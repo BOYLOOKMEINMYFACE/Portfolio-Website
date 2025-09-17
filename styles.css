@@ -1,25 +1,77 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: 'jost';
+    font-family: 'jost', sans-serif;
+}
+
+h1 {
+    color: white;
+    font-size: 32px;
+    font-family: Jost;
+    font-weight: 400;
+    word-wrap: break-word
 }
 
 .home-page {
+    display: flex;
     width: 100%;
     position: relative;
     background-color: #2a2e26;
     height: 100%;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    gap: 48px
 }
 
 .home-page-Rectangle {
-    position: relative;
+    flex: 1;
+    animation: expand 2s ease-in-out forwards;
+    position: absolute;
     top: 0px;
     left: 0px;
-    width: 200px;
+    width: calc(100%/6);
     height: 100%;
+    text-align: center;
+    justify-content: center;
+
+}
+
+.home-page-Rectangle:nth-child(1) {
+    --shift: 0%;
+    animation-delay: 0s;
+}
+
+.home-page-Rectangle:nth-child(2) {
+    --shift: 100%;
+    animation-delay: 0s;
+}
+
+.home-page-Rectangle:nth-child(3) {
+    --shift: 200%;
+    animation-delay: 0s;
+}
+
+.home-page-Rectangle:nth-child(4) {
+    --shift: 300%;
+    animation-delay: 0s;
+}
+
+.home-page-Rectangle:nth-child(5) {
+    --shift: 400%;
+    animation-delay: 0s;
+}
+
+.home-page-Rectangle:nth-child(6) {
+    --shift: 500%;
+    animation-delay: 0s;
+}
+
+@keyframes expand {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(var(--shift));
+    }
 }
