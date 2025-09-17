@@ -1,0 +1,25 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'jost';
+}
+
+.home-page {
+    width: 100%;
+    position: relative;
+    background-color: #2a2e26;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    gap: 48px
+}
+
+.home-page-Rectangle {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 200px;
+    height: 100%;
+}
