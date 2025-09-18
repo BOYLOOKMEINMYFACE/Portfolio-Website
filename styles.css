@@ -23,47 +23,64 @@ h1 {
     overflow: hidden;
 }
 
+.logo {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+    animation-delay: 2s;
+
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
 .home-page-Rectangle {
     flex: 1;
-    animation: expand 2s ease-in-out forwards;
     position: absolute;
     top: 0px;
     left: 0px;
     width: calc(100%/6);
     height: 100%;
+
     text-align: center;
     justify-content: center;
 
+    animation: expand 2s ease-in-out forwards;
+    animation-delay: 0s;
 }
 
 .home-page-Rectangle:nth-child(1) {
     --shift: 0%;
-    animation-delay: 0s;
 }
 
 .home-page-Rectangle:nth-child(2) {
     --shift: 100%;
-    animation-delay: 0s;
 }
 
 .home-page-Rectangle:nth-child(3) {
     --shift: 200%;
-    animation-delay: 0s;
 }
 
 .home-page-Rectangle:nth-child(4) {
     --shift: 300%;
-    animation-delay: 0s;
 }
 
 .home-page-Rectangle:nth-child(5) {
     --shift: 400%;
-    animation-delay: 0s;
 }
 
 .home-page-Rectangle:nth-child(6) {
     --shift: 500%;
-    animation-delay: 0s;
 }
 
 @keyframes expand {
