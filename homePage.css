@@ -12,21 +12,22 @@ h1 {
     font-family: Sofia Sans;
     font-weight: 400;
     word-wrap: break-word;
-    
+
     opacity: 0;
     animation: slideIn 1s forwards;
     animation-delay: 1.5s;
 }
 
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .home-page {
@@ -64,7 +65,7 @@ h1 {
     position: absolute;
     top: 0px;
     left: 0px;
-    width: calc(100%/6);
+    width: calc(100%/5);
     height: 100%;
 
     text-align: center;
@@ -73,6 +74,22 @@ h1 {
 
     animation: expand 1.5s ease-in-out forwards;
 }
+
+.home-page-Rectangle img {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    animation-delay: 1.5s;
+}
+
+.home-page-Rectangle h1 {
+    position: relative;
+    top: 20px;
+    z-index: 2;
+}
+
+/* .home-page-Rectangle:hover{
+    
+} */
 
 .home-page-Rectangle:nth-child(1) {
     --shift: 0%;
