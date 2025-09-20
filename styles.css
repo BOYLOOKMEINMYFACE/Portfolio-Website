@@ -3,15 +3,30 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: 'jost', sans-serif;
+    font-family: 'Sofia Sans', sans-serif;
 }
 
 h1 {
     color: white;
     font-size: 32px;
-    font-family: Jost;
+    font-family: Sofia Sans;
     font-weight: 400;
-    word-wrap: break-word
+    word-wrap: break-word;
+    
+    opacity: 0;
+    animation: slideIn 1s forwards;
+    animation-delay: 1.5s;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .home-page {
@@ -29,8 +44,8 @@ h1 {
     height: 60px;
 
     opacity: 0;
-    animation: fadeIn 0.5s forwards;
-    animation-delay: 2s;
+    animation: fadeIn 1s forwards;
+    animation-delay: 1.5s;
 
 }
 
@@ -56,8 +71,7 @@ h1 {
     justify-content: center;
     overflow: hidden;
 
-    animation: expand 2s ease-in-out forwards;
-    animation-delay: 0s;
+    animation: expand 1.5s ease-in-out forwards;
 }
 
 .home-page-Rectangle:nth-child(1) {
