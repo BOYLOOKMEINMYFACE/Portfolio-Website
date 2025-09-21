@@ -75,6 +75,12 @@ h1 {
     animation: expand 1.5s ease-in-out forwards;
 }
 
+.home-page-Rectangle:hover {
+    flex-grow: 3;
+    transition: flex-grow 0.5s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
 .home-page-Rectangle img {
     opacity: 0;
     animation: fadeIn 1s forwards;
@@ -86,10 +92,6 @@ h1 {
     top: 20px;
     z-index: 2;
 }
-
-/* .home-page-Rectangle:hover{
-    
-} */
 
 .R1 { --shift: 0%; }
 .R2 { --shift: 100%; }
