@@ -91,29 +91,11 @@ h1 {
     
 } */
 
-.home-page-Rectangle:nth-child(1) {
-    --shift: 0%;
-}
-
-.home-page-Rectangle:nth-child(2) {
-    --shift: 100%;
-}
-
-.home-page-Rectangle:nth-child(3) {
-    --shift: 200%;
-}
-
-.home-page-Rectangle:nth-child(4) {
-    --shift: 300%;
-}
-
-.home-page-Rectangle:nth-child(5) {
-    --shift: 400%;
-}
-
-.home-page-Rectangle:nth-child(6) {
-    --shift: 500%;
-}
+.R1 { --shift: 0%; }
+.R2 { --shift: 100%; }
+.R3 { --shift: 200%; }
+.R4 { --shift: 300%; }
+.R5 { --shift: 400%; }
 
 @keyframes expand {
     0% {
