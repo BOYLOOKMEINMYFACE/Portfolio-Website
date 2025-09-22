@@ -11,6 +11,11 @@ a.rect {
     text-decoration: none;
 }
 
+p {
+    color: white;
+    font-family: Sofia Sans;
+}
+
 h1 {
     color: white;
     font-size: 32px;
@@ -42,6 +47,7 @@ h1 {
 
 .rect {
     flex: 1;
+    transition: 0.8s ease;
 
     position: relative;
     text-align: center;
@@ -50,22 +56,20 @@ h1 {
 
 .rect:hover {
     flex: 3;
-    transition: 0.8s ease;
 }
 
 .rect:hover .intro-block {
     opacity: 0.8;
-    transition: 0.8s ease;
 }
 
 .rect:hover img {
     filter: blur(20px);
-    transition: 0.8s ease;
 }
 
 .rect img {
     opacity: 0;
     animation: fadeIn 1s forwards;
+    transition: 0.8s ease;
 
     width: 100%;
     height: 100%;
@@ -74,6 +78,7 @@ h1 {
 
 .intro-block {
     opacity: 0;
+    transition: 0.8s ease;
 
     z-index: 2;
     position: absolute;
@@ -82,7 +87,7 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: aliceblue;
+    background-color: #22251E;
     border-radius: 20px;
 }
 
