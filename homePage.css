@@ -97,6 +97,7 @@ h1 {
     opacity: 0;
     transition: 0.8s ease;
 
+    position: relative;
     z-index: 1;
     width: 75%;
     height: 75%;
@@ -133,7 +134,23 @@ h1 {
 .profile-pic {
     position: absolute;
     width: auto;
-    height: 40%;
+    height: 50%;
     object-fit: cover;
     border-radius: 20px;
+}
+
+.scroll-container {
+    position: relative;
+    width: 80%;
+    height: 30%;
+    overflow-x: scroll;
+    scroll-snap-type: mandatory;
+    scrollbar-width: none; 
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.scroll-img {
+    flex: 0 0 100%;
 }
