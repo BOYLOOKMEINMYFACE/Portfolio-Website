@@ -1,357 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <title>Jacob Zhao</title>
-
-  <!-- SPACE GROTESK -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Istok+Web:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@300..700&display=swap"
-    rel="stylesheet"
-  >
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Space Grotesk", sans-serif;
-      background: white;
-      color: #666;
-    }
-
-    /* HEADER */
-
-    header {
-      min-height: 82vh;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      padding: 40px 20px 40px;
-    }
-
-    .logo {
-      font-family: "Space Grotesk", sans-serif;
-
-      font-size: clamp(54px, 8vw, 118px);
-      font-weight: 300;
-
-      letter-spacing: -0.05em;
-
-      color: black;
-
-      line-height: 0.95;
-      text-align: center;
-    }
-
-    nav {
-      width: 75vw;
-      max-width: 1200px;
-
-      margin-top: 70px;
-
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-
-      align-items: center;
-      gap: 34px;
-    }
-
-    nav a {
-      font-family: "Space Grotesk", sans-serif;
-
-      text-decoration: none;
-
-      color: #9b9b9b;
-
-      font-size: 19px;
-      font-weight: 400;
-
-      text-align: center;
-
-      letter-spacing: -0.03em;
-    }
-
-    nav a:hover,
-    nav a.active {
-      color: black;
-    }
-
-    .divider {
-      width: 1px;
-      height: 42px;
-      background: #dddddd;
-    }
-
-    /* GALLERY */
-
-    .gallery {
-      width: 75vw;
-      max-width: 1450px;
-
-      margin: 0 auto 80px;
-
-      display: flex;
-      flex-direction: column;
-
-      gap: 20px;
-    }
-
-    /* ROWS */
-
-    .row {
-      display: flex;
-      gap: 20px;
-      align-items: stretch;
-    }
-
-    /* PROJECTS */
-
-    .project {
-      position: relative;
-      overflow: hidden;
-
-      background: #f2f2f2;
-    }
-
-    .project img {
-      width: 100%;
-      height: 100%;
-
-      display: block;
-      object-fit: cover;
-    }
-
-    /* FIXED HEIGHTS */
-
-    .row-large {
-      height: 760px;
-    }
-
-    .row-medium {
-      height: 540px;
-    }
-
-    .row-small {
-      height: 420px;
-    }
-
-    /* FLEX RATIOS */
-
-    .hero {
-      flex: 1.12;
-    }
-
-    .stack {
-      flex: 0.88;
-
-      display: flex;
-      flex-direction: column;
-
-      gap: 20px;
-    }
-
-    .stack .project {
-      flex: 1;
-    }
-
-    .wide-left {
-      flex: 1.08;
-    }
-
-    .wide-right {
-      flex: 0.92;
-    }
-
-    .thin {
-      flex: 0.78;
-    }
-
-    .large {
-      flex: 1.22;
-    }
-
-    .equal {
-      flex: 1;
-    }
-
-    /* IMAGE TITLE */
-
-    .title {
-      font-family: "Space Grotesk", sans-serif;
-
-      position: absolute;
-
-      top: 38px;
-      left: 42px;
-
-      color: rgba(255,255,255,0.93);
-
-      font-size: clamp(30px, 3vw, 58px);
-
-      font-weight: 300;
-
-      letter-spacing: -0.05em;
-
-      line-height: 0.95;
-    }
-
-    /* MOBILE */
-
-    @media (max-width: 900px) {
-
-      header {
-        min-height: 75vh;
-        padding: 100px 20px 40px;
-      }
-
-      nav {
-        width: 90vw;
-
-        grid-template-columns: 1fr;
-        gap: 18px;
-      }
-
-      .divider {
-        display: none;
-      }
-
-      .gallery {
-        width: 90vw;
-      }
-
-      .row {
-        flex-direction: column;
-        height: auto !important;
-      }
-
-      .project {
-        height: auto;
-      }
-
-      .project img {
-        aspect-ratio: 4 / 3;
-      }
-
-      .title {
-        left: 24px;
-        top: 24px;
-      }
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacob Zhao</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#1f1f1f;
+  --text:rgba(255,255,255,0.95);
+  --muted:rgba(255,255,255,0.62);
+  --dim:rgba(255,255,255,0.75);
+  --gap: clamp(32px, 5vw, 72px);
+}
+
+html{
+  scroll-snap-type:y mandatory;
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:"Jost",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-y:scroll;
+}
+
+section{
+  height:100vh;
+  width:100%;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+}
+
+/* ── HOME ── */
+.home{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.logo{
+  font-size:clamp(60px,9vw,140px);
+  font-weight:100;
+  letter-spacing:-0.05em;
+  line-height:.95;
+}
+
+.subtitle{
+  margin-top:24px;
+  font-size:24px;
+  font-weight:200;
+  color:var(--dim);
+}
+
+/* ── CV PAGE ── */
+.cv-page{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding: clamp(24px, 3vh, 48px) clamp(16px, 3vw, 40px);
+}
+
+.cv-container{
+  width: 100%;
+  max-width: 1450px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  align-items: start;
+}
+
+.cv-column{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  gap: clamp(10px, 1.8vh, 26px);
+}
+
+/* ── CV SECTION ── */
+.cv-section{
+  display:flex;
+  flex-direction:column;
+  gap: clamp(4px, 0.6vh, 8px);
+}
+
+.cv-section__title{
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight:200;
+  letter-spacing:-0.02em;
+  margin-bottom: clamp(2px, 0.4vh, 6px);
+}
+
+/* ── CV ITEM ── */
+.cv-item{
+  display:flex;
+  flex-direction:column;
+  gap: clamp(1px, 0.3vh, 4px);
+}
+
+/* Row: name + date side by side */
+.cv-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:16px;
+}
+
+.cv-row__name{
+  font-size: clamp(14px, 1.3vw, 18px);
+  font-weight:300;
+  line-height:1.45;
+  color:var(--text);
+}
+
+.cv-row__date{
+  flex-shrink:0;
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight:300;
+  color:var(--dim);
+  text-align:right;
+  white-space:nowrap;
+}
+
+/* Sub-row (degree / GPA line) */
+.cv-subrow{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:16px;
+}
+
+.cv-subrow__text{
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight:300;
+  color:var(--dim);
+  line-height:1.4;
+}
+
+.cv-subrow__right{
+  flex-shrink:0;
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight:300;
+  color:var(--dim);
+  text-align:right;
+  white-space:nowrap;
+}
+
+/* Bullet lines */
+.cv-bullet{
+  display:flex;
+  gap:6px;
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight:200;
+  line-height:1.45;
+  color:var(--muted);
+  padding-left:2px;
+}
+
+.cv-bullet::before{
+  content:"·";
+  flex-shrink:0;
+  color:var(--muted);
+}
+
+/* Plain text block (coursework, skills) */
+.cv-prose{
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight:200;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+/* ── IMAGE SECTIONS ── */
+.image-section{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.frame{
+  width:min(92vw,1600px);
+  height:min(88vh,1000px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.frame img{
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  display:block;
+  object-fit:contain;
+}
+
+/* ── PAGE LABEL ── */
+section{
+  position: relative;
+}
+
+.page-label{
+  position:absolute;
+  top:18px;
+  left:24px;
+  font-size:17px;
+  font-weight:200;
+  color:rgba(255,255,255,0.3);
+  letter-spacing:0.06em;
+  pointer-events:none;
+}
+
+/* ── TABLET ── */
+@media(max-width:1100px){
+  :root{ --gap: 32px; }
+
+  .cv-row__name,
+  .cv-subrow__text,
+  .cv-bullet,
+  .cv-prose{
+    font-size:13px;
+  }
+
+  .cv-row__date,
+  .cv-subrow__right{
+    font-size:12px;
+  }
+
+  .cv-section__title{
+    font-size:22px;
+  }
+}
+
+/* ── MOBILE ── */
+@media(max-width:760px){
+  html{ scroll-snap-type:none; }
+
+  section{ height:auto; min-height:100svh; }
+
+  .home{ padding:60px 28px; min-height:100svh; }
+  .logo{ font-size:clamp(52px,14vw,80px); }
+
+  .cv-page{
+    height:auto;
+    min-height:100svh;
+    align-items:flex-start;
+    padding:40px 24px;
+  }
+
+  .cv-container{
+    height:auto;
+    padding:0;
+    grid-template-columns:1fr;
+    gap:28px;
+    overflow:visible;
+  }
+
+  .cv-column{ gap:18px; }
+
+  .cv-section__title{ font-size:26px; }
+
+  .cv-row{ flex-direction:column; gap:2px; }
+  .cv-row__date{ text-align:left; }
+
+  .cv-subrow{ flex-direction:column; gap:2px; }
+  .cv-subrow__right{ text-align:left; }
+
+  .cv-row__name,
+  .cv-subrow__text,
+  .cv-bullet,
+  .cv-prose,
+  .cv-row__date,
+  .cv-subrow__right{
+    font-size:14px;
+  }
+
+  .frame{ width:92vw; height:82vh; }
+}
+</style>
 </head>
-
 <body>
 
-  <header>
 
-    <div class="logo">
-      Jacob Zhao
-    </div>
+<!-- HOME -->
+<section class="home">
+  <div class="logo">Jacob Zhao</div>
+  <div class="subtitle">Portfolio</div>
+</section>
 
-    <nav>
+<!-- CV -->
+<section class="cv-page">
+  <div class="page-label">CV</div>
+  <div class="cv-container">
 
-      <a href="#" class="active">
-        Selected Works
-      </a>
+    <!-- LEFT COLUMN -->
+    <div class="cv-column">
 
-      <div class="divider"></div>
+      <!-- Education -->
+      <div class="cv-section">
+        <div class="cv-section__title">Education</div>
 
-      <a href="#">
-        About
-      </a>
-
-      <div class="divider"></div>
-
-      <a href="#">
-        Contact
-      </a>
-
-    </nav>
-
-  </header>
-
-  <main class="gallery">
-
-    <!-- ROW 1 -->
-
-    <section class="row row-large">
-
-      <article class="project hero">
-
-        <img
-          src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1800"
-          alt=""
-        >
-
-        <div class="title">
-          Oblique Garden
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">Massachusetts Institute of Technology, Cambridge, MA</span>
+            <span class="cv-row__date">Expected Graduation June 2029</span>
+          </div>
+          <div class="cv-subrow">
+            <span class="cv-subrow__text">Candidate for B.S. in Architecture and Material Science and Engineering</span>
+            <span class="cv-subrow__right">GPA: 5.0</span>
+          </div>
+          <div class="cv-prose">Coursework: Architecture Studio, Thermodynamics for Materials, Computational Design, Environmental Tech in Buildings, Structures of Materials.</div>
+          <div class="cv-prose">Skills: CAD, Rhino, Grasshopper, Figma, Photoshop, Illustrator, Java, Python, English, Chinese, Audio Editing, Interviewing.</div>
         </div>
 
-      </article>
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">Brooks School, Andover, MA</span>
+            <span class="cv-row__date">Sep 2022 – Jun 2025</span>
+          </div>
+          <div class="cv-subrow">
+            <span class="cv-subrow__text">Summa Cum Laude Society Inductee; SAT 1560.</span>
+            <span class="cv-subrow__right">GPA: 4.0 Unweighted</span>
+          </div>
+          <div class="cv-prose">Awards: The William R. Ferris JR. Prize; Robert Lehman Art Prize; School Physics Prize; School Math Prize; AP Scholar with Distinction ×2.</div>
+        </div>
+      </div>
 
-      <div class="stack">
+      <!-- Awards -->
+      <div class="cv-section">
+        <div class="cv-section__title">Awards</div>
 
-        <article class="project">
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">Scholastic Art Award National Gold Medal, Best-In-Grade Award.</span>
+          </div>
+          <div class="cv-bullet">Best in Grade Special Award — 2 people in each grade out of 300,000 others.</div>
+          <div class="cv-bullet">Scholastic Awards 2025 Yearbook Cover.</div>
+        </div>
 
-          <img
-            src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1400"
-            alt=""
-          >
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">AIME qualifier with distinction.</span>
+          </div>
+          <div class="cv-bullet">Top 5% in US.</div>
+        </div>
+      </div>
 
-        </article>
+      <!-- Projects -->
+      <div class="cv-section">
+        <div class="cv-section__title">Projects &amp; Extracurriculars</div>
 
-        <article class="project">
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">Award Winning Architecture Project, The Wall</span>
+            <span class="cv-row__date">Jun 2024</span>
+          </div>
+          <div class="cv-bullet">Developed and built a working interactive wall to solve social problems.</div>
+          <div class="cv-bullet">Won the Brooks School Robert Lehman Art Prize for best exhibition of the year.</div>
+          <div class="cv-bullet">Received Scholastic Art Award National Gold Medal.</div>
+          <div class="cv-bullet">Best in Grade Special Award — 2 people in each grade out of 300,000 others.</div>
+          <div class="cv-bullet">Scholastic Awards 2025 Yearbook Cover.</div>
+        </div>
+      </div>
 
-          <img
-            src="https://images.unsplash.com/photo-1494526585095-c41746248156?w=1400"
-            alt=""
-          >
+    </div>
 
-        </article>
+    <!-- RIGHT COLUMN -->
+    <div class="cv-column">
+
+      <!-- Experience -->
+      <div class="cv-section">
+        <div class="cv-section__title">Experience and Volunteering</div>
+
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">Admin Masic Lab, MIT, Cambridge, MA</span>
+            <span class="cv-row__date">June 2026 – Now</span>
+          </div>
+          <div class="cv-bullet">Research in functional concrete: thermal conductive and electrical energy storage.</div>
+          <div class="cv-bullet">Design and manufacture concrete columns capable of storing 24V of energy.</div>
+          <div class="cv-bullet">Analyze functionality of larger-scale thermal conductive concrete in a road surface setting.</div>
+        </div>
+
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">MIT Self-Assembly Lab, Cambridge, MA</span>
+            <span class="cv-row__date">Dec 2025 – May 2026</span>
+          </div>
+          <div class="cv-bullet">Developed submersible, geometry-driven reef structures for coastal restoration.</div>
+          <div class="cv-bullet">Designed structures to enable self-assembling reefs.</div>
+          <div class="cv-bullet">Conducted material experiments and collected data.</div>
+          <div class="cv-bullet">Designed electronic casing for the wave simulation tank.</div>
+        </div>
+
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">LinkChance Architect Summer Intern, Beijing</span>
+            <span class="cv-row__date">Jun – Aug 2024</span>
+          </div>
+          <div class="cv-bullet">Proposed designs accepted for a nationally renowned museum restaurant.</div>
+          <div class="cv-bullet">Designed lamps and ceiling lights for market.</div>
+          <div class="cv-bullet">Created proposals and designs for LinkChance Headquarters remodel.</div>
+        </div>
+
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">ARUP Intern, Beijing</span>
+            <span class="cv-row__date">Jul – Aug 2023</span>
+          </div>
+          <div class="cv-bullet">Developed a physical architectural display model for company promotion.</div>
+          <div class="cv-bullet">Acquired professional physical model-building skills.</div>
+        </div>
+
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">Brooks School Arts Prefect, MA</span>
+            <span class="cv-row__date">Sep 2024 – Jun 2025</span>
+          </div>
+          <div class="cv-bullet">Oversaw art department plays, festivals, and concerts with over 300 people.</div>
+          <div class="cv-bullet">Tutored 10+ students weekly in open art studios.</div>
+        </div>
+
+        <div class="cv-item">
+          <div class="cv-row">
+            <span class="cv-row__name">Boys and Girls Club in Haverhill, Volunteer</span>
+            <span class="cv-row__date">Sep 2022 – Dec 2024</span>
+          </div>
+          <div class="cv-bullet">Tutored kids with schoolwork and led reading and painting groups.</div>
+          <div class="cv-bullet">Facilitated group athletic activities for 30+ kids.</div>
+        </div>
 
       </div>
 
-    </section>
+    </div>
 
-    <!-- ROW 2 -->
+  </div>
+</section>
 
-    <section class="row row-medium">
-
-      <article class="project wide-left">
-
-        <img
-          src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600"
-          alt=""
-        >
-
-      </article>
-
-      <article class="project wide-right">
-
-        <img
-          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600"
-          alt=""
-        >
-
-      </article>
-
-    </section>
-
-  </main>
+<!-- IMAGE SECTIONS -->
+<section class="image-section">
+  <div class="page-label">The Wall</div>
+  <div class="frame"><img src="../Home Page/Wall.jpg" alt="Wall"></div>
+</section>
+<section class="image-section">
+  <div class="page-label">Herbinizer</div>
+  <div class="frame"><img src="../Home Page/Herbinizer.jpg" alt="Herbinizer"></div>
+</section>
+<section class="image-section">
+  <div class="page-label">Globe</div>
+  <div class="frame"><img src="../Home Page/Globe.jpg" alt="Globe"></div>
+</section>
+<section class="image-section">
+  <div class="page-label">Puzzle</div>
+  <div class="frame"><img src="../Home Page/Puzzle.jpg" alt="Puzzle"></div>
+</section>
 
 </body>
 </html>
