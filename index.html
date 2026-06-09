@@ -50,10 +50,6 @@
       overflow: hidden;
     }
 
-    #cv.snap-section {
-      overflow: visible;
-    }
-
     /* ── COVER ── */
     .cover {
       background: var(--bg);
@@ -128,15 +124,6 @@
       display: block;
     }
 
-    .cover-pagenum {
-      position: absolute;
-      bottom: clamp(20px, 3vh, 36px);
-      right: clamp(20px, 3vw, 40px);
-      font-size: 13px;
-      font-weight: 100;
-      color: rgba(255, 255, 255, 0.22);
-      letter-spacing: 0.05em;
-    }
 
     @keyframes slideInLeft {
       to {
@@ -173,13 +160,27 @@
 
     /* ── HOME ── */
     .home {
-      display: grid;
-      grid-template-rows: 1fr auto;
+      display: flex;
+      flex-direction: column;
       padding: clamp(28px, 4vw, 56px);
       height: 100vh;
+      position: relative;
+    }
+
+    /* ── HOME: top strip area ── */
+    .home-strip {
+      width: 100%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      /* resting: strip sits centred in the page via flex on .home */
+      /* pinned: strip moves to the top via .home.project-pinned */
     }
 
     .home-work {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -188,7 +189,21 @@
       position: relative;
     }
 
+    /* ── HOME-WORK: hidden at rest, expands when pinned ── */
+    .home-work {
+      flex: 0;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+      transition: flex 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .home.project-pinned .home-work {
+      flex: 1;
+    }
+
     .home-bottom-wrap {
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
     }
@@ -197,6 +212,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
+      position: relative;
     }
 
     .home-nav {
@@ -209,7 +225,7 @@
       background: none;
       border: none;
       font-family: "Jost", sans-serif;
-      font-size: clamp(16px, 1.6vw, 26px);
+      font-size: clamp(13px, 1.1vw, 17px);
       font-weight: 200;
       letter-spacing: 0.04em;
       color: var(--text);
@@ -248,7 +264,7 @@
     }
 
     .contact-flyout a {
-      font-size: clamp(16px, 1.6vw, 26px);
+      font-size: clamp(13px, 1.1vw, 17px);
       font-weight: 100;
       letter-spacing: 0.04em;
       color: var(--dim);
@@ -260,17 +276,104 @@
       color: var(--text);
     }
 
-    /* ── CONTENTS ROW ── */
-    .contents-row {
-      width: min(86vw, 1320px);
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: clamp(28px, 5vw, 90px);
-      align-items: center;
-      justify-items: center;
-      transition: opacity 0.22s ease, transform 0.22s ease;
+    .contact-flyout-btn {
+      background: none;
+      border: none;
+      font-family: "Jost", sans-serif;
+      font-size: clamp(13px, 1.1vw, 17px);
+      font-weight: 100;
+      letter-spacing: 0.04em;
+      color: var(--dim);
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
     }
 
+    .contact-flyout-btn:hover {
+      color: var(--text);
+    }
+
+    .email-wrap {
+      position: relative;
+    }
+
+    .email-sub {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      white-space: nowrap;
+    }
+
+    .email-wrap.open .email-sub {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .email-addr {
+      background: none;
+      border: none;
+      font-family: "Jost", sans-serif;
+      font-size: clamp(12px, 1vw, 15px);
+      font-weight: 100;
+      letter-spacing: 0.04em;
+      color: rgba(255, 255, 255, 0.45);
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+      transition: color 0.2s;
+    }
+
+    .email-addr:hover {
+      color: var(--text);
+    }
+
+    .copy-toast {
+      position: fixed;
+      bottom: clamp(24px, 4vh, 48px);
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.75);
+      font-family: "Jost", sans-serif;
+      font-size: 13px;
+      font-weight: 200;
+      letter-spacing: 0.06em;
+      padding: 10px 22px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+
+    .copy-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── CONTENTS ROW — resting state ── */
+    .contents-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: min(90vw, 1200px);
+      /* transitions for every animating property */
+      transition:
+        width 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+        gap 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── ICON — resting state ── */
     .project-icon {
       background: none;
       border: 0;
@@ -280,17 +383,59 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
-      transition: opacity 0.22s ease, transform 0.22s ease;
+      gap: clamp(10px, 1.4vh, 16px);
+      flex: 1;
+      padding: clamp(14px, 2vw, 28px) clamp(10px, 1.5vw, 22px);
+      position: relative;
+      /* All sub-properties that change on pin */
+      transition:
+        opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+        padding 0.65s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .project-icon:hover {
-      opacity: 0.55;
-      transform: translateY(-4px);
+    /* hairline dividers between icons */
+    .project-icon:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: clamp(40px, 6vh, 64px);
+      width: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: height 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
     }
 
+    /* active-dot indicator */
+    .project-icon::before {
+      content: '';
+      position: absolute;
+      bottom: clamp(4px, 0.8vh, 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.65);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .project-icon.icon-active::before {
+      opacity: 1;
+    }
+
+    .project-icon:not(.icon-active):hover {
+      opacity: 0.45;
+    }
+
+    .project-icon.icon-active {
+      opacity: 1;
+    }
+
+    /* ── SQUARE (image container) ── */
     .square {
-      width: clamp(90px, 10vw, 160px);
+      width: clamp(80px, 9vw, 140px);
       aspect-ratio: 1/1;
       border: none;
       background: transparent;
@@ -298,6 +443,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      transition: width 0.65s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .square img {
@@ -307,40 +453,153 @@
       display: block;
     }
 
+    /* ── LABEL ── */
     .project-name {
-      font-size: clamp(16px, 1.4vw, 22px);
+      font-size: clamp(11px, 0.95vw, 14px);
       font-weight: 200;
       line-height: 1.1;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.06em;
       text-align: center;
+      color: rgba(255, 255, 255, 0.55);
+      transition: font-size 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
     }
 
-    /* ── PROJECT VIEW ── */
+    /* ── PINNED STATE  ── */
+    /* When an icon is clicked the home section gets .project-pinned.
+       The strip slides to the top, icons shrink, card slides in below. */
+
+    /* Rearrange home layout so strip is at top */
+    .home.project-pinned {
+      flex-direction: column;
+    }
+
+    /* Strip itself gets a bottom hairline and tighter vertical padding */
+    .home.project-pinned .contents-row {
+      width: 100%;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Icons shrink to compact top-bar size */
+    .home.project-pinned .project-icon {
+      padding: clamp(8px, 1.2vh, 16px) clamp(8px, 1vw, 16px);
+    }
+
+    .home.project-pinned .project-icon:not(:last-child)::after {
+      height: 32px;
+    }
+
+    /* All icons shrink by default when pinned */
+    .home.project-pinned .square {
+      width: clamp(36px, 3.5vw, 52px);
+    }
+
+    .home.project-pinned .project-name {
+      font-size: clamp(9px, 0.72vw, 11px);
+      opacity: 0.55;
+    }
+
+    /* Active icon stays at full resting size — clearly stands out */
+    .home.project-pinned .project-icon.icon-active .square {
+      width: clamp(72px, 8vw, 118px);
+    }
+
+    .home.project-pinned .project-icon.icon-active .project-name {
+      font-size: clamp(11px, 0.95vw, 14px);
+      opacity: 1;
+    }
+
+    /* Non-active icons dim when strip is pinned */
+    .home.project-pinned .project-icon:not(.icon-active) {
+      opacity: 0.38;
+    }
+
+    .home.project-pinned .project-icon:not(.icon-active):hover {
+      opacity: 0.72;
+    }
+
+    /* ── STRIP PREV / NEXT ARROWS ── */
+    .strip-nav {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: clamp(28px, 3vw, 44px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.0);
+      font-family: "Jost", sans-serif;
+      font-size: clamp(18px, 1.8vw, 26px);
+      font-weight: 100;
+      padding: 0;
+      transition: color 0.3s ease, opacity 0.4s ease;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .strip-nav.prev { left: 0; }
+    .strip-nav.next { right: 0; }
+
+    /* Show arrows when pinned and direction is available */
+    .home.project-pinned .strip-nav {
+      opacity: 1;
+      pointer-events: auto;
+      color: rgba(255, 255, 255, 0.22);
+    }
+
+    .home.project-pinned .strip-nav:hover {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .home.project-pinned .strip-nav:disabled {
+      opacity: 0;
+      pointer-events: none;
+    }
     .project-view {
       position: absolute;
       inset: 0;
-      display: grid;
-      grid-template-columns: clamp(100px, 12vw, 180px) 1fr;
-      gap: clamp(26px, 3vw, 56px);
+      display: flex;
       align-items: center;
+      justify-content: stretch;
       opacity: 0;
       pointer-events: none;
-      transform: translateY(28px);
-      transition: opacity 0.22s ease, transform 0.22s ease;
+      transform: translateY(32px);
+      transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .home.project-open .contents-row {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-20px);
-      visibility: hidden;
-    }
-
-    .home.project-open .project-view {
+    .home.project-pinned .project-view {
       opacity: 1;
       pointer-events: auto;
       transform: translateY(0);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    /* hint fades out when pinned */
+    .home.project-pinned .home-hint {
+      opacity: 0;
+    }
+
+    /* ── HOME STRIP layout ──
+       At rest: strip is the only child with flex:1 centering in the flex column.
+       When pinned: strip stays at top (order 0), home-work expands (flex:1). */
+    .home-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* At rest take up all available space so it appears vertically centred */
+      flex: 1;
+      transition: flex 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .home.project-pinned .home-strip {
+      flex: 0 0 auto;
+    }
+
+    .home.project-pinned .home-work {
+      flex: 1;
     }
 
     .project-rail {
@@ -423,17 +682,16 @@
     /* ── PROJECT CARDS ── */
     .project-card {
       display: none;
-      grid-template-columns: minmax(260px, 0.85fr) minmax(520px, 2.9fr) minmax(220px, 0.8fr);
+      width: 100%;
+      grid-template-columns: minmax(200px, 0.75fr) minmax(400px, 2.5fr) minmax(200px, 0.85fr);
       gap: clamp(16px, 1.6vw, 28px);
       align-items: start;
-      height: clamp(320px, 42vh, 520px);
-      align-self: center;
-      justify-self: stretch;
+      height: 100%;
+      padding: clamp(24px, 3vh, 44px) clamp(28px, 4vw, 56px);
     }
 
     .project-card.active {
       display: grid;
-      transform: translateX(-40px);
       cursor: pointer;
     }
 
@@ -505,167 +763,12 @@
     }
 
     .home-hint {
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 100;
-      letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.28);
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.22);
       white-space: nowrap;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 2px;
-    }
-
-    .cv-outer {
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-    }
-
-    .cv-outer::-webkit-scrollbar {
-      display: none;
-    }
-
-    .cv-panel {
-      flex: 0 0 100vw;
-      width: 100vw;
-      height: 100vh;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: clamp(48px, 7vh, 96px) clamp(48px, 7vw, 120px);
-    }
-
-    .cv-panel-inner {
-      width: 100%;
-      max-width: 960px;
-      margin-left: clamp(36px, 4vw, 72px);
-      display: flex;
-      flex-direction: column;
-      gap: clamp(24px, 3.5vh, 42px);
-    }
-
-    .cv-section {
-      display: flex;
-      flex-direction: column;
-      gap: clamp(12px, 1.7vh, 20px);
-    }
-
-    .cv-section__title {
-      font-size: clamp(24px, 2.6vw, 44px);
-      font-weight: 200;
-      letter-spacing: -0.01em;
-      line-height: 1;
-      color: var(--text);
-      margin-bottom: clamp(10px, 1.6vh, 22px);
-      padding-bottom: clamp(10px, 1.2vh, 16px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .cv-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .cv-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 24px;
-    }
-
-    .cv-row__name {
-      font-size: clamp(15px, 1.35vw, 21px);
-      font-weight: 100;
-      line-height: 1.25;
-      color: var(--dim);
-    }
-
-    .cv-row__date {
-      flex-shrink: 0;
-      font-size: clamp(15px, 1.35vw, 21px);
-      font-weight: 100;
-      line-height: 1.25;
-      color: var(--dim);
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .cv-subrow {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 24px;
-    }
-
-    .cv-subrow__text {
-      font-size: clamp(15px, 1.35vw, 21px);
-      font-weight: 100;
-      color: rgba(255, 255, 255, 0.58);
-      line-height: 1.25;
-    }
-
-    .cv-subrow__right {
-      flex-shrink: 0;
-      font-size: clamp(15px, 1.35vw, 21px);
-      font-weight: 100;
-      color: rgba(255, 255, 255, 0.58);
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .cv-bullet {
-      font-size: clamp(15px, 1.35vw, 21px);
-      font-weight: 100;
-      line-height: 1.3;
-      color: rgba(255, 255, 255, 0.58);
-      padding-left: 12px;
-      position: relative;
-    }
-
-    .cv-bullet::before {
-      content: "–";
-      position: absolute;
-      left: 0;
-      color: rgba(255, 255, 255, 0.2);
-    }
-
-    .cv-prose {
-      font-size: clamp(15px, 1.35vw, 21px);
-      font-weight: 100;
-      line-height: 1.3;
-      color: rgba(255, 255, 255, 0.45);
-    }
-
-    .cv-dots {
-      position: absolute;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .cv-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      transition: background 0.3s;
-    }
-
-    .cv-dot.active {
-      background: rgba(255, 255, 255, 0.7);
+      transition: opacity 0.4s ease;
     }
 
     /* ── PROJECT DETAIL SECTIONS ── */
@@ -722,7 +825,7 @@
 
       display: flex;
       align-items: flex-start;
-      padding-top: clamp(120px, 18vh, 190px);
+      padding-top: clamp(68px, 9vh, 96px);
       gap: clamp(16px, 2vw, 28px);
       padding-left: 0;
       padding-right: clamp(28px, 4vw, 56px);
@@ -770,7 +873,7 @@
 
     .wall-gallery-img {
       flex: 0 0 auto;
-      height: 55vh;
+      height: 72vh;
       width: auto;
       object-fit: cover;
       display: block;
@@ -787,14 +890,14 @@
     .wall-slide {
       flex: 0 0 auto;
       width: auto;
-      height: 55vh;
+      height: 72vh;
       scroll-snap-align: start;
       position: relative;
       display: block;
     }
 
     .wall-slide .wall-gallery-img {
-      height: 55vh;
+      height: 72vh;
       width: auto;
       scroll-snap-align: none;
     }
@@ -802,7 +905,7 @@
     .wall-caption {
       position: absolute;
       left: 0;
-      top: calc(55vh + clamp(14px, 2vh, 24px));
+      top: calc(72vh + clamp(12px, 1.5vh, 18px));
       width: 100%;
       max-width: 720px;
 
@@ -909,7 +1012,7 @@
 
       display: flex;
       align-items: flex-start;
-      padding-top: clamp(120px, 18vh, 190px);
+      padding-top: clamp(68px, 9vh, 96px);
       gap: clamp(16px, 2vw, 28px);
       padding-left: 0;
       padding-right: clamp(28px, 4vw, 56px);
@@ -957,7 +1060,7 @@
 
     .puzzle-gallery-img {
       flex: 0 0 auto;
-      height: 55vh;
+      height: 72vh;
       width: auto;
       object-fit: cover;
       display: block;
@@ -974,14 +1077,14 @@
     .puzzle-slide {
       flex: 0 0 auto;
       width: auto;
-      height: 55vh;
+      height: 72vh;
       scroll-snap-align: start;
       position: relative;
       display: block;
     }
 
     .puzzle-slide .puzzle-gallery-img {
-      height: 55vh;
+      height: 72vh;
       width: auto;
       scroll-snap-align: none;
     }
@@ -989,7 +1092,7 @@
     .puzzle-caption {
       position: absolute;
       left: 0;
-      top: calc(55vh + clamp(14px, 2vh, 24px));
+      top: calc(72vh + clamp(12px, 1.5vh, 18px));
       width: 100%;
       max-width: 720px;
 
@@ -1076,39 +1179,32 @@
         font-size: clamp(48px, 14vw, 80px);
       }
 
-      .cv-outer {
-        flex-direction: column;
-        overflow-x: hidden;
-        overflow-y: visible;
-        height: auto;
-        scroll-snap-type: none;
-      }
-
-      .cv-panel {
-        flex: none;
-        width: 100%;
-        height: auto;
-        min-height: 100svh;
-        padding: 48px 24px;
-        scroll-snap-align: none;
-      }
-
-      .cv-panel-inner {
-        margin-left: 0;
-      }
-
-      .cv-dots {
-        display: none;
-      }
-
       .home {
         padding: 32px 24px;
         min-height: 100svh;
+        height: auto;
+      }
+
+      .home-strip {
+        flex: 0 0 auto;
+        padding: 40px 0;
+      }
+
+      .home.project-pinned .home-strip {
+        padding: 16px 0;
+      }
+
+      .home-work {
+        min-height: 0;
+      }
+
+      .home.project-pinned .home-work {
+        min-height: 60svh;
       }
 
       .home-bottom {
         flex-direction: column;
-        gap: 24px;
+        gap: 16px;
         align-items: flex-start;
       }
 
@@ -1126,47 +1222,46 @@
         transform: translateY(0);
       }
 
-      .cv-row {
-        flex-direction: column;
-        gap: 2px;
-      }
-
-      .cv-row__date {
-        text-align: left;
-      }
-
-      .cv-subrow {
-        flex-direction: column;
-        gap: 2px;
-      }
-
-      .cv-subrow__right {
-        text-align: left;
-      }
-
       .contents-row {
-        grid-template-columns: 1fr;
-        gap: 42px;
-        padding: 72px 0;
+        width: 100%;
       }
 
       .square {
-        width: 42vw;
+        width: clamp(48px, 12vw, 72px);
       }
 
       .project-view {
         position: relative;
         inset: auto;
-        grid-template-columns: 1fr;
-        gap: 28px;
-        padding: 48px 0;
+        flex-direction: column;
+        align-items: flex-start;
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
       }
 
-      .project-rail {
+      .project-card,
+      .project-card.active {
+        grid-template-columns: 1fr;
+        gap: 20px;
         height: auto;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-start;
+        min-height: 0;
+        padding: 16px 0;
+      }
+
+      .project-info,
+      .project-image,
+      .project-description {
+        grid-column: auto;
+        grid-row: auto;
+      }
+
+      .project-info {
+        text-align: left;
+      }
+
+      .project-description {
+        gap: 24px;
       }
 
       .fixed-project-rail {
@@ -1185,29 +1280,6 @@
         font-size: clamp(72px, 18vw, 110px);
       }
 
-      .project-card,
-      .project-card.active {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        height: auto;
-        min-height: 0;
-      }
-
-      .project-info,
-      .project-image,
-      .project-description {
-        grid-column: auto;
-        grid-row: auto;
-      }
-
-      .project-info {
-        text-align: left;
-      }
-
-      .project-description {
-        gap: 24px;
-      }
-
       #wall-section {
         --wall-safe-left: 0px;
       }
@@ -1220,20 +1292,20 @@
         width: 100%;
         margin-left: 0;
         padding-left: 0;
-        padding-top: 120px;
+        padding-top: 80px;
       }
 
       .wall-slide {
-        height: clamp(160px, 30vh, 280px);
+        height: clamp(200px, 45vh, 380px);
       }
 
       .wall-gallery-img,
       .wall-slide .wall-gallery-img {
-        height: clamp(160px, 30vh, 280px);
+        height: clamp(200px, 45vh, 380px);
       }
 
       .wall-caption {
-        top: calc(clamp(160px, 30vh, 280px) + clamp(14px, 2vh, 24px));
+        top: calc(clamp(200px, 45vh, 380px) + clamp(12px, 1.5vh, 18px));
         max-width: 82vw;
       }
 
@@ -1252,20 +1324,20 @@
         width: 100%;
         margin-left: 0;
         padding-left: 0;
-        padding-top: 120px;
+        padding-top: 80px;
       }
 
       .puzzle-slide {
-        height: clamp(160px, 30vh, 280px);
+        height: clamp(200px, 45vh, 380px);
       }
 
       .puzzle-gallery-img,
       .puzzle-slide .puzzle-gallery-img {
-        height: clamp(160px, 30vh, 280px);
+        height: clamp(200px, 45vh, 380px);
       }
 
       .puzzle-caption {
-        top: calc(clamp(160px, 30vh, 280px) + clamp(14px, 2vh, 24px));
+        top: calc(clamp(200px, 45vh, 380px) + clamp(12px, 1.5vh, 18px));
         max-width: 82vw;
       }
     }
@@ -1292,12 +1364,15 @@
         </div>
       </div>
     </div>
-    <div class="cover-pagenum">1</div>
+
   </section>
 
   <!-- HOME (projects) -->
   <section class="snap-section home">
-    <div class="home-work" id="homeWork">
+
+    <!-- Strip: centred at rest, slides to top on pin -->
+    <div class="home-strip">
+      <button class="strip-nav prev" id="stripPrev" type="button" aria-label="Previous project">&#8592;</button>
       <div class="contents-row" id="contentsRow" aria-label="Project contents">
         <button class="project-icon" id="cvButton" type="button" aria-label="Open CV">
           <div class="square"><img src="NavBar_Pics/CV_nav.jpg" alt="CV"></div>
@@ -1320,31 +1395,10 @@
           <div class="project-name">Globe</div>
         </button>
       </div>
-
+      <button class="strip-nav next" id="stripNext" type="button" aria-label="Next project">&#8594;</button>
+    </div>
+    <div class="home-work" id="homeWork">
       <div class="project-view" id="projectView">
-        <nav class="project-rail" aria-label="Project navigation">
-          <button class="rail-button" type="button" id="railCvButton">
-            <div class="rail-square"><img src="NavBar_Pics/CV_nav.jpg" alt="CV"></div>
-            <span>CV</span>
-          </button>
-          <button class="rail-button active" type="button" data-project="wall">
-            <div class="rail-square"><img src="NavBar_Pics/Wall_nav.jpg" alt="Wall"></div>
-            <span>Wall</span>
-          </button>
-          <button class="rail-button" type="button" data-project="puzzle">
-            <div class="rail-square"><img src="NavBar_Pics/Puzzle_nav.jpg" alt="Puzzle"></div>
-            <span>Puzzle</span>
-          </button>
-          <button class="rail-button" type="button" data-project="herbinizer">
-            <div class="rail-square"><img src="NavBar_Pics/Herbinizer_nav.jpg" alt="Herbinizer"></div>
-            <span>Herbinizer</span>
-          </button>
-          <button class="rail-button" type="button" data-project="globe">
-            <div class="rail-square"><img src="NavBar_Pics/Globe_nav.jpg" alt="Globe"></div>
-            <span>Globe</span>
-          </button>
-        </nav>
-
         <article class="project-card active" data-card="wall">
           <div class="project-info">
             <h2>The Wall</h2>
@@ -1412,12 +1466,19 @@
             <button class="contact-toggle" type="button" id="contactToggle">Contact</button>
             <div class="contact-flyout">
               <a href="#">Instagram</a>
-              <a href="#">LinkedIn</a>
-              <a href="mailto:">Email</a>
+              <a href="https://www.linkedin.com/in/jacob-zhao-architect" target="_blank" rel="noopener">LinkedIn</a>
+              <div class="email-wrap" id="emailWrap">
+                <button class="contact-flyout-btn" id="emailToggle" type="button">Email</button>
+                <div class="email-sub" id="emailSub">
+                  <button class="email-addr" type="button" data-email="jakez06@icloud.com">jakez06@icloud.com</button>
+                  <button class="email-addr" type="button" data-email="jacob086@mit.edu">jacob086@mit.edu</button>
+                </div>
+              </div>
             </div>
           </div>
         </nav>
-        <span class="home-hint">Hover over icons to preview project</span>
+        <span class="home-hint">click an icon to preview</span>
+
       </div>
     </div>
   </section>
@@ -1446,159 +1507,8 @@
     </button>
   </nav>
 
-  <!-- CV -->
-  <section id="cv" class="snap-section">
-    <div class="cv-outer" id="cv-outer">
-      <div class="cv-panel">
-        <div class="cv-panel-inner">
-          <div class="cv-section">
-            <div class="cv-section__title">Education</div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">Massachusetts Institute of Technology, Cambridge, MA</span>
-                <span class="cv-row__date">Expected June 2029</span>
-              </div>
-              <div class="cv-subrow">
-                <span class="cv-subrow__text">Candidate for B.S. in Architecture and Material Science and
-                  Engineering</span>
-                <span class="cv-subrow__right">GPA: 5.0</span>
-              </div>
-              <div class="cv-prose">Coursework: Architecture Studio, Thermodynamics for Materials, Computational Design,
-                Environmental Tech in Buildings, Structures of Materials.</div>
-              <div class="cv-prose">Skills: CAD, Rhino, Grasshopper, Figma, Photoshop, Illustrator, Java, Python,
-                English, Chinese, Audio Editing, Interviewing.</div>
-            </div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">Brooks School, Andover, MA</span>
-                <span class="cv-row__date">Sep 2022 – Jun 2025</span>
-              </div>
-              <div class="cv-subrow">
-                <span class="cv-subrow__text">Summa Cum Laude Society Inductee; SAT 1560.</span>
-                <span class="cv-subrow__right">GPA: 4.0 Unweighted</span>
-              </div>
-              <div class="cv-prose">Awards: The William R. Ferris JR. Prize; Robert Lehman Art Prize; School Physics
-                Prize; School Math Prize; AP Scholar with Distinction ×2.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cv-panel">
-        <div class="cv-panel-inner">
-          <div class="cv-section">
-            <div class="cv-section__title">Awards</div>
-            <div class="cv-item">
-              <div class="cv-row"><span class="cv-row__name">Scholastic Art Award — National Gold Medal, Best-In-Grade
-                  Award</span></div>
-              <div class="cv-bullet">Best in Grade Special Award — 2 people in each grade out of 300,000 others.</div>
-              <div class="cv-bullet">Scholastic Awards 2025 Yearbook Cover.</div>
-            </div>
-            <div class="cv-item">
-              <div class="cv-row"><span class="cv-row__name">AIME Qualifier with Distinction</span></div>
-              <div class="cv-bullet">Top 5% in the US.</div>
-            </div>
-          </div>
-          <div class="cv-section">
-            <div class="cv-section__title">Projects &amp; Extracurriculars</div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">Award Winning Architecture Project, The Wall</span>
-                <span class="cv-row__date">Jun 2024</span>
-              </div>
-              <div class="cv-bullet">Developed and built a working interactive wall to solve social problems.</div>
-              <div class="cv-bullet">Won the Brooks School Robert Lehman Art Prize for best exhibition of the year.
-              </div>
-              <div class="cv-bullet">Received Scholastic Art Award National Gold Medal.</div>
-              <div class="cv-bullet">Best in Grade Special Award — 2 people in each grade out of 300,000 others.</div>
-              <div class="cv-bullet">Scholastic Awards 2025 Yearbook Cover.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cv-panel">
-        <div class="cv-panel-inner">
-          <div class="cv-section">
-            <div class="cv-section__title">Experience &amp; Volunteering</div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">Admin Masic Lab, MIT, Cambridge, MA</span>
-                <span class="cv-row__date">June 2026 – Now</span>
-              </div>
-              <div class="cv-bullet">Research in functional concrete: thermal conductive and electrical energy storage.
-              </div>
-              <div class="cv-bullet">Design and manufacture concrete columns capable of storing 24V of energy.</div>
-              <div class="cv-bullet">Analyze functionality of larger-scale thermal conductive concrete in a road surface
-                setting.</div>
-            </div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">MIT Self-Assembly Lab, Cambridge, MA</span>
-                <span class="cv-row__date">Dec 2025 – May 2026</span>
-              </div>
-              <div class="cv-bullet">Developed submersible, geometry-driven reef structures for coastal restoration.
-              </div>
-              <div class="cv-bullet">Designed structures to enable self-assembling reefs.</div>
-              <div class="cv-bullet">Conducted material experiments and collected data.</div>
-              <div class="cv-bullet">Designed electronic casing for the wave simulation tank.</div>
-            </div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">LinkChance Architect Summer Intern, Beijing</span>
-                <span class="cv-row__date">Jun – Aug 2024</span>
-              </div>
-              <div class="cv-bullet">Proposed designs accepted for a nationally renowned museum restaurant.</div>
-              <div class="cv-bullet">Designed lamps and ceiling lights for market.</div>
-              <div class="cv-bullet">Created proposals and designs for LinkChance Headquarters remodel.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cv-panel">
-        <div class="cv-panel-inner">
-          <div class="cv-section">
-            <div class="cv-section__title">Experience &amp; Volunteering</div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">ARUP Intern, Beijing</span>
-                <span class="cv-row__date">Jul – Aug 2023</span>
-              </div>
-              <div class="cv-bullet">Developed a physical architectural display model for company promotion.</div>
-              <div class="cv-bullet">Acquired professional physical model-building skills.</div>
-            </div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">Brooks School Arts Prefect, MA</span>
-                <span class="cv-row__date">Sep 2024 – Jun 2025</span>
-              </div>
-              <div class="cv-bullet">Oversaw art department plays, festivals, and concerts with over 300 people.</div>
-              <div class="cv-bullet">Tutored 10+ students weekly in open art studios.</div>
-            </div>
-            <div class="cv-item">
-              <div class="cv-row">
-                <span class="cv-row__name">Boys and Girls Club in Haverhill, Volunteer</span>
-                <span class="cv-row__date">Sep 2022 – Dec 2024</span>
-              </div>
-              <div class="cv-bullet">Tutored kids with schoolwork and led reading and painting groups.</div>
-              <div class="cv-bullet">Facilitated group athletic activities for 30+ kids.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="cv-dots">
-      <div class="cv-dot active" id="dot-0"></div>
-      <div class="cv-dot" id="dot-1"></div>
-      <div class="cv-dot" id="dot-2"></div>
-      <div class="cv-dot" id="dot-3"></div>
-    </div>
-  </section>
-
   <!-- WALL DETAIL -->
   <section id="wall-section" class="project-detail-section" data-project-section="wall">
-    <div class="wall-floating-title" aria-hidden="true">The Wall</div>
     <div class="wall-gallery" id="wallGallery">
       <div class="wall-gallery-info">
         <div class="wall-left-title">The Wall</div>
@@ -1667,7 +1577,6 @@
 
   <!-- OTHER PROJECT DETAIL SECTIONS -->
   <section id="puzzle-section" class="project-detail-section" data-project-section="puzzle">
-    <div class="puzzle-floating-title" aria-hidden="true">Puzzle</div>
     <div class="puzzle-gallery" id="puzzleGallery">
       <div class="puzzle-gallery-info">
         <div class="puzzle-left-title">Puzzle</div>
@@ -1760,7 +1669,6 @@
     </div>
   </section>
   <section id="herbinizer-section" class="project-detail-section" data-project-section="herbinizer">
-    <div class="puzzle-floating-title" aria-hidden="true">Herbinizer</div>
     <div class="puzzle-gallery" id="herbinizerGallery">
       <div class="puzzle-gallery-info">
         <div class="puzzle-left-title">Herbinizer</div>
@@ -1818,7 +1726,6 @@
     </div>
   </section>
   <section id="globe-section" class="project-detail-section" data-project-section="globe">
-    <div class="puzzle-floating-title" aria-hidden="true">Globe</div>
     <div class="puzzle-gallery" id="globeGallery">
       <div class="puzzle-gallery-info">
         <div class="puzzle-left-title">Globe</div>
@@ -1862,55 +1769,190 @@
     <img id="imageModalImg" alt="">
   </div>
 
+  <div class="copy-toast" id="copyToast"></div>
+
   <script>
     // ── Contact toggle ──
     var contactWrap = document.getElementById('contactWrap');
     var contactToggle = document.getElementById('contactToggle');
+    var emailWrap = document.getElementById('emailWrap');
+    var emailToggle = document.getElementById('emailToggle');
+    var copyToast = document.getElementById('copyToast');
+    var toastTimer = null;
+
     if (contactToggle && contactWrap) {
-      contactToggle.addEventListener('click', function (e) { e.stopPropagation(); contactWrap.classList.toggle('open'); });
-      document.addEventListener('click', function (e) { if (!contactWrap.contains(e.target)) contactWrap.classList.remove('open'); });
+      contactToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        contactWrap.classList.toggle('open');
+        if (!contactWrap.classList.contains('open') && emailWrap) {
+          emailWrap.classList.remove('open');
+        }
+      });
+      document.addEventListener('click', function (e) {
+        if (!contactWrap.contains(e.target)) {
+          contactWrap.classList.remove('open');
+          if (emailWrap) emailWrap.classList.remove('open');
+        }
+      });
     }
+
+    if (emailToggle && emailWrap) {
+      emailToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        emailWrap.classList.toggle('open');
+      });
+    }
+
+    function showToast(msg) {
+      if (!copyToast) return;
+      copyToast.textContent = msg;
+      copyToast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        copyToast.classList.remove('show');
+      }, 2200);
+    }
+
+    document.querySelectorAll('.email-addr').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var email = btn.getAttribute('data-email');
+        navigator.clipboard.writeText(email).then(function () {
+          showToast(email + ' copied');
+        }).catch(function () {
+          showToast(email);
+        });
+        emailWrap.classList.remove('open');
+        contactWrap.classList.remove('open');
+      });
+    });
 
     // ── Projects ──
     var homeSection = document.querySelector('.home');
     var cvButton = document.getElementById('cvButton');
-    var railCvButton = document.getElementById('railCvButton');
     var fixedRailCvButton = document.getElementById('fixedRailCvButton');
     var fixedProjectRail = document.getElementById('fixedProjectRail');
     var projectOpenButtons = document.querySelectorAll('.project-open-button');
-    var railButtons = document.querySelectorAll('.rail-button[data-project]');
+    var fixedRailButtons = document.querySelectorAll('#fixedProjectRail .rail-button[data-project]');
     var projectCards = document.querySelectorAll('.project-card');
+    var allProjectIcons = document.querySelectorAll('.project-open-button');
 
-    function scrollToCV() { document.getElementById('cv').scrollIntoView({ behavior: 'smooth' }); }
+    var currentProject = null; // null = unpinned
+
+    function scrollToCV() { window.open('Resume MIT.pdf', '_blank'); }
     function scrollToProjectSection(name) {
       resetGalleryForProject(name);
       var t = document.getElementById(name + '-section');
       if (t) t.scrollIntoView({ behavior: 'smooth' });
     }
 
-    function openProject(name) {
-      homeSection.classList.add('project-open');
-      projectCards.forEach(function (c) { c.classList.toggle('active', c.getAttribute('data-card') === name); });
-      railButtons.forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-project') === name); });
-      updateCVHighlight();
+    function pinProject(name) {
+      currentProject = name;
+      homeSection.classList.add('project-pinned');
+      // Show the right card
+      projectCards.forEach(function (c) {
+        c.classList.toggle('active', c.getAttribute('data-card') === name);
+      });
+      // Mark the active icon
+      allProjectIcons.forEach(function (b) {
+        b.classList.toggle('icon-active', b.getAttribute('data-project') === name);
+      });
+      updateFixedRailHighlight();
+      updateStripNavState();
     }
 
+    function unpin() {
+      currentProject = null;
+      homeSection.classList.remove('project-pinned');
+      allProjectIcons.forEach(function (b) { b.classList.remove('icon-active'); });
+      updateFixedRailHighlight();
+      updateStripNavState();
+    }
+
+    // CV button always just scrolls
     if (cvButton) cvButton.addEventListener('click', scrollToCV);
-    if (railCvButton) railCvButton.addEventListener('click', scrollToCV);
     if (fixedRailCvButton) fixedRailCvButton.addEventListener('click', scrollToCV);
 
+    // Icon click: pin on first click, scroll on second click of same icon
     projectOpenButtons.forEach(function (b) {
-      b.addEventListener('mouseenter', function () { openProject(b.getAttribute('data-project')); });
-      b.addEventListener('click', function () { scrollToProjectSection(b.getAttribute('data-project')); });
+      b.addEventListener('click', function () {
+        var name = b.getAttribute('data-project');
+        if (currentProject === name) {
+          // Already pinned to this project — scroll into it
+          scrollToProjectSection(name);
+        } else {
+          pinProject(name);
+        }
+      });
     });
-    railButtons.forEach(function (b) {
-      b.addEventListener('mouseenter', function () { openProject(b.getAttribute('data-project')); });
+
+    // Project card click → scroll into that project's detail section
+    projectCards.forEach(function (c) {
+      c.addEventListener('click', function () {
+        scrollToProjectSection(c.getAttribute('data-card'));
+      });
+    });
+
+    // Fixed rail buttons
+    fixedRailButtons.forEach(function (b) {
       b.addEventListener('click', function () { scrollToProjectSection(b.getAttribute('data-project')); });
     });
 
-    var projectView = document.getElementById('projectView');
-    if (projectView) projectView.addEventListener('mouseleave', function () { homeSection.classList.remove('project-open'); });
-    projectCards.forEach(function (c) { c.addEventListener('click', function () { scrollToProjectSection(c.getAttribute('data-card')); }); });
+    // Escape key unpins; arrow keys navigate projects when on the home section
+    var projectOrder = ['wall', 'puzzle', 'herbinizer', 'globe'];
+
+    function navigateProject(dir) {
+      // Only act when we're on the home section (not scrolled away)
+      var homeRect = homeSection.getBoundingClientRect();
+      var onHome = homeRect.top > -window.innerHeight * 0.5 && homeRect.top < window.innerHeight * 0.5;
+      if (!onHome) return;
+      if (!currentProject) {
+        // Not pinned yet — pin to first/last depending on direction
+        pinProject(dir > 0 ? projectOrder[0] : projectOrder[projectOrder.length - 1]);
+        return;
+      }
+      var idx = projectOrder.indexOf(currentProject);
+      var next = idx + dir;
+      if (next >= 0 && next < projectOrder.length) {
+        pinProject(projectOrder[next]);
+      }
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && currentProject) {
+        // Only unpin if we're still on the home section
+        var homeRect = homeSection.getBoundingClientRect();
+        var onHome = homeRect.top > -window.innerHeight * 0.5 && homeRect.top < window.innerHeight * 0.5;
+        if (onHome) { unpin(); return; }
+      }
+      if (e.key === 'ArrowRight') { e.preventDefault(); navigateProject(1); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); navigateProject(-1); }
+    });
+
+    var stripPrev = document.getElementById('stripPrev');
+    var stripNext = document.getElementById('stripNext');
+
+    function updateStripNavState() {
+      if (!stripPrev || !stripNext) return;
+      if (!currentProject) {
+        stripPrev.disabled = true;
+        stripNext.disabled = true;
+        return;
+      }
+      var idx = projectOrder.indexOf(currentProject);
+      stripPrev.disabled = idx <= 0;
+      stripNext.disabled = idx >= projectOrder.length - 1;
+    }
+
+    if (stripPrev) stripPrev.addEventListener('click', function () { navigateProject(-1); });
+    if (stripNext) stripNext.addEventListener('click', function () { navigateProject(1); });
+    homeSection.addEventListener('touchstart', function (e) {
+      swipeStartX = e.touches[0].clientX;
+    }, { passive: true });
+    homeSection.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].clientX - swipeStartX;
+      if (Math.abs(dx) > 40) navigateProject(dx < 0 ? 1 : -1);
+    }, { passive: true });
 
     // ── Fixed nav: only show from CV section onward ──
     function updateFixedRailVisibility() {
@@ -1931,23 +1973,18 @@
       return v;
     }
 
-    function updateCVHighlight() {
-      var cvEl = document.getElementById('cv');
-      var inCV = false;
-      if (cvEl) { var r = cvEl.getBoundingClientRect(); inCV = r.top < window.innerHeight * 0.5 && r.bottom > window.innerHeight * 0.5; }
+    function updateFixedRailHighlight() {
       var vp = getVisibleProjectSection();
-      document.querySelectorAll('#fixedRailCvButton, #railCvButton').forEach(function (b) { b.classList.toggle('cv-active', inCV); });
-      railButtons.forEach(function (b) {
+      if (fixedRailCvButton) fixedRailCvButton.classList.remove('cv-active');
+      fixedRailButtons.forEach(function (b) {
         var pn = b.getAttribute('data-project');
-        b.classList.toggle('active', vp ? pn === vp : (!inCV && pn === getCurrentProject()));
+        b.classList.toggle('active', vp ? pn === vp : false);
       });
     }
 
-    function getCurrentProject() { var a = document.querySelector('.project-card.active'); return a ? a.getAttribute('data-card') : 'wall'; }
-
-    window.addEventListener('scroll', updateCVHighlight, { passive: true });
-    window.addEventListener('resize', updateCVHighlight);
-    updateCVHighlight();
+    window.addEventListener('scroll', updateFixedRailHighlight, { passive: true });
+    window.addEventListener('resize', updateFixedRailHighlight);
+    updateFixedRailHighlight();
 
 
     // ── Wall gallery: final image alignment + floating title ──
@@ -2348,6 +2385,7 @@
 
     function closeImageModal() {
       if (!imageModal || !imageModalImg) return;
+      if (!imageModal.classList.contains('open')) return;
 
       imageModal.classList.remove('open');
       imageModal.setAttribute('aria-hidden', 'true');
@@ -2372,17 +2410,9 @@
       });
     }
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeImageModal();
+      if (e.key === 'Escape' && imageModal && imageModal.classList.contains('open')) closeImageModal();
     });
 
-    // ── CV dots ──
-    var cvOuter = document.getElementById('cv-outer');
-    if (cvOuter) {
-      cvOuter.addEventListener('scroll', function () {
-        var idx = Math.round(cvOuter.scrollLeft / cvOuter.clientWidth);
-        document.querySelectorAll('.cv-dot').forEach(function (d, i) { d.classList.toggle('active', i === idx); });
-      }, { passive: true });
-    }
   </script>
 </body>
 
