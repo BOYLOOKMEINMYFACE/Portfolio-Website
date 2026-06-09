@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jacob Zhao</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #1f1f1f;
+      --text: rgba(255, 255, 255, 0.95);
+      --muted: rgba(255, 255, 255, 0.62);
+      --dim: rgba(255, 255, 255, 0.75);
+    }
+
+    html {
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      height: 100%;
+      overflow-y: scroll;
+      scrollbar-width: none;
+    }
+
+    html::-webkit-scrollbar {
+      display: none;
+    }
+
+    body {
+      font-family: "Jost", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100%;
+    }
+
+    .snap-section {
+      height: 100vh;
+      width: 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #cv.snap-section {
+      overflow: visible;
+    }
+
+    /* ── COVER ── */
+    .cover {
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cover-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .cover-name {
+      font-size: clamp(48px, 7vw, 110px);
+      font-weight: 100;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: rgba(255, 255, 255, 0.88);
+      transform: translateX(-80px);
+      opacity: 0;
+      animation: slideInLeft 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+    }
+
+    .cover-sub {
+      display: flex;
+      align-items: flex-start;
+      margin-top: clamp(6px, 1vw, 14px);
+      align-self: flex-end;
+      transform: translateX(-80px);
+      opacity: 0;
+      animation: slideInLeft 1s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+    }
+
+    .cover-portfolio {
+      font-size: clamp(18px, 2vw, 32px);
+      font-weight: 100;
+      letter-spacing: 0.04em;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.4;
+      padding-right: clamp(14px, 1.5vw, 24px);
+    }
+
+    .cover-line-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 4px;
+    }
+
+    .cover-vline {
+      width: 1px;
+      height: clamp(100px, 14vh, 180px);
+      background: rgba(255, 255, 255, 0.3);
+      transform: scaleY(0);
+      transform-origin: top center;
+      animation: dropDown 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+    }
+
+    .cover-arrow {
+      margin-top: 6px;
+      color: rgba(255, 255, 255, 0.45);
+      transform: translateY(-220px);
+      opacity: 0;
+      animation: arrowFall 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+    }
+
+    .cover-arrow svg {
+      width: clamp(12px, 1.2vw, 18px);
+      height: auto;
+      display: block;
+    }
+
+    .cover-pagenum {
+      position: absolute;
+      bottom: clamp(20px, 3vh, 36px);
+      right: clamp(20px, 3vw, 40px);
+      font-size: 13px;
+      font-weight: 100;
+      color: rgba(255, 255, 255, 0.22);
+      letter-spacing: 0.05em;
+    }
+
+    @keyframes slideInLeft {
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes dropDown {
+      0% {
+        transform: scaleY(0);
+      }
+
+      100% {
+        transform: scaleY(1);
+      }
+    }
+
+    @keyframes arrowFall {
+      0% {
+        transform: translateY(-220px);
+        opacity: 0;
+      }
+
+      60% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* ── HOME ── */
+    .home {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: clamp(28px, 4vw, 56px);
+      height: 100vh;
+    }
+
+    .home-work {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .home-bottom-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .home-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .home-nav {
+      display: flex;
+      gap: clamp(24px, 4vw, 64px);
+      align-items: flex-end;
+    }
+
+    .contact-toggle {
+      background: none;
+      border: none;
+      font-family: "Jost", sans-serif;
+      font-size: clamp(16px, 1.6vw, 26px);
+      font-weight: 200;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      cursor: pointer;
+      padding: 0;
+      transition: opacity 0.2s;
+    }
+
+    .contact-toggle:hover {
+      opacity: 0.5;
+    }
+
+    .contact-wrap {
+      position: relative;
+    }
+
+    .contact-flyout {
+      position: absolute;
+      left: 100%;
+      bottom: 0;
+      padding-left: clamp(16px, 2vw, 32px);
+      display: flex;
+      flex-direction: row;
+      gap: clamp(16px, 2vw, 32px);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      white-space: nowrap;
+    }
+
+    .contact-wrap.open .contact-flyout {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .contact-flyout a {
+      font-size: clamp(16px, 1.6vw, 26px);
+      font-weight: 100;
+      letter-spacing: 0.04em;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-flyout a:hover {
+      color: var(--text);
+    }
+
+    /* ── CONTENTS ROW ── */
+    .contents-row {
+      width: min(86vw, 1320px);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: clamp(28px, 5vw, 90px);
+      align-items: center;
+      justify-items: center;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .project-icon {
+      background: none;
+      border: 0;
+      color: var(--dim);
+      font-family: "Jost", sans-serif;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .project-icon:hover {
+      opacity: 0.55;
+      transform: translateY(-4px);
+    }
+
+    .square {
+      width: clamp(90px, 10vw, 160px);
+      aspect-ratio: 1/1;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .square img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .project-name {
+      font-size: clamp(16px, 1.4vw, 22px);
+      font-weight: 200;
+      line-height: 1.1;
+      letter-spacing: 0.01em;
+      text-align: center;
+    }
+
+    /* ── PROJECT VIEW ── */
+    .project-view {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: clamp(100px, 12vw, 180px) 1fr;
+      gap: clamp(26px, 3vw, 56px);
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(28px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .home.project-open .contents-row {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-20px);
+      visibility: hidden;
+    }
+
+    .home.project-open .project-view {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .project-rail {
+      height: 70%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(12px, 1.8vh, 24px);
+      align-items: flex-start;
+    }
+
+    .rail-button {
+      background: none;
+      border: 0;
+      color: rgba(255, 255, 255, 0.5);
+      font-family: "Jost", sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: clamp(12px, 0.95vw, 15px);
+      font-weight: 200;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .rail-button:hover,
+    .rail-button.active {
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .rail-square {
+      width: clamp(26px, 3vw, 44px);
+      aspect-ratio: 1/1;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .rail-square img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .rail-button.cv-active,
+    .rail-button.cv-active span {
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    /* ── FIXED VERTICAL NAV ── */
+    .fixed-project-rail {
+      position: fixed;
+      left: clamp(16px, 2vw, 32px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(18px, 2.5vh, 32px);
+      align-items: flex-start;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+    }
+
+    .fixed-project-rail.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .fixed-project-rail .rail-button {
+      backdrop-filter: blur(2px);
+    }
+
+    /* ── PROJECT CARDS ── */
+    .project-card {
+      display: none;
+      grid-template-columns: minmax(260px, 0.85fr) minmax(520px, 2.9fr) minmax(220px, 0.8fr);
+      gap: clamp(16px, 1.6vw, 28px);
+      align-items: start;
+      height: clamp(320px, 42vh, 520px);
+      align-self: center;
+      justify-self: stretch;
+    }
+
+    .project-card.active {
+      display: grid;
+      transform: translateX(-40px);
+      cursor: pointer;
+    }
+
+    .project-info {
+      text-align: right;
+      padding-top: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .project-info h2 {
+      font-size: clamp(24px, 2.6vw, 44px);
+      font-weight: 200;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .project-info p,
+    .project-description p {
+      font-size: clamp(15px, 1.35vw, 24px);
+      font-weight: 100;
+      line-height: 1.25;
+      color: var(--dim);
+    }
+
+    .project-info p {
+      text-align: right;
+      max-width: 420px;
+    }
+
+    .project-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      align-self: start;
+      grid-column: 2;
+      grid-row: 1;
+      margin-top: 0;
+    }
+
+    .project-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .project-description {
+      padding-top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(34px, 5vh, 70px);
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .project-info {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .home-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: relative;
+    }
+
+    .home-hint {
+      font-size: 13px;
+      font-weight: 100;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.28);
+      white-space: nowrap;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 2px;
+    }
+
+    .cv-outer {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+
+    .cv-outer::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cv-panel {
+      flex: 0 0 100vw;
+      width: 100vw;
+      height: 100vh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: clamp(48px, 7vh, 96px) clamp(48px, 7vw, 120px);
+    }
+
+    .cv-panel-inner {
+      width: 100%;
+      max-width: 960px;
+      margin-left: clamp(36px, 4vw, 72px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(24px, 3.5vh, 42px);
+    }
+
+    .cv-section {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 1.7vh, 20px);
+    }
+
+    .cv-section__title {
+      font-size: clamp(24px, 2.6vw, 44px);
+      font-weight: 200;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: clamp(10px, 1.6vh, 22px);
+      padding-bottom: clamp(10px, 1.2vh, 16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cv-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .cv-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 24px;
+    }
+
+    .cv-row__name {
+      font-size: clamp(15px, 1.35vw, 21px);
+      font-weight: 100;
+      line-height: 1.25;
+      color: var(--dim);
+    }
+
+    .cv-row__date {
+      flex-shrink: 0;
+      font-size: clamp(15px, 1.35vw, 21px);
+      font-weight: 100;
+      line-height: 1.25;
+      color: var(--dim);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .cv-subrow {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 24px;
+    }
+
+    .cv-subrow__text {
+      font-size: clamp(15px, 1.35vw, 21px);
+      font-weight: 100;
+      color: rgba(255, 255, 255, 0.58);
+      line-height: 1.25;
+    }
+
+    .cv-subrow__right {
+      flex-shrink: 0;
+      font-size: clamp(15px, 1.35vw, 21px);
+      font-weight: 100;
+      color: rgba(255, 255, 255, 0.58);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .cv-bullet {
+      font-size: clamp(15px, 1.35vw, 21px);
+      font-weight: 100;
+      line-height: 1.3;
+      color: rgba(255, 255, 255, 0.58);
+      padding-left: 12px;
+      position: relative;
+    }
+
+    .cv-bullet::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .cv-prose {
+      font-size: clamp(15px, 1.35vw, 21px);
+      font-weight: 100;
+      line-height: 1.3;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .cv-dots {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .cv-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: background 0.3s;
+    }
+
+    .cv-dot.active {
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ── PROJECT DETAIL SECTIONS ── */
+    .project-detail-section {
+      height: 100vh;
+      width: 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* ── WALL SECTION LAYOUT ── */
+    #wall-section {
+      --wall-safe-left: clamp(118px, 10vw, 155px);
+
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .wall-floating-title {
+      position: absolute;
+      top: clamp(28px, 4vw, 56px);
+      left: var(--wall-safe-left);
+      z-index: 8;
+      font-size: clamp(24px, 2.6vw, 44px);
+      font-weight: 200;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--text);
+      user-select: none;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    #wall-section.show-wall-title .wall-floating-title {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── WALL HORIZONTAL SCROLL CONTAINER ── */
+    .wall-gallery {
+      /* Starts after the fixed project nav, so scrolling content is clipped
+         before it can pass underneath the nav column. */
+
+      width: calc(100% - var(--wall-safe-left));
+      height: 100%;
+      margin-left: var(--wall-safe-left);
+
+      display: flex;
+      align-items: flex-start;
+      padding-top: clamp(120px, 18vh, 190px);
+      gap: clamp(16px, 2vw, 28px);
+      padding-left: 0;
+      padding-right: clamp(28px, 4vw, 56px);
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+
+    .wall-gallery::-webkit-scrollbar {
+      display: none;
+    }
+
+    .wall-gallery-info {
+      flex: 0 0 clamp(260px, 0.85fr, 340px);
+      min-width: clamp(240px, 20vw, 340px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-end;
+      text-align: right;
+      scroll-snap-align: start;
+      padding-top: clamp(6px, 1vh, 18px);
+    }
+
+    .wall-left-title {
+      font-size: clamp(24px, 2.6vw, 44px);
+      font-weight: 200;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--text);
+      user-select: none;
+      margin-bottom: 14px;
+    }
+
+    .wall-left-meta {
+      font-size: clamp(15px, 1.35vw, 24px);
+      font-weight: 100;
+      line-height: 1.25;
+      color: var(--dim);
+      letter-spacing: 0.01em;
+      max-width: 420px;
+    }
+
+    .wall-gallery-img {
+      flex: 0 0 auto;
+      height: 55vh;
+      width: auto;
+      object-fit: cover;
+      display: block;
+      scroll-snap-align: start;
+      opacity: 0.85;
+      transition: opacity 0.3s;
+      cursor: pointer;
+    }
+
+    .wall-gallery-img:hover {
+      opacity: 1;
+    }
+
+    .wall-slide {
+      flex: 0 0 auto;
+      width: auto;
+      height: 55vh;
+      scroll-snap-align: start;
+      position: relative;
+      display: block;
+    }
+
+    .wall-slide .wall-gallery-img {
+      height: 55vh;
+      width: auto;
+      scroll-snap-align: none;
+    }
+
+    .wall-caption {
+      position: absolute;
+      left: 0;
+      top: calc(55vh + clamp(14px, 2vh, 24px));
+      width: 100%;
+      max-width: 720px;
+
+      font-family: "Jost", sans-serif;
+      font-size: clamp(15px, 1.35vw, 24px);
+      font-weight: 100;
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      color: var(--dim);
+
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+    }
+
+    .wall-slide.active .wall-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(20, 20, 20, 0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(24px, 4vw, 64px);
+    }
+
+    .image-modal.open {
+      display: flex;
+    }
+
+    .image-modal img {
+      max-width: 92vw;
+      max-height: 88vh;
+      object-fit: contain;
+    }
+
+    .image-modal-close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      background: none;
+      border: 0;
+      color: white;
+      font-family: "Jost", sans-serif;
+      font-size: 42px;
+      font-weight: 100;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .wall-gallery-spacer {
+      flex: 0 0 var(--wall-end-space, 40px);
+      height: 1px;
+      pointer-events: none;
+    }
+
+
+    /* ── PUZZLE SECTION LAYOUT ── */
+    #puzzle-section {
+      --puzzle-safe-left: clamp(118px, 10vw, 155px);
+
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .puzzle-floating-title {
+      position: absolute;
+      top: clamp(28px, 4vw, 56px);
+      left: var(--puzzle-safe-left);
+      z-index: 8;
+      font-size: clamp(24px, 2.6vw, 44px);
+      font-weight: 200;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--text);
+      user-select: none;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    #puzzle-section.show-puzzle-title .puzzle-floating-title {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .puzzle-gallery {
+      width: calc(100% - var(--puzzle-safe-left));
+      height: 100%;
+      margin-left: var(--puzzle-safe-left);
+
+      display: flex;
+      align-items: flex-start;
+      padding-top: clamp(120px, 18vh, 190px);
+      gap: clamp(16px, 2vw, 28px);
+      padding-left: 0;
+      padding-right: clamp(28px, 4vw, 56px);
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+
+    .puzzle-gallery::-webkit-scrollbar {
+      display: none;
+    }
+
+    .puzzle-gallery-info {
+      flex: 0 0 clamp(260px, 0.85fr, 340px);
+      min-width: clamp(240px, 20vw, 340px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-end;
+      text-align: right;
+      scroll-snap-align: start;
+      padding-top: clamp(6px, 1vh, 18px);
+    }
+
+    .puzzle-left-title {
+      font-size: clamp(24px, 2.6vw, 44px);
+      font-weight: 200;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--text);
+      user-select: none;
+      margin-bottom: 14px;
+    }
+
+    .puzzle-left-meta {
+      font-size: clamp(15px, 1.35vw, 24px);
+      font-weight: 100;
+      line-height: 1.25;
+      color: var(--dim);
+      letter-spacing: 0.01em;
+      max-width: 420px;
+    }
+
+    .puzzle-gallery-img {
+      flex: 0 0 auto;
+      height: 55vh;
+      width: auto;
+      object-fit: cover;
+      display: block;
+      scroll-snap-align: start;
+      opacity: 0.85;
+      transition: opacity 0.3s;
+      cursor: pointer;
+    }
+
+    .puzzle-gallery-img:hover {
+      opacity: 1;
+    }
+
+    .puzzle-slide {
+      flex: 0 0 auto;
+      width: auto;
+      height: 55vh;
+      scroll-snap-align: start;
+      position: relative;
+      display: block;
+    }
+
+    .puzzle-slide .puzzle-gallery-img {
+      height: 55vh;
+      width: auto;
+      scroll-snap-align: none;
+    }
+
+    .puzzle-caption {
+      position: absolute;
+      left: 0;
+      top: calc(55vh + clamp(14px, 2vh, 24px));
+      width: 100%;
+      max-width: 720px;
+
+      font-family: "Jost", sans-serif;
+      font-size: clamp(15px, 1.35vw, 24px);
+      font-weight: 100;
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      color: var(--dim);
+
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+    }
+
+    .puzzle-slide.active .puzzle-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .puzzle-gallery-spacer {
+      flex: 0 0 var(--puzzle-end-space, 40px);
+      height: 1px;
+      pointer-events: none;
+    }
+
+    /* ── OTHER PROJECT DETAIL SECTIONS ── */
+    .project-detail-section:not(#wall-section):not(#puzzle-section) {
+      padding: clamp(28px, 4vw, 56px);
+    }
+
+    .project-detail-title {
+      position: absolute;
+      top: clamp(28px, 4vw, 56px);
+      left: clamp(120px, 14vw, 220px);
+      font-size: clamp(32px, 5vw, 80px);
+      font-weight: 200;
+      letter-spacing: 0.01em;
+      line-height: 1;
+      color: var(--text);
+      user-select: none;
+      z-index: 2;
+    }
+
+    .project-detail-meta {
+      position: absolute;
+      top: clamp(28px, 4vw, 56px);
+      right: clamp(28px, 4vw, 56px);
+      text-align: right;
+      font-size: clamp(15px, 1.35vw, 21px);
+      font-weight: 100;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.58);
+      letter-spacing: 0.01em;
+      z-index: 2;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 760px) {
+      html {
+        scroll-snap-type: none;
+        height: auto;
+        overflow-y: auto;
+      }
+
+      body {
+        height: auto;
+      }
+
+      .snap-section {
+        height: auto;
+        min-height: 100svh;
+        overflow: visible;
+        scroll-snap-align: none;
+        scroll-snap-stop: unset;
+      }
+
+      .cover {
+        min-height: 100svh;
+      }
+
+      .cover-name {
+        font-size: clamp(48px, 14vw, 80px);
+      }
+
+      .cv-outer {
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: visible;
+        height: auto;
+        scroll-snap-type: none;
+      }
+
+      .cv-panel {
+        flex: none;
+        width: 100%;
+        height: auto;
+        min-height: 100svh;
+        padding: 48px 24px;
+        scroll-snap-align: none;
+      }
+
+      .cv-panel-inner {
+        margin-left: 0;
+      }
+
+      .cv-dots {
+        display: none;
+      }
+
+      .home {
+        padding: 32px 24px;
+        min-height: 100svh;
+      }
+
+      .home-bottom {
+        flex-direction: column;
+        gap: 24px;
+        align-items: flex-start;
+      }
+
+      .contact-flyout {
+        left: 0;
+        bottom: 100%;
+        padding-left: 0;
+        padding-bottom: 10px;
+        flex-direction: column;
+        gap: 8px;
+        transform: translateY(8px);
+      }
+
+      .contact-wrap.open .contact-flyout {
+        transform: translateY(0);
+      }
+
+      .cv-row {
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .cv-row__date {
+        text-align: left;
+      }
+
+      .cv-subrow {
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .cv-subrow__right {
+        text-align: left;
+      }
+
+      .contents-row {
+        grid-template-columns: 1fr;
+        gap: 42px;
+        padding: 72px 0;
+      }
+
+      .square {
+        width: 42vw;
+      }
+
+      .project-view {
+        position: relative;
+        inset: auto;
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 48px 0;
+      }
+
+      .project-rail {
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+
+      .fixed-project-rail {
+        display: none;
+      }
+
+      .project-detail-section {
+        min-height: 100svh;
+        height: auto;
+        padding: 32px 24px;
+      }
+
+      .project-detail-title {
+        top: 32px;
+        left: 24px;
+        font-size: clamp(72px, 18vw, 110px);
+      }
+
+      .project-card,
+      .project-card.active {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        height: auto;
+        min-height: 0;
+      }
+
+      .project-info,
+      .project-image,
+      .project-description {
+        grid-column: auto;
+        grid-row: auto;
+      }
+
+      .project-info {
+        text-align: left;
+      }
+
+      .project-description {
+        gap: 24px;
+      }
+
+      #wall-section {
+        --wall-safe-left: 0px;
+      }
+
+      .wall-floating-title {
+        left: 24px;
+      }
+
+      .wall-gallery {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 0;
+        padding-top: 120px;
+      }
+
+      .wall-slide {
+        height: clamp(160px, 30vh, 280px);
+      }
+
+      .wall-gallery-img,
+      .wall-slide .wall-gallery-img {
+        height: clamp(160px, 30vh, 280px);
+      }
+
+      .wall-caption {
+        top: calc(clamp(160px, 30vh, 280px) + clamp(14px, 2vh, 24px));
+        max-width: 82vw;
+      }
+
+
+      #puzzle-section {
+        --puzzle-safe-left: 0px;
+      }
+
+      .puzzle-floating-title {
+        left: 24px;
+      }
+
+      .puzzle-gallery {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 0;
+        padding-top: 120px;
+      }
+
+      .puzzle-slide {
+        height: clamp(160px, 30vh, 280px);
+      }
+
+      .puzzle-gallery-img,
+      .puzzle-slide .puzzle-gallery-img {
+        height: clamp(160px, 30vh, 280px);
+      }
+
+      .puzzle-caption {
+        top: calc(clamp(160px, 30vh, 280px) + clamp(14px, 2vh, 24px));
+        max-width: 82vw;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- COVER -->
+  <section class="snap-section cover">
+    <div class="cover-content">
+      <div class="cover-name">Jacob Zhao</div>
+      <div class="cover-sub">
+        <div class="cover-portfolio">Portfolio</div>
+        <div class="cover-line-wrap">
+          <div class="cover-vline"></div>
+          <div class="cover-arrow">
+            <svg viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="7" y1="0" x2="7" y2="14" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+              <polyline points="2,10 7,16 12,10" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cover-pagenum">1</div>
+  </section>
+
+  <!-- HOME (projects) -->
+  <section class="snap-section home">
+    <div class="home-work" id="homeWork">
+      <div class="contents-row" id="contentsRow" aria-label="Project contents">
+        <button class="project-icon" id="cvButton" type="button" aria-label="Open CV">
+          <div class="square"><img src="../NavBar_Pics/CV_nav.jpg" alt="CV"></div>
+          <div class="project-name">CV</div>
+        </button>
+        <button class="project-icon project-open-button" type="button" data-project="wall">
+          <div class="square"><img src="../NavBar_Pics/Wall_nav.jpg" alt="Wall"></div>
+          <div class="project-name">Wall</div>
+        </button>
+        <button class="project-icon project-open-button" type="button" data-project="puzzle">
+          <div class="square"><img src="../NavBar_Pics/Puzzle_nav.jpg" alt="Puzzle"></div>
+          <div class="project-name">Puzzle</div>
+        </button>
+        <button class="project-icon project-open-button" type="button" data-project="herbinizer">
+          <div class="square"><img src="../NavBar_Pics/Herbinizer_nav.jpg" alt="Herbinizer"></div>
+          <div class="project-name">Herbinizer</div>
+        </button>
+        <button class="project-icon project-open-button" type="button" data-project="globe">
+          <div class="square"><img src="../NavBar_Pics/Globe_nav.jpg" alt="Globe"></div>
+          <div class="project-name">Globe</div>
+        </button>
+      </div>
+
+      <div class="project-view" id="projectView">
+        <nav class="project-rail" aria-label="Project navigation">
+          <button class="rail-button" type="button" id="railCvButton">
+            <div class="rail-square"><img src="../NavBar_Pics/CV_nav.jpg" alt="CV"></div>
+            <span>CV</span>
+          </button>
+          <button class="rail-button active" type="button" data-project="wall">
+            <div class="rail-square"><img src="../NavBar_Pics/Wall_nav.jpg" alt="Wall"></div>
+            <span>Wall</span>
+          </button>
+          <button class="rail-button" type="button" data-project="puzzle">
+            <div class="rail-square"><img src="../NavBar_Pics/Puzzle_nav.jpg" alt="Puzzle"></div>
+            <span>Puzzle</span>
+          </button>
+          <button class="rail-button" type="button" data-project="herbinizer">
+            <div class="rail-square"><img src="../NavBar_Pics/Herbinizer_nav.jpg" alt="Herbinizer"></div>
+            <span>Herbinizer</span>
+          </button>
+          <button class="rail-button" type="button" data-project="globe">
+            <div class="rail-square"><img src="../NavBar_Pics/Globe_nav.jpg" alt="Globe"></div>
+            <span>Globe</span>
+          </button>
+        </nav>
+
+        <article class="project-card active" data-card="wall">
+          <div class="project-info">
+            <h2>The Wall</h2>
+            <p>Individual Art Class Project<br>February – June, 2024<br>Wood, Strings, Arduino Board,<br>Motors, Acrylic
+              Paint, Tools<br>Rhino, Enscape<br>36&quot; × 48&quot; × 3&quot;</p>
+          </div>
+          <div class="project-image"><img src="../Home Page/Wall.jpg" alt="The Wall"></div>
+          <div class="project-description">
+            <p>The development of technology encouraged more human communications without physical interactions, making
+              face to face conversations harder and more precious.</p>
+            <p>Inspired by the movement logic of plant stomata, the Wall is created to improve in person communications
+              and social engagements. It opens and closes according to human emotions.</p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card="puzzle">
+          <div class="project-info">
+            <h2>Puzzle</h2>
+            <p>Souvenir Based on the MIT Chapel<br>Group Class Project<br>May, 2026<br>Spray Paint, Embossed
+              Paper,<br>Laser Cutting, Cast concrete<br>Varied Size</p>
+          </div>
+          <div class="project-image"><img src="../Home Page/Puzzle.jpg" alt="Puzzle"></div>
+          <div class="project-description">
+            <p>A project to design a souvenir for the MIT Chapel by exploring shapes from 2D - 2.5D - 3D evolution,
+              emphasizing human connections with objects.</p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card="herbinizer">
+          <div class="project-info">
+            <h2>Herbinizer</h2>
+            <p>Individual Class Project<br>December, 2025<br>Paper, Cardboard,<br>0.042" Aluminum Sheet<br>6" x 6" x 3"
+            </p>
+          </div>
+          <div class="project-image"><img src="../Home Page/Herbinizer.jpg" alt="Herbinizer"></div>
+          <div class="project-description">
+            <p>The Herbinizer is designed to make growing plants easier and available to anyone, bringing life
+              everywhere, even spaces that can't seem to fit.</p>
+            <p>A planting unit that expands in any directions, enabling it to be placed in any environments including
+              city apartments and sidewalks.</p>
+          </div>
+        </article>
+
+        <article class="project-card" data-card="globe">
+          <div class="project-info">
+            <h2>Globe</h2>
+            <p>Individual Work<br>September - December, 2023<br>PVC board, Paper, Pen<br>Rhino, Grasshopper,
+              Photoshop<br>Vary in size</p>
+          </div>
+          <div class="project-image"><img src="../Home Page/Globe.jpg" alt="Globe"></div>
+          <div class="project-description">
+            <p>All activities at the Brooks School surround two roads: the main street and another street. Life as a
+              student at Brooks starts at the crossing of two roads.</p>
+            <p>Life around the main street can be inconvenient and time consuming. Hence, a retractable hemisphere tent
+              is designed to be placed around campus.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="home-bottom-wrap">
+      <div class="home-bottom">
+        <nav class="home-nav">
+          <div class="contact-wrap" id="contactWrap">
+            <button class="contact-toggle" type="button" id="contactToggle">Contact</button>
+            <div class="contact-flyout">
+              <a href="#">Instagram</a>
+              <a href="#">LinkedIn</a>
+              <a href="mailto:">Email</a>
+            </div>
+          </div>
+        </nav>
+        <span class="home-hint">Hover over icons to preview project</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIXED VERTICAL NAV -->
+  <nav class="fixed-project-rail" id="fixedProjectRail" aria-label="Fixed project navigation">
+    <button class="rail-button" type="button" id="fixedRailCvButton">
+      <div class="rail-square"><img src="../NavBar_Pics/CV_nav.jpg" alt="CV"></div>
+      <span>CV</span>
+    </button>
+    <button class="rail-button" type="button" data-project="wall">
+      <div class="rail-square"><img src="../NavBar_Pics/Wall_nav.jpg" alt="Wall"></div>
+      <span>Wall</span>
+    </button>
+    <button class="rail-button" type="button" data-project="puzzle">
+      <div class="rail-square"><img src="../NavBar_Pics/Puzzle_nav.jpg" alt="Puzzle"></div>
+      <span>Puzzle</span>
+    </button>
+    <button class="rail-button" type="button" data-project="herbinizer">
+      <div class="rail-square"><img src="../NavBar_Pics/Herbinizer_nav.jpg" alt="Herbinizer"></div>
+      <span>Herbinizer</span>
+    </button>
+    <button class="rail-button" type="button" data-project="globe">
+      <div class="rail-square"><img src="../NavBar_Pics/Globe_nav.jpg" alt="Globe"></div>
+      <span>Globe</span>
+    </button>
+  </nav>
+
+  <!-- CV -->
+  <section id="cv" class="snap-section">
+    <div class="cv-outer" id="cv-outer">
+      <div class="cv-panel">
+        <div class="cv-panel-inner">
+          <div class="cv-section">
+            <div class="cv-section__title">Education</div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">Massachusetts Institute of Technology, Cambridge, MA</span>
+                <span class="cv-row__date">Expected June 2029</span>
+              </div>
+              <div class="cv-subrow">
+                <span class="cv-subrow__text">Candidate for B.S. in Architecture and Material Science and
+                  Engineering</span>
+                <span class="cv-subrow__right">GPA: 5.0</span>
+              </div>
+              <div class="cv-prose">Coursework: Architecture Studio, Thermodynamics for Materials, Computational Design,
+                Environmental Tech in Buildings, Structures of Materials.</div>
+              <div class="cv-prose">Skills: CAD, Rhino, Grasshopper, Figma, Photoshop, Illustrator, Java, Python,
+                English, Chinese, Audio Editing, Interviewing.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">Brooks School, Andover, MA</span>
+                <span class="cv-row__date">Sep 2022 – Jun 2025</span>
+              </div>
+              <div class="cv-subrow">
+                <span class="cv-subrow__text">Summa Cum Laude Society Inductee; SAT 1560.</span>
+                <span class="cv-subrow__right">GPA: 4.0 Unweighted</span>
+              </div>
+              <div class="cv-prose">Awards: The William R. Ferris JR. Prize; Robert Lehman Art Prize; School Physics
+                Prize; School Math Prize; AP Scholar with Distinction ×2.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cv-panel">
+        <div class="cv-panel-inner">
+          <div class="cv-section">
+            <div class="cv-section__title">Awards</div>
+            <div class="cv-item">
+              <div class="cv-row"><span class="cv-row__name">Scholastic Art Award — National Gold Medal, Best-In-Grade
+                  Award</span></div>
+              <div class="cv-bullet">Best in Grade Special Award — 2 people in each grade out of 300,000 others.</div>
+              <div class="cv-bullet">Scholastic Awards 2025 Yearbook Cover.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-row"><span class="cv-row__name">AIME Qualifier with Distinction</span></div>
+              <div class="cv-bullet">Top 5% in the US.</div>
+            </div>
+          </div>
+          <div class="cv-section">
+            <div class="cv-section__title">Projects &amp; Extracurriculars</div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">Award Winning Architecture Project, The Wall</span>
+                <span class="cv-row__date">Jun 2024</span>
+              </div>
+              <div class="cv-bullet">Developed and built a working interactive wall to solve social problems.</div>
+              <div class="cv-bullet">Won the Brooks School Robert Lehman Art Prize for best exhibition of the year.
+              </div>
+              <div class="cv-bullet">Received Scholastic Art Award National Gold Medal.</div>
+              <div class="cv-bullet">Best in Grade Special Award — 2 people in each grade out of 300,000 others.</div>
+              <div class="cv-bullet">Scholastic Awards 2025 Yearbook Cover.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cv-panel">
+        <div class="cv-panel-inner">
+          <div class="cv-section">
+            <div class="cv-section__title">Experience &amp; Volunteering</div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">Admin Masic Lab, MIT, Cambridge, MA</span>
+                <span class="cv-row__date">June 2026 – Now</span>
+              </div>
+              <div class="cv-bullet">Research in functional concrete: thermal conductive and electrical energy storage.
+              </div>
+              <div class="cv-bullet">Design and manufacture concrete columns capable of storing 24V of energy.</div>
+              <div class="cv-bullet">Analyze functionality of larger-scale thermal conductive concrete in a road surface
+                setting.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">MIT Self-Assembly Lab, Cambridge, MA</span>
+                <span class="cv-row__date">Dec 2025 – May 2026</span>
+              </div>
+              <div class="cv-bullet">Developed submersible, geometry-driven reef structures for coastal restoration.
+              </div>
+              <div class="cv-bullet">Designed structures to enable self-assembling reefs.</div>
+              <div class="cv-bullet">Conducted material experiments and collected data.</div>
+              <div class="cv-bullet">Designed electronic casing for the wave simulation tank.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">LinkChance Architect Summer Intern, Beijing</span>
+                <span class="cv-row__date">Jun – Aug 2024</span>
+              </div>
+              <div class="cv-bullet">Proposed designs accepted for a nationally renowned museum restaurant.</div>
+              <div class="cv-bullet">Designed lamps and ceiling lights for market.</div>
+              <div class="cv-bullet">Created proposals and designs for LinkChance Headquarters remodel.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cv-panel">
+        <div class="cv-panel-inner">
+          <div class="cv-section">
+            <div class="cv-section__title">Experience &amp; Volunteering</div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">ARUP Intern, Beijing</span>
+                <span class="cv-row__date">Jul – Aug 2023</span>
+              </div>
+              <div class="cv-bullet">Developed a physical architectural display model for company promotion.</div>
+              <div class="cv-bullet">Acquired professional physical model-building skills.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">Brooks School Arts Prefect, MA</span>
+                <span class="cv-row__date">Sep 2024 – Jun 2025</span>
+              </div>
+              <div class="cv-bullet">Oversaw art department plays, festivals, and concerts with over 300 people.</div>
+              <div class="cv-bullet">Tutored 10+ students weekly in open art studios.</div>
+            </div>
+            <div class="cv-item">
+              <div class="cv-row">
+                <span class="cv-row__name">Boys and Girls Club in Haverhill, Volunteer</span>
+                <span class="cv-row__date">Sep 2022 – Dec 2024</span>
+              </div>
+              <div class="cv-bullet">Tutored kids with schoolwork and led reading and painting groups.</div>
+              <div class="cv-bullet">Facilitated group athletic activities for 30+ kids.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cv-dots">
+      <div class="cv-dot active" id="dot-0"></div>
+      <div class="cv-dot" id="dot-1"></div>
+      <div class="cv-dot" id="dot-2"></div>
+      <div class="cv-dot" id="dot-3"></div>
+    </div>
+  </section>
+
+  <!-- WALL DETAIL -->
+  <section id="wall-section" class="project-detail-section" data-project-section="wall">
+    <div class="wall-floating-title" aria-hidden="true">The Wall</div>
+    <div class="wall-gallery" id="wallGallery">
+      <div class="wall-gallery-info">
+        <div class="wall-left-title">The Wall</div>
+        <div class="wall-left-meta">
+          Individual Art Class Project<br>
+          February – June, 2024<br>
+          Wood, Strings, Arduino Board,<br>
+          Motors, Acrylic Paint, Tools<br>
+          Rhino, Enscape<br>
+          36&quot; × 48&quot; × 3&quot;
+        </div>
+      </div>
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="../Home Page/Wall.jpg" alt="The Wall">
+        <div class="wall-caption">The development of technology encouraged more human communications without physical
+          interactions, making face to face conversations harder and more precious.
+          Inspired by the movement logic of plant stomata, the Wall is created to improve in person communications and
+          social engagements. It opens and closes according to human emotions.</div>
+      </div>
+
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="Wall_Pics/wall_final_look 1.jpg" alt="Wall final look">
+        <div class="wall-caption">A divider between two bedrooms. The nets open when the wall detects happiness in the
+          room, which means people are prone to communication. On the other hand, it closes when people are feeling
+          negative, avoiding potentially bad interactions. </div>
+      </div>
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="Wall_Pics/Wall_Sketch.jpg" alt="Wall sketch">
+        <div class="wall-caption">Stomata acts as the mouth of plants, A stoma can be influenced by many factors, such
+          as the time of the day, humidity, and temperature of its surrounding. Just like plants, human can also be
+          easily affected by those around them. This led to the question of whether the space people dwell in can also
+          affect their emotions</div>
+      </div>
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/3261721788946_.pic.jpg"
+          alt="Wall manufacturing 1">
+        <div class="wall-caption">Experimenting on web shapes: Fishnets with multiple layers. Strings open and close
+          depending on elasticity.</div>
+      </div>
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/IMG_2223 1.jpg" alt="Wall manufacturing 2">
+        <div class="wall-caption">Cutting out frames from plywood with jigsaw</div>
+      </div>
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/img-724184746_页面_09.jpg"
+          alt="Wall manufacturing 3">
+        <div class="wall-caption">Sketches exploring net movements</div>
+      </div>
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="Wall_Pics/Wall_Algorithm.jpg" alt="Wall algorithm">
+        <div class="wall-caption">The algorithm has 6 phases, each representing a different emotion. Depending on the
+          emotions that the camera detects, the code determines how much the wall will open.</div>
+      </div>
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="Wall_Pics/HO2.jpg" alt="Wall HO2">
+        <div class="wall-caption">The Wall installed in between two bedrooms of two siblings</div>
+      </div>
+      <div class="wall-slide">
+        <img class="wall-gallery-img" src="Wall_Pics/HO3.jpg" alt="Wall HO3">
+        <div class="wall-caption">A peak into the other sibling's room. The half open wall provides an opportunity for
+          the siblings to connect.</div>
+      </div>
+      <div class="wall-gallery-spacer"></div>
+    </div>
+  </section>
+
+  <!-- OTHER PROJECT DETAIL SECTIONS -->
+  <section id="puzzle-section" class="project-detail-section" data-project-section="puzzle">
+    <div class="puzzle-floating-title" aria-hidden="true">Puzzle</div>
+    <div class="puzzle-gallery" id="puzzleGallery">
+      <div class="puzzle-gallery-info">
+        <div class="puzzle-left-title">Puzzle</div>
+        <div class="puzzle-left-meta">
+          Souvenir Based on the MIT Chapel<br>
+          Group Class Project<br>
+          May, 2026<br>
+          Spray Paint, Embossed Paper,<br>
+          Laser Cutting, Cast concrete<br>
+          Varied Size
+        </div>
+      </div>
+
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="../Home Page/Puzzle.jpg" alt="Puzzle overview">
+        <div class="puzzle-caption">A souvenir for the MIT Chapel that explores shape evolution from 2D to 2.5D to 3D, using puzzle-like pieces to build a tactile connection between people, memory, and place.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.1 1.jpg" alt="Puzzle process 2.1.1">
+        <div class="puzzle-caption">Early studies translate the chapel's circular geometry and light conditions into modular puzzle forms.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.2 1.jpg" alt="Puzzle process 2.1.2">
+        <div class="puzzle-caption">The souvenir begins as a flat graphic system, testing how chapel-inspired shapes can interlock, separate, and recombine.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.3 1.jpg" alt="Puzzle process 2.1.3">
+        <div class="puzzle-caption">Form experiments move from planar patterns into raised surfaces, creating a 2.5D object that can be touched and assembled.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.4 1.jpg" alt="Puzzle process 2.1.4">
+        <div class="puzzle-caption">Iterations refine scale, edge condition, and the relationship between individual pieces and the complete chapel souvenir.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.Stencil 1.jpg" alt="Puzzle stencil">
+        <div class="puzzle-caption">Stencil and fabrication drawings organize the graphic language before the final material tests.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Bryan+Jacob formwork 1.jpg" alt="Puzzle formwork">
+        <div class="puzzle-caption">Formwork studies prepare the concrete casting process, balancing handmade texture with repeatable geometry.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Bryan+Jacob-FINAL 2.jpg" alt="Puzzle final">
+        <div class="puzzle-caption">The final object combines cast concrete, embossed paper, laser-cut pieces, and painted surfaces into a compact chapel souvenir.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/HandOut_1 2.jpg" alt="Puzzle handout 1">
+        <div class="puzzle-caption">Presentation handouts explain the conceptual framework, fabrication process, and the souvenir's connection to the MIT Chapel.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Handout_2 1.jpg" alt="Puzzle handout 2">
+        <div class="puzzle-caption">The project communicates through diagrams, process documentation, and final product photography.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Handout_5 2.jpg" alt="Puzzle handout 5">
+        <div class="puzzle-caption">Additional presentation material documents the design logic and how each object belongs to the full puzzle system.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Puzzle test collage">
+        <div class="puzzle-caption">Material tests compare surface, color, embossing, and cast quality across multiple prototypes.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Wall_1 2.jpg" alt="Puzzle wall 1">
+        <div class="puzzle-caption">Wall studies connect the object back to the MIT Chapel interior, translating spatial atmosphere into a hand-held artifact.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Wall_2 2.jpg" alt="Puzzle wall 2">
+        <div class="puzzle-caption">The wall imagery records how light, texture, and curved surfaces informed the souvenir's material and graphic language.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Wall_3 1.jpg" alt="Puzzle wall 3">
+        <div class="puzzle-caption">Final wall documentation situates the puzzle pieces within the chapel reference system and closes the project narrative.</div>
+      </div>
+      <div class="puzzle-gallery-spacer"></div>
+    </div>
+  </section>
+  <section id="herbinizer-section" class="project-detail-section" data-project-section="herbinizer">
+    <div class="project-detail-title">Herbinizer</div>
+    <div class="project-detail-meta">
+      Individual Class Project<br>
+      December, 2025<br>
+      Paper, Cardboard,<br>
+      0.042&quot; Aluminum Sheet<br>
+      6&quot; x 6&quot; x 3&quot;
+    </div>
+  </section>
+  <section id="globe-section" class="project-detail-section" data-project-section="globe">
+    <div class="project-detail-title">Globe</div>
+    <div class="project-detail-meta">
+      Individual Work<br>
+      September – December, 2023<br>
+      PVC board, Paper, Pen<br>
+      Rhino, Grasshopper, Photoshop<br>
+      Vary in size
+    </div>
+  </section>
+
+  <div class="image-modal" id="imageModal" aria-hidden="true">
+    <button class="image-modal-close" type="button" id="imageModalClose" aria-label="Close expanded image">×</button>
+    <img id="imageModalImg" alt="">
+  </div>
+
+  <script>
+    // ── Contact toggle ──
+    var contactWrap = document.getElementById('contactWrap');
+    var contactToggle = document.getElementById('contactToggle');
+    if (contactToggle && contactWrap) {
+      contactToggle.addEventListener('click', function (e) { e.stopPropagation(); contactWrap.classList.toggle('open'); });
+      document.addEventListener('click', function (e) { if (!contactWrap.contains(e.target)) contactWrap.classList.remove('open'); });
+    }
+
+    // ── Projects ──
+    var homeSection = document.querySelector('.home');
+    var cvButton = document.getElementById('cvButton');
+    var railCvButton = document.getElementById('railCvButton');
+    var fixedRailCvButton = document.getElementById('fixedRailCvButton');
+    var fixedProjectRail = document.getElementById('fixedProjectRail');
+    var projectOpenButtons = document.querySelectorAll('.project-open-button');
+    var railButtons = document.querySelectorAll('.rail-button[data-project]');
+    var projectCards = document.querySelectorAll('.project-card');
+
+    function scrollToCV() { document.getElementById('cv').scrollIntoView({ behavior: 'smooth' }); }
+    function scrollToProjectSection(name) {
+      resetGalleryForProject(name);
+      var t = document.getElementById(name + '-section');
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openProject(name) {
+      homeSection.classList.add('project-open');
+      projectCards.forEach(function (c) { c.classList.toggle('active', c.getAttribute('data-card') === name); });
+      railButtons.forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-project') === name); });
+      updateCVHighlight();
+    }
+
+    if (cvButton) cvButton.addEventListener('click', scrollToCV);
+    if (railCvButton) railCvButton.addEventListener('click', scrollToCV);
+    if (fixedRailCvButton) fixedRailCvButton.addEventListener('click', scrollToCV);
+
+    projectOpenButtons.forEach(function (b) {
+      b.addEventListener('mouseenter', function () { openProject(b.getAttribute('data-project')); });
+      b.addEventListener('click', function () { scrollToProjectSection(b.getAttribute('data-project')); });
+    });
+    railButtons.forEach(function (b) {
+      b.addEventListener('mouseenter', function () { openProject(b.getAttribute('data-project')); });
+      b.addEventListener('click', function () { scrollToProjectSection(b.getAttribute('data-project')); });
+    });
+
+    var projectView = document.getElementById('projectView');
+    if (projectView) projectView.addEventListener('mouseleave', function () { homeSection.classList.remove('project-open'); });
+    projectCards.forEach(function (c) { c.addEventListener('click', function () { scrollToProjectSection(c.getAttribute('data-card')); }); });
+
+    // ── Fixed nav: only show from CV section onward ──
+    function updateFixedRailVisibility() {
+      if (!fixedProjectRail) return;
+      fixedProjectRail.classList.toggle('visible', window.scrollY > window.innerHeight * 1.5);
+    }
+    window.addEventListener('scroll', updateFixedRailVisibility, { passive: true });
+    window.addEventListener('resize', updateFixedRailVisibility);
+    updateFixedRailVisibility();
+
+    // ── CV / project highlight ──
+    function getVisibleProjectSection() {
+      var v = null;
+      document.querySelectorAll('[data-project-section]').forEach(function (s) {
+        var r = s.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.5 && r.bottom > window.innerHeight * 0.5) v = s.getAttribute('data-project-section');
+      });
+      return v;
+    }
+
+    function updateCVHighlight() {
+      var cvEl = document.getElementById('cv');
+      var inCV = false;
+      if (cvEl) { var r = cvEl.getBoundingClientRect(); inCV = r.top < window.innerHeight * 0.5 && r.bottom > window.innerHeight * 0.5; }
+      var vp = getVisibleProjectSection();
+      document.querySelectorAll('#fixedRailCvButton, #railCvButton').forEach(function (b) { b.classList.toggle('cv-active', inCV); });
+      railButtons.forEach(function (b) {
+        var pn = b.getAttribute('data-project');
+        b.classList.toggle('active', vp ? pn === vp : (!inCV && pn === getCurrentProject()));
+      });
+    }
+
+    function getCurrentProject() { var a = document.querySelector('.project-card.active'); return a ? a.getAttribute('data-card') : 'wall'; }
+
+    window.addEventListener('scroll', updateCVHighlight, { passive: true });
+    window.addEventListener('resize', updateCVHighlight);
+    updateCVHighlight();
+
+
+    // ── Wall gallery: final image alignment + floating title ──
+    var wallSection = document.getElementById('wall-section');
+    var wallGallery = document.getElementById('wallGallery');
+
+    function getPx(value) {
+      var n = parseFloat(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function updateWallEndSpace() {
+      if (!wallGallery) return;
+
+      var imgs = wallGallery.querySelectorAll('.wall-gallery-img');
+      var lastImg = imgs[imgs.length - 1];
+      if (!lastImg) return;
+
+      var styles = window.getComputedStyle(wallGallery);
+      var gap = getPx(styles.columnGap || styles.gap);
+      var paddingRight = getPx(styles.paddingRight);
+
+      // Give the last image enough trailing space so its left edge can snap
+      // exactly to the left edge of the scroll container.
+      var needed = wallGallery.clientWidth - lastImg.offsetWidth - gap - paddingRight;
+      wallGallery.style.setProperty('--wall-end-space', Math.max(0, needed) + 'px');
+    }
+
+    function updateWallFloatingTitle() {
+      if (!wallSection || !wallGallery) return;
+
+      var info = wallGallery.querySelector('.wall-gallery-info');
+      if (!info) return;
+
+      var galleryRect = wallGallery.getBoundingClientRect();
+      var infoRect = info.getBoundingClientRect();
+
+      // Show the small title as soon as the title/metadata column has fully
+      // moved past the left edge of the visible gallery container.
+      var titleShouldShow = infoRect.right <= galleryRect.left + 2;
+      wallSection.classList.toggle('show-wall-title', titleShouldShow);
+    }
+
+    function updateActiveWallCaption() {
+      if (!wallGallery) return;
+
+      var galleryRect = wallGallery.getBoundingClientRect();
+      var slides = wallGallery.querySelectorAll('.wall-slide');
+      var closest = null;
+      var closestDistance = Infinity;
+
+      slides.forEach(function (slide) {
+        var rect = slide.getBoundingClientRect();
+        var distance = Math.abs(rect.left - galleryRect.left);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closest = slide;
+        }
+      });
+
+      slides.forEach(function (slide) {
+        slide.classList.toggle('active', slide === closest);
+      });
+    }
+
+    if (wallGallery) {
+      wallGallery.addEventListener('scroll', function () {
+        updateWallFloatingTitle();
+        updateActiveWallCaption();
+      }, { passive: true });
+      window.addEventListener('resize', function () {
+        updateWallEndSpace();
+        updateWallFloatingTitle();
+        updateActiveWallCaption();
+      });
+
+      wallGallery.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) img.addEventListener('load', function () {
+          updateWallEndSpace();
+          updateActiveWallCaption();
+        }, { once: true });
+      });
+
+      updateWallEndSpace();
+      updateWallFloatingTitle();
+      updateActiveWallCaption();
+    }
+
+
+    // ── Puzzle gallery: same behavior as wall gallery ──
+    var puzzleSection = document.getElementById('puzzle-section');
+    var puzzleGallery = document.getElementById('puzzleGallery');
+
+    function updatePuzzleEndSpace() {
+      if (!puzzleGallery) return;
+
+      var imgs = puzzleGallery.querySelectorAll('.puzzle-gallery-img');
+      var lastImg = imgs[imgs.length - 1];
+      if (!lastImg) return;
+
+      var styles = window.getComputedStyle(puzzleGallery);
+      var gap = getPx(styles.columnGap || styles.gap);
+      var paddingRight = getPx(styles.paddingRight);
+      var needed = puzzleGallery.clientWidth - lastImg.offsetWidth - gap - paddingRight;
+      puzzleGallery.style.setProperty('--puzzle-end-space', Math.max(0, needed) + 'px');
+    }
+
+    function updatePuzzleFloatingTitle() {
+      if (!puzzleSection || !puzzleGallery) return;
+
+      var info = puzzleGallery.querySelector('.puzzle-gallery-info');
+      if (!info) return;
+
+      var galleryRect = puzzleGallery.getBoundingClientRect();
+      var infoRect = info.getBoundingClientRect();
+      var titleShouldShow = infoRect.right <= galleryRect.left + 2;
+      puzzleSection.classList.toggle('show-puzzle-title', titleShouldShow);
+    }
+
+    function updateActivePuzzleCaption() {
+      if (!puzzleGallery) return;
+
+      var galleryRect = puzzleGallery.getBoundingClientRect();
+      var slides = puzzleGallery.querySelectorAll('.puzzle-slide');
+      var closest = null;
+      var closestDistance = Infinity;
+
+      slides.forEach(function (slide) {
+        var rect = slide.getBoundingClientRect();
+        var distance = Math.abs(rect.left - galleryRect.left);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closest = slide;
+        }
+      });
+
+      slides.forEach(function (slide) {
+        slide.classList.toggle('active', slide === closest);
+      });
+    }
+
+    if (puzzleGallery) {
+      puzzleGallery.addEventListener('scroll', function () {
+        updatePuzzleFloatingTitle();
+        updateActivePuzzleCaption();
+      }, { passive: true });
+      window.addEventListener('resize', function () {
+        updatePuzzleEndSpace();
+        updatePuzzleFloatingTitle();
+        updateActivePuzzleCaption();
+      });
+
+      puzzleGallery.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) img.addEventListener('load', function () {
+          updatePuzzleEndSpace();
+          updateActivePuzzleCaption();
+        }, { once: true });
+      });
+
+      updatePuzzleEndSpace();
+      updatePuzzleFloatingTitle();
+      updateActivePuzzleCaption();
+    }
+
+
+
+    // ── Reset horizontal project galleries when leaving / opening a project ──
+    function resetWallGallery() {
+      if (!wallGallery || wallGallery.scrollLeft === 0) return;
+      wallGallery.scrollTo({ left: 0, behavior: 'auto' });
+      if (wallSection) wallSection.classList.remove('show-wall-title');
+      updateWallFloatingTitle();
+      updateActiveWallCaption();
+    }
+
+    function resetPuzzleGallery() {
+      if (!puzzleGallery || puzzleGallery.scrollLeft === 0) return;
+      puzzleGallery.scrollTo({ left: 0, behavior: 'auto' });
+      if (puzzleSection) puzzleSection.classList.remove('show-puzzle-title');
+      updatePuzzleFloatingTitle();
+      updateActivePuzzleCaption();
+    }
+
+    function resetGalleryForProject(name) {
+      if (name === 'wall') resetWallGallery();
+      if (name === 'puzzle') resetPuzzleGallery();
+    }
+
+    function resetGalleriesOutsideCurrentSection() {
+      var sections = [
+        { name: 'wall', section: wallSection, reset: resetWallGallery },
+        { name: 'puzzle', section: puzzleSection, reset: resetPuzzleGallery }
+      ];
+
+      sections.forEach(function (item) {
+        if (!item.section) return;
+        var rect = item.section.getBoundingClientRect();
+        var isCurrent = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
+        if (!isCurrent) item.reset();
+      });
+    }
+
+    window.addEventListener('scroll', resetGalleriesOutsideCurrentSection, { passive: true });
+    window.addEventListener('resize', resetGalleriesOutsideCurrentSection);
+    resetGalleriesOutsideCurrentSection();
+
+    // ── Wall image modal ──
+    var imageModal = document.getElementById('imageModal');
+    var imageModalImg = document.getElementById('imageModalImg');
+    var imageModalClose = document.getElementById('imageModalClose');
+
+    var savedScrollY = 0;
+
+    function openImageModal(img) {
+      if (!imageModal || !imageModalImg || !img) return;
+
+      savedScrollY = window.scrollY;
+
+      imageModalImg.src = img.src;
+      imageModalImg.alt = img.alt || '';
+      imageModal.classList.add('open');
+      imageModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeImageModal() {
+      if (!imageModal || !imageModalImg) return;
+
+      imageModal.classList.remove('open');
+      imageModal.setAttribute('aria-hidden', 'true');
+      imageModalImg.src = '';
+
+      requestAnimationFrame(function () {
+        window.scrollTo(0, savedScrollY);
+      });
+    }
+
+    document.querySelectorAll('.wall-gallery-img, .puzzle-gallery-img').forEach(function (img) {
+      img.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openImageModal(img);
+      });
+    });
+
+    if (imageModalClose) imageModalClose.addEventListener('click', closeImageModal);
+    if (imageModal) {
+      imageModal.addEventListener('click', function (e) {
+        if (e.target === imageModal) closeImageModal();
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeImageModal();
+    });
+
+    // ── CV dots ──
+    var cvOuter = document.getElementById('cv-outer');
+    if (cvOuter) {
+      cvOuter.addEventListener('scroll', function () {
+        var idx = Math.round(cvOuter.scrollLeft / cvOuter.clientWidth);
+        document.querySelectorAll('.cv-dot').forEach(function (d, i) { d.classList.toggle('active', i === idx); });
+      }, { passive: true });
+    }
+  </script>
+</body>
+
+</html>
