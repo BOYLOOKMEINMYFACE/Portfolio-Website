@@ -62,6 +62,41 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      margin-right: clamp(280px, 36vw, 640px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .cover-photo {
+      position: absolute;
+      bottom: 0;
+      left: 54%;
+      height: clamp(320px, 80vh, 860px);
+      z-index: 1;
+      pointer-events: none;
+      transform: translateY(100%);
+      opacity: 0;
+      animation: slideUpPhoto 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+    }
+
+    .cover-photo img {
+      height: 100%;
+      width: auto;
+      display: block;
+    }
+
+    @keyframes slideUpPhoto {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUpPhotoMobile {
+      to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
     }
 
     .cover-name {
@@ -540,8 +575,13 @@
       z-index: 10;
     }
 
-    .strip-nav.prev { left: 0; }
-    .strip-nav.next { right: 0; }
+    .strip-nav.prev {
+      left: 0;
+    }
+
+    .strip-nav.next {
+      right: 0;
+    }
 
     /* Show arrows when pinned and direction is available */
     .home.project-pinned .strip-nav {
@@ -558,6 +598,7 @@
       opacity: 0;
       pointer-events: none;
     }
+
     .project-view {
       position: absolute;
       inset: 0;
@@ -568,7 +609,7 @@
       pointer-events: none;
       transform: translateY(32px);
       transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .home.project-pinned .project-view {
@@ -1153,61 +1194,211 @@
 
     /* ── MOBILE ── */
     @media (max-width: 760px) {
+
+      /* ── BASE ── */
       html {
-        scroll-snap-type: none;
-        height: auto;
-        overflow-y: auto;
+        scroll-snap-type: y mandatory;
+        height: 100%;
+        overflow-y: scroll;
       }
 
       body {
-        height: auto;
+        height: 100%;
       }
 
       .snap-section {
-        height: auto;
-        min-height: 100svh;
-        overflow: visible;
-        scroll-snap-align: none;
-        scroll-snap-stop: unset;
+        height: 100svh;
+        min-height: unset;
+        overflow: hidden;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
       }
 
       .cover {
-        min-height: 100svh;
+        height: 100svh;
+        min-height: unset;
       }
 
       .cover-name {
-        font-size: clamp(48px, 14vw, 80px);
+        font-size: clamp(40px, 12vw, 72px);
+      }
+
+      .cover-sub {
+        margin-top: 8px;
+      }
+
+      .cover-portfolio {
+        font-size: clamp(16px, 4.5vw, 24px);
+      }
+
+      .cover-vline {
+        height: clamp(60px, 10vh, 100px);
+      }
+
+      .cover-content {
+        margin-right: 0;
+        margin-bottom: 38svh;
+      }
+
+      .cover-photo {
+        left: 50%;
+        transform: translate(-50%, 100%);
+        height: clamp(220px, 44svh, 420px);
+        animation-name: slideUpPhotoMobile;
       }
 
       .home {
-        padding: 32px 24px;
-        min-height: 100svh;
-        height: auto;
+        padding: 28px 20px 24px;
+        height: 100svh;
+        min-height: unset;
+        overflow: hidden;
       }
 
+      /* Strip: stack vertically, wrap icons into 2 rows if needed */
       .home-strip {
         flex: 0 0 auto;
-        padding: 40px 0;
+        padding: 32px 0 24px;
       }
 
       .home.project-pinned .home-strip {
-        padding: 16px 0;
+        padding: 12px 0;
       }
 
+      .contents-row {
+        width: 100%;
+        gap: 0;
+      }
+
+      /* Each icon narrower on mobile */
+      .project-icon {
+        padding: clamp(10px, 2.5vw, 18px) clamp(4px, 1vw, 10px);
+        gap: 8px;
+      }
+
+      .project-icon:not(:last-child)::after {
+        height: 28px;
+      }
+
+      .square {
+        width: clamp(44px, 13vw, 68px);
+      }
+
+      .project-name {
+        font-size: clamp(9px, 2.2vw, 12px);
+        letter-spacing: 0.04em;
+      }
+
+      /* Pinned state on mobile */
+      .home.project-pinned .project-icon {
+        padding: 8px clamp(2px, 0.8vw, 8px);
+      }
+
+      .home.project-pinned .project-icon:not(.icon-active) .square {
+        width: clamp(28px, 7vw, 40px);
+      }
+
+      .home.project-pinned .project-icon.icon-active .square {
+        width: clamp(44px, 11vw, 62px);
+      }
+
+      .home.project-pinned .project-name {
+        font-size: 9px;
+      }
+
+      .home.project-pinned .project-icon.icon-active .project-name {
+        font-size: 10px;
+      }
+
+      /* Strip nav arrows hidden on mobile — use swipe instead */
+      .strip-nav {
+        display: none;
+      }
+
+      /* Work area */
       .home-work {
         min-height: 0;
       }
 
       .home.project-pinned .home-work {
-        min-height: 60svh;
+        min-height: 0;
+        flex: 1;
       }
 
-      .home-bottom {
+      /* Project view: normal flow on mobile */
+      .project-view {
+        position: relative;
+        inset: auto;
         flex-direction: column;
+        align-items: stretch;
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Project card: single column */
+      .project-card,
+      .project-card.active {
+        grid-template-columns: 1fr;
         gap: 16px;
+        height: auto;
+        min-height: 0;
+        padding: 12px 0 0;
+      }
+
+      .project-info,
+      .project-image,
+      .project-description {
+        grid-column: auto;
+        grid-row: auto;
+      }
+
+      /* Reorder: image first, then title, then description */
+      .project-image {
+        order: 1;
+        aspect-ratio: unset;
+      }
+
+      .project-image img {
+        object-fit: contain;
+        height: auto;
+      }
+
+      .project-info {
+        order: 2;
+        text-align: left;
         align-items: flex-start;
       }
 
+      .project-description {
+        order: 3;
+        gap: 12px;
+      }
+
+      .project-info h2 {
+        font-size: clamp(20px, 6vw, 32px);
+        margin-bottom: 8px;
+      }
+
+      .project-info p,
+      .project-description p {
+        font-size: clamp(13px, 3.5vw, 16px);
+        line-height: 1.45;
+      }
+
+      /* Bottom bar */
+      .home-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 0;
+        padding-top: 16px;
+      }
+
+      .home-hint {
+        display: none;
+      }
+
+      /* Contact flyout: opens upward on mobile */
       .contact-flyout {
         left: 0;
         bottom: 100%;
@@ -1222,123 +1413,185 @@
         transform: translateY(0);
       }
 
-      .contents-row {
-        width: 100%;
+      .email-sub {
+        bottom: calc(100% + 6px);
       }
 
-      .square {
-        width: clamp(48px, 12vw, 72px);
-      }
-
-      .project-view {
-        position: relative;
-        inset: auto;
-        flex-direction: column;
-        align-items: flex-start;
-        transform: none;
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .project-card,
-      .project-card.active {
-        grid-template-columns: 1fr;
-        gap: 20px;
-        height: auto;
-        min-height: 0;
-        padding: 16px 0;
-      }
-
-      .project-info,
-      .project-image,
-      .project-description {
-        grid-column: auto;
-        grid-row: auto;
-      }
-
-      .project-info {
-        text-align: left;
-      }
-
-      .project-description {
-        gap: 24px;
-      }
-
+      /* ── FIXED SIDE NAV — hidden on mobile ── */
       .fixed-project-rail {
         display: none;
       }
 
+      /* ── PROJECT DETAIL SECTIONS ── */
       .project-detail-section {
-        min-height: 100svh;
-        height: auto;
-        padding: 32px 24px;
+        height: 100svh;
+        min-height: unset;
+        overflow: hidden;
+        padding: 0;
       }
 
-      .project-detail-title {
-        top: 32px;
-        left: 24px;
-        font-size: clamp(72px, 18vw, 110px);
-      }
-
+      /* ── PROJECT DETAIL GALLERIES — same as desktop, zero safe-left ── */
       #wall-section {
         --wall-safe-left: 0px;
-      }
-
-      .wall-floating-title {
-        left: 24px;
+        height: 100svh;
+        overflow: hidden;
       }
 
       .wall-gallery {
         width: 100%;
         margin-left: 0;
+        padding-top: clamp(48px, 8vh, 72px);
+        padding-right: 20px;
         padding-left: 0;
-        padding-top: 80px;
+        height: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .wall-gallery-info {
+        min-width: 44vw;
+        flex: 0 0 44vw;
+        align-items: flex-end;
+        text-align: right;
+        padding-top: 4px;
+        scroll-snap-align: start;
+      }
+
+      .wall-left-title {
+        font-size: clamp(18px, 5vw, 26px);
+        margin-bottom: 8px;
+      }
+
+      .wall-left-meta {
+        font-size: clamp(11px, 2.8vw, 14px);
+        max-width: 100%;
       }
 
       .wall-slide {
-        height: clamp(200px, 45vh, 380px);
+        flex: 0 0 auto;
+        width: auto;
+        height: 56svh;
+        scroll-snap-align: start;
+        position: relative;
+        display: block;
       }
 
       .wall-gallery-img,
       .wall-slide .wall-gallery-img {
-        height: clamp(200px, 45vh, 380px);
+        height: 56svh;
+        width: auto;
+        object-fit: cover;
       }
 
       .wall-caption {
-        top: calc(clamp(200px, 45vh, 380px) + clamp(12px, 1.5vh, 18px));
-        max-width: 82vw;
+        position: absolute;
+        top: calc(56svh + 10px);
+        font-size: clamp(11px, 2.8vw, 13px);
+        max-width: 80vw;
+        opacity: 0;
+        transform: translateY(8px);
       }
 
+      .wall-slide.active .wall-caption {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .wall-gallery-spacer {
+        display: block;
+      }
 
       #puzzle-section,
       #herbinizer-section,
       #globe-section {
         --puzzle-safe-left: 0px;
-      }
-
-      .puzzle-floating-title {
-        left: 24px;
+        height: 100svh;
+        overflow: hidden;
       }
 
       .puzzle-gallery {
         width: 100%;
         margin-left: 0;
+        padding-top: clamp(48px, 8vh, 72px);
+        padding-right: 20px;
         padding-left: 0;
-        padding-top: 80px;
+        height: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .puzzle-gallery-info {
+        min-width: 44vw;
+        flex: 0 0 44vw;
+        align-items: flex-end;
+        text-align: right;
+        padding-top: 4px;
+        scroll-snap-align: start;
+      }
+
+      .puzzle-left-title {
+        font-size: clamp(18px, 5vw, 26px);
+        margin-bottom: 8px;
+      }
+
+      .puzzle-left-meta {
+        font-size: clamp(11px, 2.8vw, 14px);
+        max-width: 100%;
       }
 
       .puzzle-slide {
-        height: clamp(200px, 45vh, 380px);
+        flex: 0 0 auto;
+        width: auto;
+        height: 56svh;
+        scroll-snap-align: start;
+        position: relative;
+        display: block;
       }
 
       .puzzle-gallery-img,
       .puzzle-slide .puzzle-gallery-img {
-        height: clamp(200px, 45vh, 380px);
+        height: 56svh;
+        width: auto;
+        object-fit: cover;
       }
 
       .puzzle-caption {
-        top: calc(clamp(200px, 45vh, 380px) + clamp(12px, 1.5vh, 18px));
-        max-width: 82vw;
+        position: absolute;
+        top: calc(56svh + 10px);
+        font-size: clamp(11px, 2.8vw, 13px);
+        max-width: 80vw;
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      .puzzle-slide.active .puzzle-caption {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .puzzle-gallery-spacer {
+        display: block;
+      }
+
+      /* Image modal */
+      .image-modal {
+        padding: 16px;
+      }
+
+      .image-modal-close {
+        top: 12px;
+        right: 16px;
+        font-size: 32px;
       }
     }
   </style>
@@ -1363,6 +1616,10 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="cover-photo">
+      <img src="Home Page/Jacob.png" alt="Jacob Zhao">
     </div>
 
   </section>
@@ -1571,7 +1828,8 @@
         <div class="wall-caption">A peak into the other sibling's room. The half open wall provides an opportunity for
           the siblings to connect.</div>
       </div>
-      <div class="wall-gallery-spacer"></div>
+    </div>
+    <div class="wall-gallery-spacer"></div>
     </div>
   </section>
 
@@ -1631,6 +1889,11 @@
           painted surfaces into a compact chapel souvenir.</div>
       </div>
       <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Puzzle test collage">
+        <div class="puzzle-caption">Material tests compare surface, color, embossing, and cast quality across multiple
+          prototypes.</div>
+      </div>
+      <div class="puzzle-slide">
         <img class="puzzle-gallery-img" src="Puzzle_Pics/HandOut_1 2.jpg" alt="Puzzle handout 1">
         <div class="puzzle-caption">Presentation handouts explain the conceptual framework, fabrication process, and the
           souvenir's connection to the MIT Chapel.</div>
@@ -1644,11 +1907,6 @@
         <img class="puzzle-gallery-img" src="Puzzle_Pics/Handout_5 2.jpg" alt="Puzzle handout 5">
         <div class="puzzle-caption">Additional presentation material documents the design logic and how each object
           belongs to the full puzzle system.</div>
-      </div>
-      <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Puzzle test collage">
-        <div class="puzzle-caption">Material tests compare surface, color, embossing, and cast quality across multiple
-          prototypes.</div>
       </div>
       <div class="puzzle-slide">
         <img class="puzzle-gallery-img" src="Puzzle_Pics/Wall_1 2.jpg" alt="Puzzle wall 1">
@@ -1665,7 +1923,8 @@
         <div class="puzzle-caption">Final wall documentation situates the puzzle pieces within the chapel reference
           system and closes the project narrative.</div>
       </div>
-      <div class="puzzle-gallery-spacer"></div>
+    </div>
+    <div class="puzzle-gallery-spacer"></div>
     </div>
   </section>
   <section id="herbinizer-section" class="project-detail-section" data-project-section="herbinizer">
@@ -1722,7 +1981,8 @@
         <div class="puzzle-caption">Final line pattern documenting the cut and fold logic used to fabricate the
           Herbinizer unit.</div>
       </div>
-      <div class="puzzle-gallery-spacer"></div>
+    </div>
+    <div class="puzzle-gallery-spacer"></div>
     </div>
   </section>
   <section id="globe-section" class="project-detail-section" data-project-section="globe">
@@ -1760,7 +2020,8 @@
       <div class="puzzle-slide">
         <img class="puzzle-gallery-img" src="Globe_Pics/Globe_finalEffects_2.jpg" alt="Globe final effects 2">
       </div>
-      <div class="puzzle-gallery-spacer"></div>
+    </div>
+    <div class="puzzle-gallery-spacer"></div>
     </div>
   </section>
 
@@ -1926,7 +2187,7 @@
         if (onHome) { unpin(); return; }
       }
       if (e.key === 'ArrowRight') { e.preventDefault(); navigateProject(1); }
-      if (e.key === 'ArrowLeft')  { e.preventDefault(); navigateProject(-1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); navigateProject(-1); }
     });
 
     var stripPrev = document.getElementById('stripPrev');
