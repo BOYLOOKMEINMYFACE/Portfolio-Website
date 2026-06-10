@@ -504,11 +504,25 @@
       animation: iconSlideIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
 
-    .home.icons-animate .project-icon:nth-child(1) { animation-delay: 0.1s; }
-    .home.icons-animate .project-icon:nth-child(2) { animation-delay: 0.22s; }
-    .home.icons-animate .project-icon:nth-child(3) { animation-delay: 0.34s; }
-    .home.icons-animate .project-icon:nth-child(4) { animation-delay: 0.46s; }
-    .home.icons-animate .project-icon:nth-child(5) { animation-delay: 0.58s; }
+    .home.icons-animate .project-icon:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .home.icons-animate .project-icon:nth-child(2) {
+      animation-delay: 0.22s;
+    }
+
+    .home.icons-animate .project-icon:nth-child(3) {
+      animation-delay: 0.34s;
+    }
+
+    .home.icons-animate .project-icon:nth-child(4) {
+      animation-delay: 0.46s;
+    }
+
+    .home.icons-animate .project-icon:nth-child(5) {
+      animation-delay: 0.58s;
+    }
 
     @keyframes iconSlideIn {
       from {
@@ -598,8 +612,13 @@
       z-index: 10;
     }
 
-    .strip-nav.prev { left: 0; }
-    .strip-nav.next { right: 0; }
+    .strip-nav.prev {
+      left: 0;
+    }
+
+    .strip-nav.next {
+      right: 0;
+    }
 
     /* Show arrows when pinned and direction is available */
     .home.project-pinned .strip-nav {
@@ -616,6 +635,7 @@
       opacity: 0;
       pointer-events: none;
     }
+
     .project-view {
       position: absolute;
       inset: 0;
@@ -626,7 +646,7 @@
       pointer-events: none;
       transform: translateY(32px);
       transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .home.project-pinned .project-view {
@@ -1219,7 +1239,9 @@
         overflow-y: scroll;
       }
 
-      body { height: 100%; }
+      body {
+        height: 100%;
+      }
 
       .snap-section {
         height: 100svh;
@@ -1229,15 +1251,26 @@
         scroll-snap-stop: always;
       }
 
-      .cover { height: 100svh; min-height: unset; }
+      .cover {
+        height: 100svh;
+        min-height: unset;
+      }
 
-      .cover-name { font-size: clamp(40px, 12vw, 72px); }
+      .cover-name {
+        font-size: clamp(40px, 12vw, 72px);
+      }
 
-      .cover-sub { margin-top: 8px; }
+      .cover-sub {
+        margin-top: 8px;
+      }
 
-      .cover-portfolio { font-size: clamp(16px, 4.5vw, 24px); }
+      .cover-portfolio {
+        font-size: clamp(16px, 4.5vw, 24px);
+      }
 
-      .cover-vline { height: clamp(60px, 10vh, 100px); }
+      .cover-vline {
+        height: clamp(60px, 10vh, 100px);
+      }
 
       .cover-content {
         margin-right: 0;
@@ -1314,7 +1347,9 @@
       }
 
       /* Strip nav arrows hidden on mobile — use swipe instead */
-      .strip-nav { display: none; }
+      .strip-nav {
+        display: none;
+      }
 
       /* Work area */
       .home-work {
@@ -1355,10 +1390,26 @@
       }
 
       /* Reorder: image first, then title, then description */
-      .project-image { order: 1; aspect-ratio: unset; }
-      .project-image img { object-fit: contain; height: auto; }
-      .project-info  { order: 2; text-align: left; align-items: flex-start; }
-      .project-description { order: 3; gap: 12px; }
+      .project-image {
+        order: 1;
+        aspect-ratio: unset;
+      }
+
+      .project-image img {
+        object-fit: contain;
+        height: auto;
+      }
+
+      .project-info {
+        order: 2;
+        text-align: left;
+        align-items: flex-start;
+      }
+
+      .project-description {
+        order: 3;
+        gap: 12px;
+      }
 
       .project-info h2 {
         font-size: clamp(20px, 6vw, 32px);
@@ -1380,7 +1431,9 @@
         padding-top: 16px;
       }
 
-      .home-hint { display: none; }
+      .home-hint {
+        display: none;
+      }
 
       /* Contact flyout: opens upward on mobile */
       .contact-flyout {
@@ -1402,7 +1455,9 @@
       }
 
       /* ── FIXED SIDE NAV — hidden on mobile ── */
-      .fixed-project-rail { display: none; }
+      .fixed-project-rail {
+        display: none;
+      }
 
       /* ── PROJECT DETAIL SECTIONS ── */
       .project-detail-section {
@@ -1484,7 +1539,9 @@
         transform: translateY(0);
       }
 
-      .wall-gallery-spacer { display: block; }
+      .wall-gallery-spacer {
+        display: block;
+      }
 
       #puzzle-section,
       #herbinizer-section,
@@ -1559,10 +1616,14 @@
         transform: translateY(0);
       }
 
-      .puzzle-gallery-spacer { display: block; }
+      .puzzle-gallery-spacer {
+        display: block;
+      }
 
       /* Image modal */
-      .image-modal { padding: 16px; }
+      .image-modal {
+        padding: 16px;
+      }
 
       .image-modal-close {
         top: 12px;
@@ -1804,8 +1865,8 @@
         <div class="wall-caption">A peak into the other sibling's room. The half open wall provides an opportunity for
           the siblings to connect.</div>
       </div>
-      </div>
-            <div class="wall-gallery-spacer"></div>
+    </div>
+    <div class="wall-gallery-spacer"></div>
     </div>
   </section>
 
@@ -1899,8 +1960,8 @@
         <div class="puzzle-caption">Final wall documentation situates the puzzle pieces within the chapel reference
           system and closes the project narrative.</div>
       </div>
-      </div>
-            <div class="puzzle-gallery-spacer"></div>
+    </div>
+    <div class="puzzle-gallery-spacer"></div>
     </div>
   </section>
   <section id="herbinizer-section" class="project-detail-section" data-project-section="herbinizer">
@@ -1915,8 +1976,25 @@
           6&quot; × 6&quot; × 3&quot;
         </div>
       </div>
-
       <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
+        <div class="puzzle-caption">The Herbinizer is designed to make growing plants easier and available to anyone,
+          bringing life everywhere, even spaces that cannot seem to fit.</div>
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer.jpg" alt="Herbinizer 1">
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-3.jpg" alt="Herbinizer 4">
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-1.jpg" alt="Herbinizer 2">
+      </div>
+      <div class="puzzle-slide">
+        <img class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-2.jpg" alt="Herbinizer 3">
+      </div>
+
+      <!-- <div class="puzzle-slide">
         <img class="puzzle-gallery-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
         <div class="puzzle-caption">The Herbinizer is designed to make growing plants easier and available to anyone,
           bringing life everywhere, even spaces that cannot seem to fit.</div>
@@ -1956,9 +2034,9 @@
           alt="Herbinizer final line pattern">
         <div class="puzzle-caption">Final line pattern documenting the cut and fold logic used to fabricate the
           Herbinizer unit.</div>
-      </div>
-      </div>
-            <div class="puzzle-gallery-spacer"></div>
+      </div> -->
+    </div>
+    <div class="puzzle-gallery-spacer"></div>
     </div>
   </section>
   <section id="globe-section" class="project-detail-section" data-project-section="globe">
@@ -1996,8 +2074,8 @@
       <div class="puzzle-slide">
         <img class="puzzle-gallery-img" src="Globe_Pics/Globe_finalEffects_2.jpg" alt="Globe final effects 2">
       </div>
-      </div>
-            <div class="puzzle-gallery-spacer"></div>
+    </div>
+    <div class="puzzle-gallery-spacer"></div>
     </div>
   </section>
 
@@ -2163,7 +2241,7 @@
         if (onHome) { unpin(); return; }
       }
       if (e.key === 'ArrowRight') { e.preventDefault(); navigateProject(1); }
-      if (e.key === 'ArrowLeft')  { e.preventDefault(); navigateProject(-1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); navigateProject(-1); }
     });
 
     var stripPrev = document.getElementById('stripPrev');
