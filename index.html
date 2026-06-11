@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1f1f1f">
   <title>Jacob Zhao</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,6 +40,12 @@
       background: var(--bg);
       color: var(--text);
       height: 100%;
+    }
+
+    button,
+    a {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .snap-section {
@@ -1229,6 +1236,16 @@
       z-index: 2;
     }
 
+    /* ── TOUCH DEVICES (no hover) ── */
+    @media (hover: none) {
+
+      /* Hover-to-brighten never fires on touch — show images at full opacity */
+      .wall-gallery-img,
+      .puzzle-gallery-img {
+        opacity: 1;
+      }
+    }
+
     /* ── MOBILE ── */
     @media (max-width: 760px) {
 
@@ -1285,49 +1302,93 @@
       }
 
       .home {
-        padding: 28px 20px 24px;
+        padding: 28px 20px calc(24px + env(safe-area-inset-bottom, 0px));
         height: 100svh;
         min-height: unset;
         overflow: hidden;
       }
 
-      /* Strip: stack vertically, wrap icons into 2 rows if needed */
+      /* While pinned, vertical swipes anywhere on the home section are
+         routed by JS to the page sections (native vertical scroll off) */
+      .home.project-pinned {
+        touch-action: pan-x;
+      }
+
+      /* ── Strip at rest: icons stacked VERTICALLY, filling the screen ── */
       .home-strip {
-        flex: 0 0 auto;
-        padding: 32px 0 24px;
+        flex: 1;
+        min-height: 0;
+        padding: 8px 0;
       }
 
       .home.project-pinned .home-strip {
+        flex: 0 0 auto;
         padding: 12px 0;
       }
 
       .contents-row {
         width: 100%;
+        height: 100%;
+        flex-direction: column;
         gap: 0;
       }
 
-      /* Each icon narrower on mobile */
-      .project-icon {
-        padding: clamp(10px, 2.5vw, 18px) clamp(4px, 1vw, 10px);
-        gap: 8px;
+      .home.project-pinned .contents-row {
+        flex-direction: row;
+        height: auto;
       }
 
+      /* Each icon takes an equal share of the vertical space */
+      .project-icon {
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+        justify-content: center;
+        padding: 6px 0;
+        gap: 10px;
+      }
+
+      /* Dividers run horizontally between stacked icons */
       .project-icon:not(:last-child)::after {
-        height: 28px;
+        top: auto;
+        bottom: 0;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        height: 1px;
+        width: clamp(140px, 50vw, 260px);
       }
 
       .square {
-        width: clamp(44px, 13vw, 68px);
+        width: clamp(48px, min(15vw, 11svh), 80px);
+        min-height: 0;
+      }
+
+      .square img {
+        object-fit: contain;
       }
 
       .project-name {
-        font-size: clamp(9px, 2.2vw, 12px);
+        font-size: clamp(11px, 3vw, 14px);
         letter-spacing: 0.04em;
       }
 
-      /* Pinned state on mobile */
+      /* ── Pinned state: compact horizontal strip at the top ── */
       .home.project-pinned .project-icon {
+        flex: 1;
+        width: auto;
         padding: 8px clamp(2px, 0.8vw, 8px);
+      }
+
+      /* Dividers return to vertical hairlines between icons */
+      .home.project-pinned .project-icon:not(:last-child)::after {
+        top: 50%;
+        bottom: auto;
+        left: auto;
+        right: 0;
+        transform: translateY(-50%);
+        height: 28px;
+        width: 1px;
       }
 
       .home.project-pinned .project-icon:not(.icon-active) .square {
@@ -1359,56 +1420,78 @@
       .home.project-pinned .home-work {
         min-height: 0;
         flex: 1;
+        overflow: hidden;
       }
 
-      /* Project view: normal flow on mobile */
+      /* ── Project view: horizontal scroll-snap carousel ──
+         Drag left/right to move between projects. Vertical pans are
+         left to JS, which routes them to the page sections. */
       .project-view {
         position: relative;
         inset: auto;
-        flex-direction: column;
+        height: 100%;
+        flex-direction: row;
         align-items: stretch;
         transform: none;
         opacity: 1;
         pointer-events: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        touch-action: pan-x;
       }
 
-      /* Project card: single column */
+      .project-view::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Project card: every card visible, one screen wide.
+         Simple flex column — image on top, title + meta below —
+         so nothing can ever overlap. */
       .project-card,
       .project-card.active {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         gap: 16px;
-        height: auto;
+        flex: 0 0 100%;
+        width: 100%;
+        height: 100%;
         min-height: 0;
-        padding: 12px 0 0;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        overflow: hidden;
+        padding: 12px 2px 16px;
       }
 
       .project-info,
-      .project-image,
-      .project-description {
+      .project-image {
         grid-column: auto;
         grid-row: auto;
       }
 
-      /* Reorder: image first, then title, then description */
+      /* Reorder: image first, then title */
       .project-image {
         order: 1;
         aspect-ratio: unset;
+        flex: 0 1 auto;
+        min-height: 0;
       }
 
       .project-image img {
-        object-fit: contain;
+        width: 100%;
         height: auto;
+        max-height: 42svh;
+        object-fit: contain;
       }
 
       .project-info {
         order: 2;
+        flex: 0 0 auto;
         text-align: left;
         align-items: flex-start;
-      }
-
-      .project-description {
-        order: 3;
-        gap: 12px;
       }
 
       .project-info h2 {
@@ -1442,8 +1525,27 @@
         padding-left: 0;
         padding-bottom: 10px;
         flex-direction: column;
-        gap: 8px;
+        gap: 4px;
         transform: translateY(8px);
+      }
+
+      /* Bigger, easier tap targets for touch */
+      .contact-toggle {
+        font-size: 15px;
+        padding: 10px 12px 10px 0;
+      }
+
+      .contact-flyout a,
+      .contact-flyout-btn,
+      .email-addr {
+        font-size: 15px;
+        padding: 8px 12px 8px 0;
+        display: inline-block;
+        text-align: left;
+      }
+
+      .email-sub {
+        gap: 0;
       }
 
       .contact-wrap.open .contact-flyout {
@@ -1477,59 +1579,68 @@
       .wall-gallery {
         width: 100%;
         margin-left: 0;
-        padding-top: clamp(48px, 8vh, 72px);
-        padding-right: 20px;
-        padding-left: 0;
+        padding: 0;
         height: 100%;
         overflow-x: auto;
         overflow-y: hidden;
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
         flex-direction: row;
-        align-items: flex-start;
-        gap: 12px;
+        align-items: stretch;
+        gap: 0;
       }
 
+      /* Intro panel becomes its own full screen */
       .wall-gallery-info {
-        min-width: 44vw;
-        flex: 0 0 44vw;
+        min-width: 100%;
+        flex: 0 0 100%;
         align-items: flex-end;
+        justify-content: center;
         text-align: right;
-        padding-top: 4px;
+        padding: clamp(48px, 8svh, 72px) 24px 32px;
         scroll-snap-align: start;
       }
 
       .wall-left-title {
-        font-size: clamp(18px, 5vw, 26px);
-        margin-bottom: 8px;
+        font-size: clamp(22px, 6.5vw, 32px);
+        margin-bottom: 10px;
       }
 
       .wall-left-meta {
-        font-size: clamp(11px, 2.8vw, 14px);
+        font-size: clamp(12px, 3.2vw, 15px);
         max-width: 100%;
       }
 
+      /* Each slide fills the whole screen; image scaled to fit */
       .wall-slide {
-        flex: 0 0 auto;
-        width: auto;
-        height: 56svh;
+        flex: 0 0 100%;
+        width: 100%;
+        height: 100%;
         scroll-snap-align: start;
         position: relative;
-        display: block;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(44px, 7svh, 64px) 0 16px;
       }
 
       .wall-gallery-img,
       .wall-slide .wall-gallery-img {
-        height: 56svh;
-        width: auto;
-        object-fit: cover;
+        width: 100%;
+        height: auto;
+        max-height: 64svh;
+        object-fit: contain;
       }
 
+      /* Caption flows below the image instead of being pinned */
       .wall-caption {
-        position: absolute;
-        top: calc(56svh + 10px);
-        font-size: clamp(11px, 2.8vw, 13px);
-        max-width: 80vw;
+        position: static;
+        margin-top: 12px;
+        padding: 0 20px;
+        width: 100%;
+        max-width: 100%;
+        font-size: clamp(12px, 3.2vw, 14px);
         opacity: 0;
         transform: translateY(8px);
       }
@@ -1540,7 +1651,7 @@
       }
 
       .wall-gallery-spacer {
-        display: block;
+        display: none;
       }
 
       #puzzle-section,
@@ -1554,59 +1665,65 @@
       .puzzle-gallery {
         width: 100%;
         margin-left: 0;
-        padding-top: clamp(48px, 8vh, 72px);
-        padding-right: 20px;
-        padding-left: 0;
+        padding: 0;
         height: 100%;
         overflow-x: auto;
         overflow-y: hidden;
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
         flex-direction: row;
-        align-items: flex-start;
-        gap: 12px;
+        align-items: stretch;
+        gap: 0;
       }
 
       .puzzle-gallery-info {
-        min-width: 44vw;
-        flex: 0 0 44vw;
+        min-width: 100%;
+        flex: 0 0 100%;
         align-items: flex-end;
+        justify-content: center;
         text-align: right;
-        padding-top: 4px;
+        padding: clamp(48px, 8svh, 72px) 24px 32px;
         scroll-snap-align: start;
       }
 
       .puzzle-left-title {
-        font-size: clamp(18px, 5vw, 26px);
-        margin-bottom: 8px;
+        font-size: clamp(22px, 6.5vw, 32px);
+        margin-bottom: 10px;
       }
 
       .puzzle-left-meta {
-        font-size: clamp(11px, 2.8vw, 14px);
+        font-size: clamp(12px, 3.2vw, 15px);
         max-width: 100%;
       }
 
       .puzzle-slide {
-        flex: 0 0 auto;
-        width: auto;
-        height: 56svh;
+        flex: 0 0 100%;
+        width: 100%;
+        height: 100%;
         scroll-snap-align: start;
         position: relative;
-        display: block;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(44px, 7svh, 64px) 0 16px;
       }
 
       .puzzle-gallery-img,
       .puzzle-slide .puzzle-gallery-img {
-        height: 56svh;
-        width: auto;
-        object-fit: cover;
+        width: 100%;
+        height: auto;
+        max-height: 64svh;
+        object-fit: contain;
       }
 
       .puzzle-caption {
-        position: absolute;
-        top: calc(56svh + 10px);
-        font-size: clamp(11px, 2.8vw, 13px);
-        max-width: 80vw;
+        position: static;
+        margin-top: 12px;
+        padding: 0 20px;
+        width: 100%;
+        max-width: 100%;
+        font-size: clamp(12px, 3.2vw, 14px);
         opacity: 0;
         transform: translateY(8px);
       }
@@ -1617,7 +1734,15 @@
       }
 
       .puzzle-gallery-spacer {
-        display: block;
+        display: none;
+      }
+
+      /* Floating titles tuck into the top-left corner */
+      .wall-floating-title,
+      .puzzle-floating-title {
+        left: 20px;
+        top: 16px;
+        font-size: clamp(18px, 5vw, 26px);
       }
 
       /* Image modal */
@@ -1626,9 +1751,10 @@
       }
 
       .image-modal-close {
-        top: 12px;
-        right: 16px;
+        top: 4px;
+        right: 8px;
         font-size: 32px;
+        padding: 8px 14px;
       }
     }
   </style>
@@ -1700,12 +1826,6 @@
               Paint, Tools<br>Rhino, Enscape<br>36&quot; × 48&quot; × 3&quot;</p>
           </div>
           <div class="project-image"><img src="Home Page/Wall.jpg" alt="The Wall"></div>
-          <div class="project-description">
-            <p>The development of technology encouraged more human communications without physical interactions, making
-              face to face conversations harder and more precious.</p>
-            <p>Inspired by the movement logic of plant stomata, the Wall is created to improve in person communications
-              and social engagements. It opens and closes according to human emotions.</p>
-          </div>
         </article>
 
         <article class="project-card" data-card="puzzle">
@@ -1715,10 +1835,6 @@
               Paper,<br>Laser Cutting, Cast concrete<br>Varied Size</p>
           </div>
           <div class="project-image"><img src="Home Page/Puzzle.jpg" alt="Puzzle"></div>
-          <div class="project-description">
-            <p>A project to design a souvenir for the MIT Chapel by exploring shapes from 2D - 2.5D - 3D evolution,
-              emphasizing human connections with objects.</p>
-          </div>
         </article>
 
         <article class="project-card" data-card="herbinizer">
@@ -1728,12 +1844,6 @@
             </p>
           </div>
           <div class="project-image"><img src="Home Page/Herbinizer.jpg" alt="Herbinizer"></div>
-          <div class="project-description">
-            <p>The Herbinizer is designed to make growing plants easier and available to anyone, bringing life
-              everywhere, even spaces that can't seem to fit.</p>
-            <p>A planting unit that expands in any directions, enabling it to be placed in any environments including
-              city apartments and sidewalks.</p>
-          </div>
         </article>
 
         <article class="project-card" data-card="globe">
@@ -1743,12 +1853,6 @@
               Photoshop<br>Vary in size</p>
           </div>
           <div class="project-image"><img src="Home Page/Globe.jpg" alt="Globe"></div>
-          <div class="project-description">
-            <p>All activities at the Brooks School surround two roads: the main street and another street. Life as a
-              student at Brooks starts at the crossing of two roads.</p>
-            <p>Life around the main street can be inconvenient and time consuming. Hence, a retractable hemisphere tent
-              is designed to be placed around campus.</p>
-          </div>
         </article>
       </div>
     </div>
@@ -1816,7 +1920,7 @@
         </div>
       </div>
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Home Page/Wall.jpg" alt="The Wall">
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Home Page/Wall.jpg" alt="The Wall">
         <div class="wall-caption">The development of technology encouraged more human communications without physical
           interactions, making face to face conversations harder and more precious.
           Inspired by the movement logic of plant stomata, the Wall is created to improve in person communications and
@@ -1824,44 +1928,44 @@
       </div>
 
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Wall_Pics/wall_final_look 1.jpg" alt="Wall final look">
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Wall_Pics/wall_final_look 1.jpg" alt="Wall final look">
         <div class="wall-caption">A divider between two bedrooms. The nets open when the wall detects happiness in the
           room, which means people are prone to communication. On the other hand, it closes when people are feeling
           negative, avoiding potentially bad interactions. </div>
       </div>
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Wall_Pics/Wall_Sketch.jpg" alt="Wall sketch">
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Wall_Pics/Wall_Sketch.jpg" alt="Wall sketch">
         <div class="wall-caption">Stomata acts as the mouth of plants, A stoma can be influenced by many factors, such
           as the time of the day, humidity, and temperature of its surrounding. Just like plants, human can also be
           easily affected by those around them. This led to the question of whether the space people dwell in can also
           affect their emotions</div>
       </div>
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/3261721788946_.pic.jpg"
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/3261721788946_.pic.jpg"
           alt="Wall manufacturing 1">
         <div class="wall-caption">Experimenting on web shapes: Fishnets with multiple layers. Strings open and close
           depending on elasticity.</div>
       </div>
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/IMG_2223 1.jpg" alt="Wall manufacturing 2">
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/IMG_2223 1.jpg" alt="Wall manufacturing 2">
         <div class="wall-caption">Cutting out frames from plywood with jigsaw</div>
       </div>
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/img-724184746_页面_09.jpg"
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Wall_Pics/Wall_Manufacturing/img-724184746_页面_09.jpg"
           alt="Wall manufacturing 3">
         <div class="wall-caption">Sketches exploring net movements</div>
       </div>
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Wall_Pics/Wall_Algorithm.jpg" alt="Wall algorithm">
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Wall_Pics/Wall_Algorithm.jpg" alt="Wall algorithm">
         <div class="wall-caption">The algorithm has 6 phases, each representing a different emotion. Depending on the
           emotions that the camera detects, the code determines how much the wall will open.</div>
       </div>
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Wall_Pics/HO2.jpg" alt="Wall HO2">
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Wall_Pics/HO2.jpg" alt="Wall HO2">
         <div class="wall-caption">The Wall installed in between two bedrooms of two siblings</div>
       </div>
       <div class="wall-slide">
-        <img class="wall-gallery-img" src="Wall_Pics/HO3.jpg" alt="Wall HO3">
+        <img loading="lazy" decoding="async" class="wall-gallery-img" src="Wall_Pics/HO3.jpg" alt="Wall HO3">
         <div class="wall-caption">A peak into the other sibling's room. The half open wall provides an opportunity for
           the siblings to connect.</div>
       </div>
@@ -1886,77 +1990,77 @@
       </div>
 
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Home Page/Puzzle.jpg" alt="Puzzle overview">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Home Page/Puzzle.jpg" alt="Puzzle overview">
         <div class="puzzle-caption">A souvenir for the MIT Chapel that explores shape evolution from 2D to 2.5D to 3D,
           using puzzle-like pieces to build a tactile connection between people, memory, and place.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.1 1.jpg" alt="Puzzle process 2.1.1">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/2.1.1 1.jpg" alt="Puzzle process 2.1.1">
         <div class="puzzle-caption">Early studies translate the chapel's circular geometry and light conditions into
           modular puzzle forms.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.2 1.jpg" alt="Puzzle process 2.1.2">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/2.1.2 1.jpg" alt="Puzzle process 2.1.2">
         <div class="puzzle-caption">The souvenir begins as a flat graphic system, testing how chapel-inspired shapes can
           interlock, separate, and recombine.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.3 1.jpg" alt="Puzzle process 2.1.3">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/2.1.3 1.jpg" alt="Puzzle process 2.1.3">
         <div class="puzzle-caption">Form experiments move from planar patterns into raised surfaces, creating a 2.5D
           object that can be touched and assembled.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.4 1.jpg" alt="Puzzle process 2.1.4">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/2.1.4 1.jpg" alt="Puzzle process 2.1.4">
         <div class="puzzle-caption">Iterations refine scale, edge condition, and the relationship between individual
           pieces and the complete chapel souvenir.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/2.1.Stencil 1.jpg" alt="Puzzle stencil">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/2.1.Stencil 1.jpg" alt="Puzzle stencil">
         <div class="puzzle-caption">Stencil and fabrication drawings organize the graphic language before the final
           material tests.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Bryan+Jacob formwork 1.jpg" alt="Puzzle formwork">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/Bryan+Jacob formwork 1.jpg" alt="Puzzle formwork">
         <div class="puzzle-caption">Formwork studies prepare the concrete casting process, balancing handmade texture
           with repeatable geometry.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Bryan+Jacob-FINAL 2.jpg" alt="Puzzle final">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/Bryan+Jacob-FINAL 2.jpg" alt="Puzzle final">
         <div class="puzzle-caption">The final object combines cast concrete, embossed paper, laser-cut pieces, and
           painted surfaces into a compact chapel souvenir.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/HandOut_1 2.jpg" alt="Puzzle handout 1">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/HandOut_1 2.jpg" alt="Puzzle handout 1">
         <div class="puzzle-caption">Presentation handouts explain the conceptual framework, fabrication process, and the
           souvenir's connection to the MIT Chapel.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Handout_2 1.jpg" alt="Puzzle handout 2">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/Handout_2 1.jpg" alt="Puzzle handout 2">
         <div class="puzzle-caption">The project communicates through diagrams, process documentation, and final product
           photography.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Handout_5 2.jpg" alt="Puzzle handout 5">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/Handout_5 2.jpg" alt="Puzzle handout 5">
         <div class="puzzle-caption">Additional presentation material documents the design logic and how each object
           belongs to the full puzzle system.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Puzzle test collage">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Puzzle test collage">
         <div class="puzzle-caption">Material tests compare surface, color, embossing, and cast quality across multiple
           prototypes.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Wall_1 2.jpg" alt="Puzzle wall 1">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/Wall_1 2.jpg" alt="Puzzle wall 1">
         <div class="puzzle-caption">Wall studies connect the object back to the MIT Chapel interior, translating spatial
           atmosphere into a hand-held artifact.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Wall_2 2.jpg" alt="Puzzle wall 2">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/Wall_2 2.jpg" alt="Puzzle wall 2">
         <div class="puzzle-caption">The wall imagery records how light, texture, and curved surfaces informed the
           souvenir's material and graphic language.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Puzzle_Pics/Wall_3 1.jpg" alt="Puzzle wall 3">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Puzzle_Pics/Wall_3 1.jpg" alt="Puzzle wall 3">
         <div class="puzzle-caption">Final wall documentation situates the puzzle pieces within the chapel reference
           system and closes the project narrative.</div>
       </div>
@@ -1977,60 +2081,60 @@
         </div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
         <div class="puzzle-caption">The Herbinizer is designed to make growing plants easier and available to anyone,
           bringing life everywhere, even spaces that cannot seem to fit.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer.jpg" alt="Herbinizer 1">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer.jpg" alt="Herbinizer 1">
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-3.jpg" alt="Herbinizer 4">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-3.jpg" alt="Herbinizer 4">
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-1.jpg" alt="Herbinizer 2">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-1.jpg" alt="Herbinizer 2">
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-2.jpg" alt="Herbinizer 3">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/The Herbinizer-2.jpg" alt="Herbinizer 3">
       </div>
 
       <!-- <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
         <div class="puzzle-caption">The Herbinizer is designed to make growing plants easier and available to anyone,
           bringing life everywhere, even spaces that cannot seem to fit.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/Herbinizer_Assembly.jpg" alt="Herbinizer assembly">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/Herbinizer_Assembly.jpg" alt="Herbinizer assembly">
         <div class="puzzle-caption">Assembly view showing how the planting unit comes together through folded surfaces
           and repeated parts.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/Herbinizer_Prototypes.jpg" alt="Herbinizer prototypes">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/Herbinizer_Prototypes.jpg" alt="Herbinizer prototypes">
         <div class="puzzle-caption">Prototype studies test scale, connection, folding logic, and how the unit can hold
           planting material.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/4. Gen.jpg" alt="Herbinizer generation diagram">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/4. Gen.jpg" alt="Herbinizer generation diagram">
         <div class="puzzle-caption">Generation diagram exploring how one compact planter can develop into a repeatable
           system.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/4. Connect.jpg" alt="Herbinizer connection">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/4. Connect.jpg" alt="Herbinizer connection">
         <div class="puzzle-caption">Connection study showing how individual units attach and extend into a larger
           planting surface.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/4. Stack Connect.jpg" alt="Herbinizer stacked connection">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/4. Stack Connect.jpg" alt="Herbinizer stacked connection">
         <div class="puzzle-caption">Stacked connection diagram describing vertical expansion and repeated modular
           growth.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/4. Single Top 1.jpg" alt="Herbinizer single top">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/4. Single Top 1.jpg" alt="Herbinizer single top">
         <div class="puzzle-caption">Single-unit top view clarifying the planter opening, geometry, and compact
           footprint.</div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Herbinizer_Pics/Final_line_pat_Inverted 1.jpg"
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Herbinizer_Pics/Final_line_pat_Inverted 1.jpg"
           alt="Herbinizer final line pattern">
         <div class="puzzle-caption">Final line pattern documenting the cut and fold logic used to fabricate the
           Herbinizer unit.</div>
@@ -2053,26 +2157,26 @@
       </div>
 
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Home Page/Globe.jpg" alt="Globe overview">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Home Page/Globe.jpg" alt="Globe overview">
         <div class="puzzle-caption">All activities at the Brooks School surround two roads: the main street and another
           street. Life as a student at Brooks starts at the crossing of two roads. Life around the main street can be
           inconvenient and time consuming. Hence, a retractable hemisphere tent is designed to be placed around campus.
         </div>
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Globe_Pics/Globe_Intro.jpg" alt="Globe intro">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Globe_Pics/Globe_Intro.jpg" alt="Globe intro">
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Globe_Pics/Globe_site.jpg" alt="Globe site">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Globe_Pics/Globe_site.jpg" alt="Globe site">
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Globe_Pics/Globe_prototype.jpg" alt="Globe prototype">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Globe_Pics/Globe_prototype.jpg" alt="Globe prototype">
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Globe_Pics/Globe_finalEffects_1.jpg" alt="Globe final effects 1">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Globe_Pics/Globe_finalEffects_1.jpg" alt="Globe final effects 1">
       </div>
       <div class="puzzle-slide">
-        <img class="puzzle-gallery-img" src="Globe_Pics/Globe_finalEffects_2.jpg" alt="Globe final effects 2">
+        <img loading="lazy" decoding="async" class="puzzle-gallery-img" src="Globe_Pics/Globe_finalEffects_2.jpg" alt="Globe final effects 2">
       </div>
     </div>
     <div class="puzzle-gallery-spacer"></div>
@@ -2153,6 +2257,46 @@
     var allProjectIcons = document.querySelectorAll('.project-open-button');
 
     var currentProject = null; // null = unpinned
+    var mobileLayout = window.matchMedia('(max-width: 760px)');
+
+    // ── FLIP: animate icons between the vertical (rest) and horizontal
+    //    (pinned) layouts. flex-direction can't transition in CSS, so we
+    //    measure positions before/after the layout change and animate the
+    //    difference with transforms. ──
+    function flipIcons(mutate) {
+      var icons = Array.prototype.slice.call(document.querySelectorAll('#contentsRow .project-icon'));
+
+      // Cancel the entrance animation if it's still running — its transform
+      // would fight the FLIP transform and corrupt the measurements.
+      homeSection.classList.remove('icons-animate');
+
+      var first = icons.map(function (el) { return el.getBoundingClientRect(); });
+
+      mutate();
+
+      var last = icons.map(function (el) { return el.getBoundingClientRect(); });
+
+      icons.forEach(function (el, i) {
+        var dx = (first[i].left + first[i].width / 2) - (last[i].left + last[i].width / 2);
+        var dy = (first[i].top + first[i].height / 2) - (last[i].top + last[i].height / 2);
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+        el.style.transition = 'none';
+        el.style.transform = 'translate(' + dx + 'px, ' + dy + 'px)';
+        // Force reflow so the starting transform is applied before animating
+        void el.getBoundingClientRect();
+
+        el.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        el.style.transform = 'translate(0, 0)';
+
+        el.addEventListener('transitionend', function handler(e) {
+          if (e.propertyName !== 'transform') return;
+          el.style.transition = '';
+          el.style.transform = '';
+          el.removeEventListener('transitionend', handler);
+        });
+      });
+    }
 
     function scrollToCV() { window.open('Resume MIT.pdf', '_blank'); }
     function scrollToProjectSection(name) {
@@ -2161,25 +2305,63 @@
       if (t) t.scrollIntoView({ behavior: 'smooth' });
     }
 
+    var projectView = document.getElementById('projectView');
+
+    // ── Mobile carousel: scroll the project-view to a given card ──
+    function scrollCarouselToProject(name, instant) {
+      if (!projectView || !mobileLayout.matches) return;
+      var card = projectView.querySelector('.project-card[data-card="' + name + '"]');
+      if (!card) return;
+      projectView.scrollTo({ left: card.offsetLeft, behavior: instant ? 'auto' : 'smooth' });
+    }
+
     function pinProject(name) {
+      var wasPinned = homeSection.classList.contains('project-pinned');
       currentProject = name;
-      homeSection.classList.add('project-pinned');
-      // Show the right card
-      projectCards.forEach(function (c) {
-        c.classList.toggle('active', c.getAttribute('data-card') === name);
-      });
-      // Mark the active icon
-      allProjectIcons.forEach(function (b) {
-        b.classList.toggle('icon-active', b.getAttribute('data-project') === name);
-      });
+
+      var applyPin = function () {
+        homeSection.classList.add('project-pinned');
+        // Show the right card
+        projectCards.forEach(function (c) {
+          c.classList.toggle('active', c.getAttribute('data-card') === name);
+        });
+        // Mark the active icon
+        allProjectIcons.forEach(function (b) {
+          b.classList.toggle('icon-active', b.getAttribute('data-project') === name);
+        });
+      };
+
+      // Animate the vertical → horizontal strip morph on mobile
+      if (!wasPinned && mobileLayout.matches) {
+        flipIcons(applyPin);
+      } else {
+        applyPin();
+      }
+
+      // Keep the mobile carousel in sync: jump instantly on first pin,
+      // glide when switching between projects
+      scrollCarouselToProject(name, !wasPinned);
+
       updateFixedRailHighlight();
       updateStripNavState();
     }
 
     function unpin() {
+      var wasPinned = homeSection.classList.contains('project-pinned');
       currentProject = null;
-      homeSection.classList.remove('project-pinned');
-      allProjectIcons.forEach(function (b) { b.classList.remove('icon-active'); });
+
+      var applyUnpin = function () {
+        homeSection.classList.remove('project-pinned');
+        allProjectIcons.forEach(function (b) { b.classList.remove('icon-active'); });
+      };
+
+      // Animate the horizontal → vertical strip morph on mobile
+      if (wasPinned && mobileLayout.matches) {
+        flipIcons(applyUnpin);
+      } else {
+        applyUnpin();
+      }
+
       updateFixedRailHighlight();
       updateStripNavState();
     }
@@ -2261,13 +2443,108 @@
 
     if (stripPrev) stripPrev.addEventListener('click', function () { navigateProject(-1); });
     if (stripNext) stripNext.addEventListener('click', function () { navigateProject(1); });
+
+    // ── Carousel scroll → sync active project/icon (debounced so it settles
+    //    on the snapped card and doesn't ripple during smooth scrolls) ──
+    var carouselSyncTimer = null;
+
+    function syncProjectFromCarousel() {
+      if (!projectView || !mobileLayout.matches || !currentProject) return;
+
+      var viewRect = projectView.getBoundingClientRect();
+      var closest = null;
+      var closestDistance = Infinity;
+
+      projectCards.forEach(function (c) {
+        var d = Math.abs(c.getBoundingClientRect().left - viewRect.left);
+        if (d < closestDistance) {
+          closestDistance = d;
+          closest = c;
+        }
+      });
+
+      if (!closest) return;
+      var name = closest.getAttribute('data-card');
+      if (name === currentProject) return;
+
+      currentProject = name;
+      projectCards.forEach(function (c) {
+        c.classList.toggle('active', c === closest);
+      });
+      allProjectIcons.forEach(function (b) {
+        b.classList.toggle('icon-active', b.getAttribute('data-project') === name);
+      });
+      updateStripNavState();
+    }
+
+    if (projectView) {
+      projectView.addEventListener('scroll', function () {
+        clearTimeout(carouselSyncTimer);
+        carouselSyncTimer = setTimeout(syncProjectFromCarousel, 90);
+      }, { passive: true });
+
+      // Keep the carousel aligned to the current card on resize/rotation
+      window.addEventListener('resize', function () {
+        if (currentProject) scrollCarouselToProject(currentProject, true);
+      });
+    }
+
+    // ── Touch swipe on home: switch projects on a clearly horizontal swipe.
+    //    Skipped while the mobile carousel is active — native scrolling
+    //    handles left/right there. ──
+    var swipeStartX = 0;
+    var swipeStartY = 0;
+    var swipeFromCarousel = false;
+
     homeSection.addEventListener('touchstart', function (e) {
       swipeStartX = e.touches[0].clientX;
+      swipeStartY = e.touches[0].clientY;
+      swipeFromCarousel = !!(projectView && projectView.contains(e.target));
     }, { passive: true });
     homeSection.addEventListener('touchend', function (e) {
       var dx = e.changedTouches[0].clientX - swipeStartX;
-      if (Math.abs(dx) > 40) navigateProject(dx < 0 ? 1 : -1);
+      var dy = e.changedTouches[0].clientY - swipeStartY;
+
+      // While the carousel is pinned, horizontal panning over the cards is
+      // native — route vertical swipes to the page sections, and let
+      // horizontal swipes outside the carousel (e.g. on the strip) switch
+      // projects too.
+      if (mobileLayout.matches && currentProject) {
+        if (Math.abs(dy) > 50 && Math.abs(dy) > Math.abs(dx) * 1.5) {
+          if (dy < 0) {
+            // Swipe up → open the previewed project's page
+            scrollToProjectSection(currentProject);
+          } else {
+            // Swipe down → back up to the cover
+            var cover = document.querySelector('.cover');
+            if (cover) cover.scrollIntoView({ behavior: 'smooth' });
+          }
+        } else if (!swipeFromCarousel && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          navigateProject(dx < 0 ? 1 : -1);
+        }
+        return;
+      }
+
+      // Unpinned: a mostly-horizontal swipe opens the first/last project.
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        navigateProject(dx < 0 ? 1 : -1);
+      }
     }, { passive: true });
+
+    // ── Desktop: horizontal trackpad scroll / shift+wheel moves between
+    //    projects on the home section ──
+    var wheelNavLock = false;
+
+    homeSection.addEventListener('wheel', function (e) {
+      if (mobileLayout.matches) return;
+      var dx = e.deltaX;
+      if (Math.abs(dx) < 12 || Math.abs(dx) <= Math.abs(e.deltaY)) return;
+      e.preventDefault(); // stop browser back/forward swipe
+      if (wheelNavLock) return;
+      wheelNavLock = true;
+      navigateProject(dx > 0 ? 1 : -1);
+      setTimeout(function () { wheelNavLock = false; }, 500);
+    }, { passive: false });
 
     // ── Fixed nav: only show from CV section onward ──
     function updateFixedRailVisibility() {
