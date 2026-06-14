@@ -2818,6 +2818,9 @@
             if (next >= 0 && next < slides.length) {
               var targetLeft = slides[next].offsetLeft - gallery.offsetLeft;
               gallery.scrollTo({ left: targetLeft, behavior: 'smooth' });
+            } else if (next < 0) {
+              // ArrowLeft past the first slide: scroll back to the title/info panel
+              gallery.scrollTo({ left: 0, behavior: 'smooth' });
             }
           }
           return;
@@ -2992,17 +2995,18 @@
     function updateWallEndSpace() {
       if (!wallGallery) return;
 
-      var imgs = wallGallery.querySelectorAll('.wall-gallery-img');
-      var lastImg = imgs[imgs.length - 1];
-      if (!lastImg) return;
+      // Use the last slide wrapper (not the raw img) so we account for the
+      // full flex-item width when computing how much trailing space is needed
+      // to let the last image snap flush to the left edge of the container.
+      var slides = wallGallery.querySelectorAll('.wall-slide');
+      var lastSlide = slides[slides.length - 1];
+      if (!lastSlide) return;
 
       var styles = window.getComputedStyle(wallGallery);
       var gap = getPx(styles.columnGap || styles.gap);
       var paddingRight = getPx(styles.paddingRight);
 
-      // Give the last image enough trailing space so its left edge can snap
-      // exactly to the left edge of the scroll container.
-      var needed = wallGallery.clientWidth - lastImg.offsetWidth - gap - paddingRight;
+      var needed = wallGallery.clientWidth - lastSlide.offsetWidth - gap - paddingRight;
       wallGallery.style.setProperty('--wall-end-space', Math.max(0, needed) + 'px');
     }
 
@@ -3079,14 +3083,14 @@
     function updatePuzzleEndSpace() {
       if (!puzzleGallery) return;
 
-      var imgs = puzzleGallery.querySelectorAll('.puzzle-gallery-img');
-      var lastImg = imgs[imgs.length - 1];
-      if (!lastImg) return;
+      var slides = puzzleGallery.querySelectorAll('.puzzle-slide');
+      var lastSlide = slides[slides.length - 1];
+      if (!lastSlide) return;
 
       var styles = window.getComputedStyle(puzzleGallery);
       var gap = getPx(styles.columnGap || styles.gap);
       var paddingRight = getPx(styles.paddingRight);
-      var needed = puzzleGallery.clientWidth - lastImg.offsetWidth - gap - paddingRight;
+      var needed = puzzleGallery.clientWidth - lastSlide.offsetWidth - gap - paddingRight;
       puzzleGallery.style.setProperty('--puzzle-end-space', Math.max(0, needed) + 'px');
     }
 
@@ -3153,14 +3157,14 @@
     function updateHerbinizerEndSpace() {
       if (!herbinizerGallery) return;
 
-      var imgs = herbinizerGallery.querySelectorAll('.puzzle-gallery-img');
-      var lastImg = imgs[imgs.length - 1];
-      if (!lastImg) return;
+      var slides = herbinizerGallery.querySelectorAll('.puzzle-slide');
+      var lastSlide = slides[slides.length - 1];
+      if (!lastSlide) return;
 
       var styles = window.getComputedStyle(herbinizerGallery);
       var gap = getPx(styles.columnGap || styles.gap);
       var paddingRight = getPx(styles.paddingRight);
-      var needed = herbinizerGallery.clientWidth - lastImg.offsetWidth - gap - paddingRight;
+      var needed = herbinizerGallery.clientWidth - lastSlide.offsetWidth - gap - paddingRight;
       herbinizerGallery.style.setProperty('--puzzle-end-space', Math.max(0, needed) + 'px');
     }
 
@@ -3227,14 +3231,14 @@
     function updateGlobeEndSpace() {
       if (!globeGallery) return;
 
-      var imgs = globeGallery.querySelectorAll('.puzzle-gallery-img');
-      var lastImg = imgs[imgs.length - 1];
-      if (!lastImg) return;
+      var slides = globeGallery.querySelectorAll('.puzzle-slide');
+      var lastSlide = slides[slides.length - 1];
+      if (!lastSlide) return;
 
       var styles = window.getComputedStyle(globeGallery);
       var gap = getPx(styles.columnGap || styles.gap);
       var paddingRight = getPx(styles.paddingRight);
-      var needed = globeGallery.clientWidth - lastImg.offsetWidth - gap - paddingRight;
+      var needed = globeGallery.clientWidth - lastSlide.offsetWidth - gap - paddingRight;
       globeGallery.style.setProperty('--puzzle-end-space', Math.max(0, needed) + 'px');
     }
 
