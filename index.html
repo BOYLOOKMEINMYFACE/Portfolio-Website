@@ -2893,28 +2893,30 @@
       });
     }
 
-    // ── Touch swipe on home: switch projects on a clearly horizontal swipe.
-    //    Skipped while the mobile carousel is active — native scrolling
-    //    handles left/right there. ──
+    // ── Touch swipe on home: switch projects from anywhere in the home
+    //    section on mobile, not only from the carousel/strip. Vertical
+    //    swipes still open details or return to the cover. ──
     var swipeStartX = 0;
     var swipeStartY = 0;
-    var swipeFromCarousel = false;
 
     homeSection.addEventListener('touchstart', function (e) {
       swipeStartX = e.touches[0].clientX;
       swipeStartY = e.touches[0].clientY;
-      swipeFromCarousel = !!(projectView && projectView.contains(e.target));
     }, { passive: true });
+
     homeSection.addEventListener('touchend', function (e) {
       var dx = e.changedTouches[0].clientX - swipeStartX;
       var dy = e.changedTouches[0].clientY - swipeStartY;
+      var isHorizontalSwipe = Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5;
+      var isVerticalSwipe = Math.abs(dy) > 50 && Math.abs(dy) > Math.abs(dx) * 1.5;
 
-      // While the carousel is pinned, horizontal panning over the cards is
-      // native — route vertical swipes to the page sections, and let
-      // horizontal swipes outside the carousel (e.g. on the strip) switch
-      // projects too.
-      if (mobileLayout.matches && currentProject) {
-        if (Math.abs(dy) > 50 && Math.abs(dy) > Math.abs(dx) * 1.5) {
+      if (!mobileLayout.matches) return;
+
+      // Pinned: left/right anywhere on the home page browses projects.
+      if (currentProject) {
+        if (isHorizontalSwipe) {
+          navigateProject(dx < 0 ? 1 : -1);
+        } else if (isVerticalSwipe) {
           if (dy < 0) {
             // Swipe up → open the previewed project's page
             scrollToProjectSection(currentProject);
@@ -2923,16 +2925,75 @@
             var cover = document.querySelector('.cover');
             if (cover) cover.scrollIntoView({ behavior: 'smooth' });
           }
-        } else if (!swipeFromCarousel && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-          navigateProject(dx < 0 ? 1 : -1);
         }
         return;
       }
 
       // Unpinned: a mostly-horizontal swipe opens the first/last project.
-      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (isHorizontalSwipe) {
         navigateProject(dx < 0 ? 1 : -1);
       }
+    }, { passive: true });
+
+    // ── Touch swipe on project detail pages: browse the visible gallery from
+    //    anywhere in that section, including captions/empty space. ──
+    var detailSwipeStartX = 0;
+    var detailSwipeStartY = 0;
+    var detailSwipeSection = null;
+
+    function galleryForProject(name) {
+      return {
+        wall: document.getElementById('wallGallery'),
+        puzzle: document.getElementById('puzzleGallery'),
+        herbinizer: document.getElementById('herbinizerGallery'),
+        globe: document.getElementById('globeGallery')
+      }[name];
+    }
+
+    function stepVisibleGallery(name, dir) {
+      var gallery = galleryForProject(name);
+      if (!gallery) return;
+      var slideSelector = name === 'wall' ? '.wall-slide' : '.puzzle-slide';
+      var slides = Array.prototype.slice.call(gallery.querySelectorAll(slideSelector));
+      if (!slides.length) return;
+
+      var galleryRect = gallery.getBoundingClientRect();
+      var best = 0;
+      var bestDist = Infinity;
+      slides.forEach(function (slide, i) {
+        var d = Math.abs(slide.getBoundingClientRect().left - galleryRect.left);
+        if (d < bestDist) { bestDist = d; best = i; }
+      });
+
+      var next = Math.max(0, Math.min(slides.length - 1, best + dir));
+      gallery.scrollTo({ left: slides[next].offsetLeft - gallery.offsetLeft, behavior: 'smooth' });
+    }
+
+    document.addEventListener('touchstart', function (e) {
+      if (!mobileLayout.matches) return;
+      if (homeSection && homeSection.contains(e.target)) return;
+      if (imageModal && imageModal.classList.contains('open')) return;
+      if (cvModal && cvModal.classList.contains('open')) return;
+
+      detailSwipeSection = getVisibleProjectSection();
+      if (!detailSwipeSection) return;
+
+      detailSwipeStartX = e.touches[0].clientX;
+      detailSwipeStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', function (e) {
+      if (!mobileLayout.matches || !detailSwipeSection) return;
+      if (homeSection && homeSection.contains(e.target)) return;
+      if (imageModal && imageModal.classList.contains('open')) return;
+      if (cvModal && cvModal.classList.contains('open')) return;
+
+      var dx = e.changedTouches[0].clientX - detailSwipeStartX;
+      var dy = e.changedTouches[0].clientY - detailSwipeStartY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        stepVisibleGallery(detailSwipeSection, dx < 0 ? 1 : -1);
+      }
+      detailSwipeSection = null;
     }, { passive: true });
 
     // ── Desktop: horizontal trackpad scroll / shift+wheel moves between
