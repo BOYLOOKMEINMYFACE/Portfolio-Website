@@ -401,7 +401,8 @@
     .project-card {
       display: none;
       width: 100%;
-      grid-template-columns: minmax(200px, 0.75fr) minmax(400px, 2.5fr) minmax(200px, 0.85fr);
+      grid-template-columns: minmax(200px, 0.75fr) minmax(400px, 3.35fr);
+      grid-template-rows: minmax(0, 1fr);
       gap: clamp(16px, 1.6vw, 28px);
       align-items: start;
       height: 100%;
@@ -427,7 +428,6 @@
     }
 
     .project-info p,
-    .project-description p,
     .gallery-meta {
       font-size: var(--h-body);
       font-weight: 100;
@@ -436,15 +436,25 @@
     }
     .project-info p { text-align: right; max-width: 420px; }
 
-    .project-image { grid-column: 2; grid-row: 1; width: 100%; aspect-ratio: 16/9; overflow: hidden; align-self: start; }
-    .project-image img { width: 100%; height: 100%; object-fit: cover; }
-
-    .project-description {
-      grid-column: 3;
+    /* Image keeps its own aspect ratio: it scales to fit the available
+       width AND height, without cropping. */
+    .project-image {
+      grid-column: 2;
       grid-row: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
       display: flex;
-      flex-direction: column;
-      gap: clamp(34px, 5vh, 70px);
+      align-items: flex-start;
+      justify-content: flex-start;
+      align-self: start;
+    }
+    .project-image img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
     }
 
     /* ── FIXED VERTICAL NAV ── */
@@ -823,13 +833,12 @@
       }
 
       .project-info, .project-image { grid-column: auto; grid-row: auto; }
-      .project-image { order: 1; aspect-ratio: unset; flex: 0 1 auto; min-height: 0; }
+      .project-image { order: 1; height: auto; justify-content: center; flex: 0 1 auto; min-height: 0; }
       .project-image img { height: auto; max-height: 42svh; object-fit: contain; }
       .project-info { order: 2; flex: 0 0 auto; text-align: left; align-items: flex-start; }
       .project-info h2 { font-size: clamp(20px, 6vw, 32px); margin-bottom: 8px; }
-      .project-info p, .project-description p { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.45; }
+      .project-info p { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.45; }
       .project-info p { text-align: left; }
-      .project-description { display: none; }
 
       .home-bottom { padding-top: 16px; }
       .contact-flyout {
@@ -956,9 +965,6 @@
             <p>Individual Art Class Project<br>February – June, 2024<br>Wood, Strings, Arduino Board,<br>Motors, Acrylic Paint, Tools<br>Rhino, Enscape<br>36&quot; × 48&quot; × 3&quot;</p>
           </div>
           <div class="project-image"><img loading="lazy" decoding="async" src="Home Page/Wall.jpg" alt="The Wall"></div>
-          <div class="project-description">
-            <p>The development of technology encouraged more human communications without physical interactions, making face to face conversations harder and more precious. Inspired by the movement logic of plant stomata, the Wall opens and closes according to human emotions to improve in-person communication.</p>
-          </div>
         </article>
 
         <article class="project-card" data-card="puzzle">
@@ -967,9 +973,6 @@
             <p>Souvenir Based on the MIT Chapel<br>Group Class Project<br>May, 2026<br>Spray Paint, Embossed Paper,<br>Laser Cutting, Cast concrete<br>Varied Size</p>
           </div>
           <div class="project-image"><img loading="lazy" decoding="async" src="Home Page/Puzzle.jpg" alt="Puzzle"></div>
-          <div class="project-description">
-            <p>A souvenir for the MIT Chapel that explores shape evolution from 2D to 2.5D to 3D. Puzzle-like pieces build a tactile connection between people, memory, and place — translating the chapel's circular geometry and light into a compact, hand-held artifact.</p>
-          </div>
         </article>
 
         <article class="project-card" data-card="herbinizer">
@@ -978,9 +981,6 @@
             <p>Individual Class Project<br>December, 2025<br>Paper, Cardboard,<br>0.042" Aluminum Sheet<br>6" x 6" x 3"</p>
           </div>
           <div class="project-image"><img loading="lazy" decoding="async" src="Home Page/Herbinizer.jpg" alt="Herbinizer"></div>
-          <div class="project-description">
-            <p>The Herbinizer is designed to make growing plants easier and available to anyone, bringing life everywhere — even into spaces that cannot seem to fit it. A compact, foldable planting unit built from aluminum sheet and cardboard through precise cutting and folding logic.</p>
-          </div>
         </article>
 
         <article class="project-card" data-card="globe">
@@ -989,9 +989,6 @@
             <p>Individual Work<br>September - December, 2023<br>PVC board, Paper, Pen<br>Rhino, Grasshopper, Photoshop<br>Vary in size</p>
           </div>
           <div class="project-image"><img loading="lazy" decoding="async" src="Home Page/Globe.jpg" alt="Globe"></div>
-          <div class="project-description">
-            <p>Life at the Brooks School centers on two crossing roads. A retractable hemisphere tent designed to shelter the main street — making campus life more comfortable and connected through a deployable structure that responds to weather and gathering.</p>
-          </div>
         </article>
       </div>
     </div>
