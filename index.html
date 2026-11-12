@@ -349,7 +349,7 @@
     .home.icons-animate .project-icon:nth-child(5) { animation-delay: 0.58s; }
 
     /* ── PINNED STATE ── */
-    .home.project-pinned .contents-row { width: 100%; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .home.project-pinned .contents-row { width: 100%; }
     .home.project-pinned .project-icon { padding: clamp(8px, 1.2vh, 16px) clamp(8px, 1vw, 16px); }
     .home.project-pinned .square { width: clamp(36px, 3.5vw, 52px); }
     .home.project-pinned .project-name { font-size: clamp(9px, 0.72vw, 11px); opacity: 0.55; }
@@ -357,33 +357,6 @@
     .home.project-pinned .project-icon.icon-active .project-name { font-size: clamp(11px, 0.95vw, 14px); opacity: 1; }
     .home.project-pinned .project-icon:not(.icon-active) { opacity: 0.38; }
     .home.project-pinned .project-icon:not(.icon-active):hover { opacity: 0.72; }
-
-    /* ── STRIP PREV / NEXT ── */
-    .strip-nav {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: clamp(28px, 3vw, 44px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: rgba(255, 255, 255, 0.22);
-      font-family: "Jost", sans-serif;
-      font-size: clamp(18px, 1.8vw, 26px);
-      font-weight: 100;
-      transition: color 0.3s ease, opacity 0.4s ease;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 10;
-    }
-    .strip-nav.prev { left: 0; }
-    .strip-nav.next { right: 0; }
-    .home.project-pinned .strip-nav { opacity: 1; pointer-events: auto; }
-    .home.project-pinned .strip-nav:hover { color: rgba(255, 255, 255, 0.75); }
-    .home.project-pinned .strip-nav:disabled { opacity: 0; pointer-events: none; }
 
     .project-view {
       position: absolute;
@@ -607,6 +580,68 @@
     /* Trailing space (sized in JS) so the last slide can snap flush left */
     .gallery-spacer { flex: 0 0 var(--end-space, 40px); height: 1px; pointer-events: none; }
 
+    /* ── VERTICAL STACK (Wall) ── */
+    .vstack-scroll {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+    }
+    .vstack-scroll::-webkit-scrollbar { display: none; }
+
+    .vstack {
+      width: 60%;               /* 20% side padding each way */
+      margin: 0 auto;
+      padding: 0 0 clamp(48px, 8vh, 96px);
+    }
+
+    .vstack-info { margin-bottom: clamp(28px, 4vh, 48px); }
+    .vstack-info .gallery-meta { margin-bottom: 18px; }
+    .vstack-intro {
+      font-size: var(--h-body);
+      font-weight: 100;
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      color: var(--dim);
+      max-width: 720px;
+    }
+
+    .vstack-row { display: flex; gap: 4px; margin-bottom: 4px; }
+    .vstack-img {
+      flex: 1 1 0;              /* JS sets flex-grow to each image's aspect ratio */
+      min-width: 0;
+      width: 100%;
+      height: auto;
+      opacity: 0.9;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    .vstack-img:hover { opacity: 1; }
+
+    #wall-section .floating-title { display: none; }  /* the pinned title replaces it */
+
+    /* Title letters spread across the full column width, pinned to the top
+       while scrolling; its background hides content scrolling beneath it */
+    .vstack-title {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: clamp(68px, 9vh, 96px) 0 clamp(20px, 3vh, 36px);
+      background: var(--bg);
+      font-size: var(--h-title);
+      font-weight: 200;
+      line-height: 1;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    /* Sketch shown as white lines with no background */
+    .vstack-img.sketch-invert { filter: invert(1); mix-blend-mode: screen; }
+
     /* ── CV MODAL ── */
     .cv-modal {
       position: fixed;
@@ -713,6 +748,9 @@
     }
     .image-modal.open { display: flex; }
     .image-modal img { max-width: 80vw; max-height: 88vh; object-fit: contain; }
+    /* Keep the blend inside the modal so only its dark background shows through */
+    .image-modal { isolation: isolate; }
+    .image-modal img.sketch-invert { filter: invert(1); mix-blend-mode: screen; }
 
     .image-modal-close {
       position: absolute;
@@ -750,7 +788,7 @@
     .image-modal-nav.next { right: 0; }
 
     /* ── TOUCH / REDUCED MOTION ── */
-    @media (hover: none) { .gallery-img { opacity: 1; } }
+    @media (hover: none) { .gallery-img, .vstack-img { opacity: 1; } }
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -795,8 +833,6 @@
       .home.project-pinned .project-icon.icon-active .square { width: clamp(44px, 11vw, 62px); }
       .home.project-pinned .project-name { font-size: 9px; }
       .home.project-pinned .project-icon.icon-active .project-name { font-size: 10px; }
-
-      .strip-nav { display: none; }
 
       /* Horizontal scroll-snap carousel of project cards */
       .project-view {
@@ -885,6 +921,11 @@
 
       .floating-title { left: 20px; top: 16px; font-size: clamp(18px, 5vw, 26px); }
 
+      .vstack { width: auto; margin: 0 16px; padding: 0 0 32px; }
+      .vstack-title { padding: 56px 0 16px; font-size: clamp(20px, 6vw, 32px); }
+      #wall-section .floating-title { left: 16px; }
+      .vstack-intro { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.45; }
+
       .cv-modal-body { flex-direction: column; }
       .cv-modal-sidebar {
         flex: 0 0 auto;
@@ -931,7 +972,6 @@
   <!-- HOME (projects) -->
   <section class="snap-section home">
     <div class="home-strip">
-      <button class="strip-nav prev" id="stripPrev" type="button" aria-label="Previous project">&#8592;</button>
       <div class="contents-row" id="contentsRow" aria-label="Project contents">
         <button class="project-icon" id="cvButton" type="button" aria-label="Open CV">
           <div class="square"><img src="NavBar_Pics/CV_nav.jpg" alt="CV"></div>
@@ -954,7 +994,6 @@
           <div class="project-name">Globe</div>
         </button>
       </div>
-      <button class="strip-nav next" id="stripNext" type="button" aria-label="Next project">&#8594;</button>
     </div>
 
     <div class="home-work" id="homeWork">
@@ -1038,190 +1077,157 @@
     </button>
   </nav>
 
-  <!-- WALL -->
+  <!-- WALL (vertical scroll) -->
   <section id="wall-section" class="detail-section" data-project-section="wall">
-    <div class="floating-title">The Wall</div>
-    <div class="gallery">
-      <div class="gallery-info">
-        <div class="gallery-title">The Wall</div>
-        <div class="gallery-meta">
-          Individual Art Class Project<br>
-          February – June, 2024<br>
-          Wood, Strings, Arduino Board,<br>
-          Motors, Acrylic Paint, Tools<br>
-          Rhino, Enscape<br>
-          36&quot; × 48&quot; × 3&quot;
+    <div class="vstack-scroll">
+      <div class="vstack">
+        <div class="vstack-title" aria-label="The Wall"><span>T</span><span>h</span><span>e</span><span>&nbsp;</span><span>W</span><span>a</span><span>l</span><span>l</span></div>
+        <div class="vstack-info">
+          <div class="gallery-meta">
+            Individual Art Class Project<br>
+            February – June, 2024<br>
+            Wood, Strings, Arduino Board,<br>
+            Motors, Acrylic Paint, Tools<br>
+            Rhino, Enscape<br>
+            36&quot; × 48&quot; × 3&quot;
+          </div>
+          <p class="vstack-intro">The development of technology encouraged more human communications without physical interactions, making face to face conversations harder and more precious. Inspired by the movement logic of plant stomata, the Wall is created to improve in person communications and social engagements. It opens and closes according to human emotions.</p>
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Wall_Pics/HO2.jpg" alt="The Wall installed between two bedrooms">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Wall_Pics/HO3.jpg" alt="A peek into the other sibling's room">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Home Page/Wall.jpg" alt="The Wall">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img sketch-invert" src="Wall_Pics/Wall_Manufacturing/img-724184746_页面_09.jpg" alt="Sketches exploring net movements">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Wall_Pics/Wall_Manufacturing/IMG_2223 1.jpg" alt="Cutting frames from plywood with a jigsaw">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Wall_Pics/Wall_Manufacturing/3261721788946_.pic.jpg" alt="Fishnet web shape experiment">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Wall_Pics/Wall_Sketch.jpg" alt="Stomata sketch">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Wall_Pics/Wall_Algorithm.jpg" alt="Emotion detection algorithm phases">
         </div>
       </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Home Page/Wall.jpg" alt="The Wall">
-        <div class="caption">The development of technology encouraged more human communications without physical interactions, making face to face conversations harder and more precious. Inspired by the movement logic of plant stomata, the Wall is created to improve in person communications and social engagements. It opens and closes according to human emotions.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Wall_Pics/wall_final_look 1.jpg" alt="Wall final look">
-        <div class="caption">A divider between two bedrooms. The nets open when the wall detects happiness in the room, which means people are prone to communication. On the other hand, it closes when people are feeling negative, avoiding potentially bad interactions.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Wall_Pics/Wall_Sketch.jpg" alt="Wall sketch">
-        <div class="caption">Stomata acts as the mouth of plants, A stoma can be influenced by many factors, such as the time of the day, humidity, and temperature of its surrounding. Just like plants, human can also be easily affected by those around them. This led to the question of whether the space people dwell in can also affect their emotions</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Wall_Pics/Wall_Manufacturing/3261721788946_.pic.jpg" alt="Wall manufacturing 1">
-        <div class="caption">Experimenting on web shapes: Fishnets with multiple layers. Strings open and close depending on elasticity.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Wall_Pics/Wall_Manufacturing/IMG_2223 1.jpg" alt="Wall manufacturing 2">
-        <div class="caption">Cutting out frames from plywood with jigsaw</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Wall_Pics/Wall_Manufacturing/img-724184746_页面_09.jpg" alt="Wall manufacturing 3">
-        <div class="caption">Sketches exploring net movements</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Wall_Pics/Wall_Algorithm.jpg" alt="Wall algorithm">
-        <div class="caption">The algorithm has 6 phases, each representing a different emotion. Depending on the emotions that the camera detects, the code determines how much the wall will open.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Wall_Pics/HO2.jpg" alt="Wall HO2">
-        <div class="caption">The Wall installed in between two bedrooms of two siblings</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Wall_Pics/HO3.jpg" alt="Wall HO3">
-        <div class="caption">A peak into the other sibling's room. The half open wall provides an opportunity for the siblings to connect.</div>
-      </div>
-      <div class="gallery-spacer"></div>
     </div>
   </section>
 
-  <!-- PUZZLE -->
+  <!-- PUZZLE (vertical scroll) -->
   <section id="puzzle-section" class="detail-section" data-project-section="puzzle">
-    <div class="floating-title">Puzzle</div>
-    <div class="gallery">
-      <div class="gallery-info">
-        <div class="gallery-title">Puzzle</div>
-        <div class="gallery-meta">
-          Souvenir Based on the MIT Chapel<br>
-          Group Class Project<br>
-          May, 2026<br>
-          Spray Paint, Embossed Paper,<br>
-          Laser Cutting, Cast concrete<br>
-          Varied Size
+    <div class="vstack-scroll">
+      <div class="vstack">
+        <div class="vstack-title" aria-label="Puzzle"><span>P</span><span>u</span><span>z</span><span>z</span><span>l</span><span>e</span></div>
+        <div class="vstack-info">
+          <div class="gallery-meta">
+            Souvenir Based on the MIT Chapel<br>
+            Group Class Project<br>
+            May, 2026<br>
+            Spray Paint, Embossed Paper,<br>
+            Laser Cutting, Cast concrete<br>
+            Varied Size
+          </div>
+          <p class="vstack-intro">A souvenir for the MIT Chapel that explores shape evolution from 2D to 2.5D to 3D, using puzzle-like pieces to build a tactile connection between people, memory, and place.</p>
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Home Page/Puzzle.jpg" alt="Puzzle overview">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.1 1.jpg" alt="Puzzle process 2.1.1">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.2 1.jpg" alt="Puzzle process 2.1.2">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.3 1.jpg" alt="Puzzle process 2.1.3">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.4 1.jpg" alt="Puzzle process 2.1.4">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.Stencil 1.jpg" alt="Puzzle stencil">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Bryan+Jacob formwork 1.jpg" alt="Puzzle formwork">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Bryan+Jacob-FINAL 2.jpg" alt="Puzzle final">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/HandOut_1 2.jpg" alt="Puzzle handout 1">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Handout_2 1.jpg" alt="Puzzle handout 2">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Handout_5 2.jpg" alt="Puzzle handout 5">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Puzzle test collage">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_1 2.jpg" alt="Puzzle wall 1">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_2 2.jpg" alt="Puzzle wall 2">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_3 1.jpg" alt="Puzzle wall 3">
         </div>
       </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Home Page/Puzzle.jpg" alt="Puzzle overview">
-        <div class="caption">A souvenir for the MIT Chapel that explores shape evolution from 2D to 2.5D to 3D, using puzzle-like pieces to build a tactile connection between people, memory, and place.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/2.1.1 1.jpg" alt="Puzzle process 2.1.1">
-        <div class="caption">Early studies translate the chapel's circular geometry and light conditions into modular puzzle forms.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/2.1.2 1.jpg" alt="Puzzle process 2.1.2">
-        <div class="caption">The souvenir begins as a flat graphic system, testing how chapel-inspired shapes can interlock, separate, and recombine.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/2.1.3 1.jpg" alt="Puzzle process 2.1.3">
-        <div class="caption">Form experiments move from planar patterns into raised surfaces, creating a 2.5D object that can be touched and assembled.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/2.1.4 1.jpg" alt="Puzzle process 2.1.4">
-        <div class="caption">Iterations refine scale, edge condition, and the relationship between individual pieces and the complete chapel souvenir.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/2.1.Stencil 1.jpg" alt="Puzzle stencil">
-        <div class="caption">Stencil and fabrication drawings organize the graphic language before the final material tests.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/Bryan+Jacob formwork 1.jpg" alt="Puzzle formwork">
-        <div class="caption">Formwork studies prepare the concrete casting process, balancing handmade texture with repeatable geometry.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/Bryan+Jacob-FINAL 2.jpg" alt="Puzzle final">
-        <div class="caption">The final object combines cast concrete, embossed paper, laser-cut pieces, and painted surfaces into a compact chapel souvenir.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/HandOut_1 2.jpg" alt="Puzzle handout 1">
-        <div class="caption">Presentation handouts explain the conceptual framework, fabrication process, and the souvenir's connection to the MIT Chapel.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/Handout_2 1.jpg" alt="Puzzle handout 2">
-        <div class="caption">The project communicates through diagrams, process documentation, and final product photography.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/Handout_5 2.jpg" alt="Puzzle handout 5">
-        <div class="caption">Additional presentation material documents the design logic and how each object belongs to the full puzzle system.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Puzzle test collage">
-        <div class="caption">Material tests compare surface, color, embossing, and cast quality across multiple prototypes.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/Wall_1 2.jpg" alt="Puzzle wall 1">
-        <div class="caption">Wall studies connect the object back to the MIT Chapel interior, translating spatial atmosphere into a hand-held artifact.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/Wall_2 2.jpg" alt="Puzzle wall 2">
-        <div class="caption">The wall imagery records how light, texture, and curved surfaces informed the souvenir's material and graphic language.</div>
-      </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Puzzle_Pics/Wall_3 1.jpg" alt="Puzzle wall 3">
-        <div class="caption">Final wall documentation situates the puzzle pieces within the chapel reference system and closes the project narrative.</div>
-      </div>
-      <div class="gallery-spacer"></div>
     </div>
   </section>
 
-  <!-- HERBINIZER -->
+  <!-- HERBINIZER (vertical scroll) -->
   <section id="herbinizer-section" class="detail-section" data-project-section="herbinizer">
-    <div class="floating-title">Herbinizer</div>
-    <div class="gallery">
-      <div class="gallery-info">
-        <div class="gallery-title">Herbinizer</div>
-        <div class="gallery-meta">
-          Individual Class Project<br>
-          December, 2025<br>
-          Paper, Cardboard,<br>
-          0.042&quot; Aluminum Sheet<br>
-          6&quot; × 6&quot; × 3&quot;
+    <div class="vstack-scroll">
+      <div class="vstack">
+        <div class="vstack-title" aria-label="Herbinizer"><span>H</span><span>e</span><span>r</span><span>b</span><span>i</span><span>n</span><span>i</span><span>z</span><span>e</span><span>r</span></div>
+        <div class="vstack-info">
+          <div class="gallery-meta">
+            Individual Class Project<br>
+            December, 2025<br>
+            Paper, Cardboard,<br>
+            0.042&quot; Aluminum Sheet<br>
+            6&quot; × 6&quot; × 3&quot;
+          </div>
+          <p class="vstack-intro">The Herbinizer is designed to make growing plants easier and available to anyone, bringing life everywhere, even spaces that cannot seem to fit.</p>
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Herbinizer_Pics/The Herbinizer.jpg" alt="Herbinizer 1">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Herbinizer_Pics/The Herbinizer-3.jpg" alt="Herbinizer 4">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Herbinizer_Pics/The Herbinizer-1.jpg" alt="Herbinizer 2">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Herbinizer_Pics/The Herbinizer-2.jpg" alt="Herbinizer 3">
         </div>
       </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
-        <div class="caption">The Herbinizer is designed to make growing plants easier and available to anyone, bringing life everywhere, even spaces that cannot seem to fit.</div>
-      </div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Herbinizer_Pics/The Herbinizer.jpg" alt="Herbinizer 1"></div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Herbinizer_Pics/The Herbinizer-3.jpg" alt="Herbinizer 4"></div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Herbinizer_Pics/The Herbinizer-1.jpg" alt="Herbinizer 2"></div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Herbinizer_Pics/The Herbinizer-2.jpg" alt="Herbinizer 3"></div>
-      <div class="gallery-spacer"></div>
     </div>
   </section>
 
-  <!-- GLOBE -->
+  <!-- GLOBE (vertical scroll) -->
   <section id="globe-section" class="detail-section" data-project-section="globe">
-    <div class="floating-title">Globe</div>
-    <div class="gallery">
-      <div class="gallery-info">
-        <div class="gallery-title">Globe</div>
-        <div class="gallery-meta">
-          Individual Work<br>
-          September – December, 2023<br>
-          PVC board, Paper, Pen<br>
-          Rhino, Grasshopper, Photoshop<br>
-          Vary in size
+    <div class="vstack-scroll">
+      <div class="vstack">
+        <div class="vstack-title" aria-label="Globe"><span>G</span><span>l</span><span>o</span><span>b</span><span>e</span></div>
+        <div class="vstack-info">
+          <div class="gallery-meta">
+            Individual Work<br>
+            September – December, 2023<br>
+            PVC board, Paper, Pen<br>
+            Rhino, Grasshopper, Photoshop<br>
+            Vary in size
+          </div>
+          <p class="vstack-intro">All activities at the Brooks School surround two roads: the main street and another street. Life as a student at Brooks starts at the crossing of two roads. Life around the main street can be inconvenient and time consuming. Hence, a retractable hemisphere tent is designed to be placed around campus.</p>
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Home Page/Globe.jpg" alt="Globe overview">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_Intro.jpg" alt="Globe intro">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_site.jpg" alt="Globe site">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_prototype.jpg" alt="Globe prototype">
+        </div>
+        <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_finalEffects_1.jpg" alt="Globe final effects 1">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_finalEffects_2.jpg" alt="Globe final effects 2">
         </div>
       </div>
-      <div class="slide">
-        <img loading="lazy" decoding="async" class="gallery-img" src="Home Page/Globe.jpg" alt="Globe overview">
-        <div class="caption">All activities at the Brooks School surround two roads: the main street and another street. Life as a student at Brooks starts at the crossing of two roads. Life around the main street can be inconvenient and time consuming. Hence, a retractable hemisphere tent is designed to be placed around campus.</div>
-      </div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Globe_Pics/Globe_Intro.jpg" alt="Globe intro"></div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Globe_Pics/Globe_site.jpg" alt="Globe site"></div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Globe_Pics/Globe_prototype.jpg" alt="Globe prototype"></div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Globe_Pics/Globe_finalEffects_1.jpg" alt="Globe final effects 1"></div>
-      <div class="slide"><img loading="lazy" decoding="async" class="gallery-img" src="Globe_Pics/Globe_finalEffects_2.jpg" alt="Globe final effects 2"></div>
-      <div class="gallery-spacer"></div>
     </div>
   </section>
 
@@ -1307,8 +1313,6 @@
     var railButtons = $$('#fixedProjectRail .rail-button[data-project]');
     var cvModal = $('cvModal');
     var imageModal = $('imageModal');
-    var stripPrev = $('stripPrev');
-    var stripNext = $('stripNext');
 
     var projectOrder = ['wall', 'puzzle', 'herbinizer', 'globe'];
     var currentProject = null;
@@ -1393,7 +1397,8 @@
     $('fixedRailCvButton').addEventListener('click', openCvModal);
 
     // ── Galleries (one controller for all four projects) ──
-    var galleries = $$('.detail-section').map(function (section) {
+    var sections = $$('.detail-section');
+    var galleries = sections.filter(function (sec) { return sec.querySelector('.gallery'); }).map(function (section) {
       var el = section.querySelector('.gallery');
       return {
         name: section.getAttribute('data-project-section'),
@@ -1465,9 +1470,38 @@
       galleries.forEach(function (g) { updateEndSpace(g); updateGallery(g); });
     });
 
+    // ── Vertical stacks (Wall) ──
+    var stacks = sections.filter(function (sec) { return sec.querySelector('.vstack-scroll'); }).map(function (section) {
+      var el = section.querySelector('.vstack-scroll');
+      return { name: section.getAttribute('data-project-section'), section: section, el: el, info: el.querySelector('.vstack-info') };
+    });
+    var stackByName = {};
+    stacks.forEach(function (st) { stackByName[st.name] = st; });
+
+    // Paired images share one height: each image's flex-grow = its aspect ratio
+    function sizeStackImg(img) {
+      if (img.naturalWidth && img.naturalHeight) img.style.flexGrow = img.naturalWidth / img.naturalHeight;
+    }
+    $$('.vstack-img').forEach(function (img) {
+      if (img.complete) sizeStackImg(img); else img.addEventListener('load', function () { sizeStackImg(img); }, { once: true });
+    });
+
+    function updateStack(st) {
+      var shouldShow = st.info.getBoundingClientRect().bottom <= st.el.querySelector('.vstack-title').getBoundingClientRect().bottom;
+      st.section.classList.toggle('show-title', shouldShow);
+    }
+    function resetStack(st) {
+      if (st.el.scrollTop === 0) return;
+      st.el.scrollTop = 0;
+      st.section.classList.remove('show-title');
+    }
+    stacks.forEach(function (st) {
+      st.el.addEventListener('scroll', rafThrottle(function () { updateStack(st); }), { passive: true });
+    });
+
     function visibleProjectSection() {
-      for (var i = 0; i < galleries.length; i++) {
-        if (isCurrentSection(galleries[i].section)) return galleries[i].name;
+      for (var i = 0; i < sections.length; i++) {
+        if (isCurrentSection(sections[i])) return sections[i].getAttribute('data-project-section');
       }
       return null;
     }
@@ -1485,15 +1519,16 @@
       rail.classList.toggle('visible', window.scrollY > innerHeight * 1.5);
       var vp = updateRail();
       galleries.forEach(function (g) { if (g.name !== vp) resetGallery(g); });
+      stacks.forEach(function (st) { if (st.name !== vp) resetStack(st); });
     });
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', function () { onScroll(); onResizeGalleries(); });
     onScroll();
 
     function scrollToProjectSection(name) {
-      var g = galleryByName[name];
+      var g = galleryByName[name] || stackByName[name];
       if (!g) return;
-      resetGallery(g);
+      if (galleryByName[name]) resetGallery(g); else resetStack(g);
       g.section.scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -1534,9 +1569,6 @@
 
     function refreshHomeUi() {
       updateRail();
-      var idx = projectOrder.indexOf(currentProject);
-      stripPrev.disabled = !currentProject || idx <= 0;
-      stripNext.disabled = !currentProject || idx >= projectOrder.length - 1;
     }
 
     function scrollCarouselTo(name, instant) {
@@ -1587,8 +1619,6 @@
     railButtons.forEach(function (b) {
       b.addEventListener('click', function () { scrollToProjectSection(b.getAttribute('data-project')); });
     });
-    stripPrev.addEventListener('click', function () { navigateProject(-1); });
-    stripNext.addEventListener('click', function () { navigateProject(1); });
 
     // Mobile carousel scroll → keep active card/icon in sync (debounced)
     var carouselTimer;
@@ -1692,13 +1722,14 @@
       modalIdx = idx;
       modalImg.src = modalList[idx].currentSrc || modalList[idx].src;
       modalImg.alt = modalList[idx].alt || '';
+      modalImg.classList.toggle('sketch-invert', modalList[idx].classList.contains('sketch-invert'));
       modalPrev.disabled = idx <= 0;
       modalNext.disabled = idx >= modalList.length - 1;
     }
 
     function openImageModal(img) {
       savedScrollY = window.scrollY;
-      modalList = $$('.gallery-img', img.closest('.gallery'));
+      modalList = $$('.gallery-img, .vstack-img', img.closest('.gallery, .vstack'));
       imageModal.classList.add('open');
       imageModal.setAttribute('aria-hidden', 'false');
       showModalImage(modalList.indexOf(img));
@@ -1713,7 +1744,7 @@
     }
 
     document.addEventListener('click', function (e) {
-      var img = e.target.closest && e.target.closest('.gallery-img');
+      var img = e.target.closest && e.target.closest('.gallery-img, .vstack-img');
       if (!img) return;
       e.stopPropagation();
       openImageModal(img);
