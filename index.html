@@ -593,7 +593,7 @@
     .vstack {
       width: 60%;               /* 20% side padding each way */
       margin: 0 auto;
-      padding: 0 0 clamp(48px, 8vh, 96px);
+      padding: clamp(52px, 7vh, 76px) 0 clamp(48px, 8vh, 96px);
     }
 
     .vstack-info { margin-bottom: clamp(28px, 4vh, 48px); }
@@ -607,7 +607,8 @@
       max-width: 720px;
     }
 
-    .vstack-row { display: flex; gap: 4px; margin-bottom: 4px; }
+    /* Same spacing between images side by side and between rows */
+    .vstack-row { display: flex; gap: clamp(12px, 1.2vw, 20px); margin-bottom: clamp(12px, 1.2vw, 20px); }
     .vstack-img {
       flex: 1 1 0;              /* JS sets flex-grow to each image's aspect ratio */
       min-width: 0;
@@ -619,24 +620,86 @@
     }
     .vstack-img:hover { opacity: 1; }
 
-    #wall-section .floating-title { display: none; }  /* the pinned title replaces it */
+    /* Puzzle layout (Figma "Frame 61"): full-width hero, row of 4 stencils,
+       3 material samples spaced out, 2x2 photo grid inset, full-width closer.
+       Spacing is in % so it scales with the column width. */
+    /* One gap between every row (6vw ≈ 10% of the 60vw column) */
+    .puzzle-layout { --puzzle-gap: 6vw; }
+    .puzzle-layout > .vstack-img { width: 100%; }
+    .puzzle-stencils {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.7vw;
+      margin: var(--puzzle-gap) 0;
+    }
+    .puzzle-materials {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: var(--puzzle-gap);
+    }
+    .puzzle-materials .vstack-img { flex: 0 0 24% !important; width: 24%; }
+    .puzzle-stencils .vstack-img,
+    .puzzle-materials .vstack-img { aspect-ratio: 1 / 1; height: auto; object-fit: cover; }
+    .puzzle-photos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--puzzle-gap) 2.1vw;
+      padding: 0 2.5%;
+      margin-bottom: var(--puzzle-gap);
+    }
+    .puzzle-photos .vstack-img { aspect-ratio: 3 / 2; height: auto; object-fit: cover; }
+    /* One picture per row, full column width, with space between rows */
+    .stack-single { display: flex; flex-direction: column; gap: clamp(24px, 3vw, 56px); }
+    .stack-single .vstack-img { flex: none !important; width: 100%; }
 
-    /* Title letters spread across the full column width, pinned to the top
-       while scrolling; its background hides content scrolling beneath it */
+    /* Opening title: letters spread across the full column width.
+       It scrolls away with the page. */
     .vstack-title {
-      position: sticky;
-      top: 0;
-      z-index: 5;
       display: flex;
       justify-content: space-between;
       width: 100%;
-      padding: clamp(68px, 9vh, 96px) 0 clamp(20px, 3vh, 36px);
-      background: var(--bg);
+      margin-bottom: clamp(20px, 3vh, 36px);
       font-size: var(--h-title);
       font-weight: 200;
       line-height: 1;
       text-transform: uppercase;
       user-select: none;
+    }
+
+    /* Reminder bar: once the opening title scrolls off, a small header with
+       the letters spread across the column fades in, 3vh from the top.
+       Built in JS from the title; sits over the scrolling content. */
+    .vstack-bar {
+      position: absolute;
+      top: 0;
+      left: 20%;
+      width: 60%;
+      z-index: 6;
+      display: flex;
+      justify-content: space-between;
+      padding: 3vh 0 clamp(6px, 0.8vh, 10px);
+      background: var(--bg);
+      font-size: clamp(13px, 1.1vw, 18px);
+      font-weight: 200;
+      line-height: 1;
+      text-transform: uppercase;
+      color: var(--dim);
+      user-select: none;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .detail-section.show-title .vstack-bar { opacity: 1; transform: translateY(0); }
+    /* Soft fade under the bar instead of a hard edge */
+    .vstack-bar::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      height: clamp(16px, 2.5vh, 28px);
+      background: linear-gradient(to bottom, var(--bg), rgba(31, 31, 31, 0));
     }
 
     /* Sketch shown as white lines with no background */
@@ -921,10 +984,14 @@
 
       .floating-title { left: 20px; top: 16px; font-size: clamp(18px, 5vw, 26px); }
 
-      .vstack { width: auto; margin: 0 16px; padding: 0 0 32px; }
-      .vstack-title { padding: 56px 0 16px; font-size: clamp(20px, 6vw, 32px); }
-      #wall-section .floating-title { left: 16px; }
+      .vstack { width: auto; margin: 0 16px; padding: 44px 0 32px; }
+      .vstack-title { font-size: clamp(20px, 6vw, 32px); margin-bottom: 16px; }
+      .vstack-bar { left: 16px; width: calc(100% - 32px); padding: 3svh 0 6px; font-size: 12px; }
       .vstack-intro { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.45; }
+      .vstack-row { gap: 8px; margin-bottom: 8px; }
+      .puzzle-layout { --puzzle-gap: 10vw; }
+      .puzzle-photos { column-gap: 8px; padding: 0; }
+      .stack-single { gap: 16px; }
 
       .cv-modal-body { flex-direction: column; }
       .cv-modal-sidebar {
@@ -1008,7 +1075,7 @@
 
         <article class="project-card" data-card="puzzle">
           <div class="project-info">
-            <h2>Puzzle</h2>
+            <h2>The Puzzle</h2>
             <p>Souvenir Based on the MIT Chapel<br>Group Class Project<br>May, 2026<br>Spray Paint, Embossed Paper,<br>Laser Cutting, Cast concrete<br>Varied Size</p>
           </div>
           <div class="project-image"><img loading="lazy" decoding="async" src="Home Page/Puzzle.jpg" alt="Puzzle"></div>
@@ -1024,7 +1091,7 @@
 
         <article class="project-card" data-card="globe">
           <div class="project-info">
-            <h2>Globe</h2>
+            <h2>The Globe</h2>
             <p>Individual Work<br>September - December, 2023<br>PVC board, Paper, Pen<br>Rhino, Grasshopper, Photoshop<br>Vary in size</p>
           </div>
           <div class="project-image"><img loading="lazy" decoding="async" src="Home Page/Globe.jpg" alt="Globe"></div>
@@ -1094,6 +1161,9 @@
           <p class="vstack-intro">The development of technology encouraged more human communications without physical interactions, making face to face conversations harder and more precious. Inspired by the movement logic of plant stomata, the Wall is created to improve in person communications and social engagements. It opens and closes according to human emotions.</p>
         </div>
         <div class="vstack-row">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Wall_Pics/wall_final_look 1.jpg" alt="The Wall final look">
+        </div>
+        <div class="vstack-row">
           <img loading="lazy" decoding="async" class="vstack-img" src="Wall_Pics/HO2.jpg" alt="The Wall installed between two bedrooms">
         </div>
         <div class="vstack-row">
@@ -1119,7 +1189,7 @@
   <section id="puzzle-section" class="detail-section" data-project-section="puzzle">
     <div class="vstack-scroll">
       <div class="vstack">
-        <div class="vstack-title" aria-label="Puzzle"><span>P</span><span>u</span><span>z</span><span>z</span><span>l</span><span>e</span></div>
+        <div class="vstack-title" aria-label="The Puzzle"><span>T</span><span>h</span><span>e</span><span>&nbsp;</span><span>P</span><span>u</span><span>z</span><span>z</span><span>l</span><span>e</span></div>
         <div class="vstack-info">
           <div class="gallery-meta">
             Souvenir Based on the MIT Chapel<br>
@@ -1131,38 +1201,27 @@
           </div>
           <p class="vstack-intro">A souvenir for the MIT Chapel that explores shape evolution from 2D to 2.5D to 3D, using puzzle-like pieces to build a tactile connection between people, memory, and place.</p>
         </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Home Page/Puzzle.jpg" alt="Puzzle overview">
-        </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.1 1.jpg" alt="Puzzle process 2.1.1">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.2 1.jpg" alt="Puzzle process 2.1.2">
-        </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.3 1.jpg" alt="Puzzle process 2.1.3">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.4 1.jpg" alt="Puzzle process 2.1.4">
-        </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.Stencil 1.jpg" alt="Puzzle stencil">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Bryan+Jacob formwork 1.jpg" alt="Puzzle formwork">
-        </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Bryan+Jacob-FINAL 2.jpg" alt="Puzzle final">
-        </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/HandOut_1 2.jpg" alt="Puzzle handout 1">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Handout_2 1.jpg" alt="Puzzle handout 2">
-        </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Handout_5 2.jpg" alt="Puzzle handout 5">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Puzzle test collage">
-        </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_1 2.jpg" alt="Puzzle wall 1">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_2 2.jpg" alt="Puzzle wall 2">
-        </div>
-        <div class="vstack-row">
-          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_3 1.jpg" alt="Puzzle wall 3">
+        <!-- Layout follows the Figma frame: hero, stencil grid, then photos -->
+        <div class="puzzle-layout">
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Handout_2 1.jpg" alt="The Puzzle">
+          <div class="puzzle-stencils">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.1 1.jpg" alt="Stencil study 1">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.2 1.jpg" alt="Stencil study 2">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.3 1.jpg" alt="Stencil study 3">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/2.1.4 1.jpg" alt="Stencil study 4">
+          </div>
+          <div class="puzzle-materials">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Bryan+Jacob formwork 1.jpg" alt="Formwork">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Bryan+Jacob-FINAL 2.jpg" alt="Embossed paper">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Tests_Collage 1.jpg" alt="Material tests collage">
+          </div>
+          <div class="puzzle-photos">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_2 2.jpg" alt="Assembling the puzzle on the lawn">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Handout_5 2.jpg" alt="Assembling the puzzle">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_1 2.jpg" alt="Close-up of the pieces">
+            <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/Wall_3 1.jpg" alt="Through the wall">
+          </div>
+          <img loading="lazy" decoding="async" class="vstack-img" src="Puzzle_Pics/HandOut_1 2.jpg" alt="Placing a piece">
         </div>
       </div>
     </div>
@@ -1183,14 +1242,10 @@
           </div>
           <p class="vstack-intro">The Herbinizer is designed to make growing plants easier and available to anyone, bringing life everywhere, even spaces that cannot seem to fit.</p>
         </div>
-        <div class="vstack-row">
+        <div class="stack-single">
           <img loading="lazy" decoding="async" class="vstack-img" src="Home Page/Herbinizer.jpg" alt="Herbinizer overview">
-        </div>
-        <div class="vstack-row">
           <img loading="lazy" decoding="async" class="vstack-img" src="Herbinizer_Pics/The Herbinizer.jpg" alt="Herbinizer 1">
           <img loading="lazy" decoding="async" class="vstack-img" src="Herbinizer_Pics/The Herbinizer-3.jpg" alt="Herbinizer 4">
-        </div>
-        <div class="vstack-row">
           <img loading="lazy" decoding="async" class="vstack-img" src="Herbinizer_Pics/The Herbinizer-1.jpg" alt="Herbinizer 2">
           <img loading="lazy" decoding="async" class="vstack-img" src="Herbinizer_Pics/The Herbinizer-2.jpg" alt="Herbinizer 3">
         </div>
@@ -1202,7 +1257,7 @@
   <section id="globe-section" class="detail-section" data-project-section="globe">
     <div class="vstack-scroll">
       <div class="vstack">
-        <div class="vstack-title" aria-label="Globe"><span>G</span><span>l</span><span>o</span><span>b</span><span>e</span></div>
+        <div class="vstack-title" aria-label="The Globe"><span>T</span><span>h</span><span>e</span><span>&nbsp;</span><span>G</span><span>l</span><span>o</span><span>b</span><span>e</span></div>
         <div class="vstack-info">
           <div class="gallery-meta">
             Individual Work<br>
@@ -1213,17 +1268,11 @@
           </div>
           <p class="vstack-intro">All activities at the Brooks School surround two roads: the main street and another street. Life as a student at Brooks starts at the crossing of two roads. Life around the main street can be inconvenient and time consuming. Hence, a retractable hemisphere tent is designed to be placed around campus.</p>
         </div>
-        <div class="vstack-row">
+        <div class="stack-single">
           <img loading="lazy" decoding="async" class="vstack-img" src="Home Page/Globe.jpg" alt="Globe overview">
-        </div>
-        <div class="vstack-row">
           <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_Intro.jpg" alt="Globe intro">
           <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_site.jpg" alt="Globe site">
-        </div>
-        <div class="vstack-row">
           <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_prototype.jpg" alt="Globe prototype">
-        </div>
-        <div class="vstack-row">
           <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_finalEffects_1.jpg" alt="Globe final effects 1">
           <img loading="lazy" decoding="async" class="vstack-img" src="Globe_Pics/Globe_finalEffects_2.jpg" alt="Globe final effects 2">
         </div>
@@ -1486,8 +1535,20 @@
       if (img.complete) sizeStackImg(img); else img.addEventListener('load', function () { sizeStackImg(img); }, { once: true });
     });
 
+    // Build each section's reminder bar from its title letters
+    stacks.forEach(function (st) {
+      st.title = st.el.querySelector('.vstack-title');
+      var bar = document.createElement('div');
+      bar.className = 'vstack-bar';
+      bar.setAttribute('aria-hidden', 'true');
+      bar.innerHTML = st.title.innerHTML;
+      st.section.appendChild(bar);
+      st.bar = bar;
+    });
+
+    // Show the bar once the opening title has scrolled up behind it
     function updateStack(st) {
-      var shouldShow = st.info.getBoundingClientRect().bottom <= st.el.querySelector('.vstack-title').getBoundingClientRect().bottom;
+      var shouldShow = st.title.getBoundingClientRect().bottom <= st.bar.getBoundingClientRect().bottom;
       st.section.classList.toggle('show-title', shouldShow);
     }
     function resetStack(st) {
