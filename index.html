@@ -805,6 +805,27 @@
     .detail-section.theme-light .stack-video,
     .detail-section.theme-light .vstack-img { filter: brightness(1.03) contrast(1.04); }
 
+    /* ── THEME WARNING (between dark and light project pages) ── */
+    .theme-warning {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 0 8vh;                   /* text sits just above centre, as in the design */
+      /* Solid dark down to 75%, then a short fade to white at the bottom */
+      background: linear-gradient(180deg, #1f1f1f 75%, #fff 100%);
+    }
+    /* Same type as the project titles (.vstack-title): thin uppercase letters
+       spread across the 60% content column */
+    .theme-warning-text {
+      width: 60%;
+      margin: 0;
+      color: #fff;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.9s ease, transform 0.9s var(--ease);
+    }
+    .theme-warning.in-view .theme-warning-text { opacity: 1; transform: none; }
+
     /* ── BIG NET PAGE: smaller, centred animation ── */
     #bignet-section .stack-video { width: 62%; margin: 0 auto; }
 
@@ -1199,6 +1220,7 @@
 
       .vstack { width: auto; margin: 0 16px; padding: 44px 0 32px; }
       .vstack-title { font-size: clamp(20px, 6vw, 32px); margin-bottom: 16px; }
+      .theme-warning-text { width: calc(100% - 32px); font-size: 4.2vw; }
       .vstack-bar { left: 16px; width: calc(100% - 32px); padding: 3svh 0 6px; font-size: 12px; }
       .vstack-intro { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.45; }
       .vstack-row { gap: 8px; margin-bottom: 8px; }
@@ -1525,6 +1547,11 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- THEME WARNING: sits between the dark (Globe) and light (Big Net) pages -->
+  <section class="snap-section theme-warning" aria-label="Change of color theme">
+    <div class="vstack-title theme-warning-text" aria-label="Beware. Change of Color Theme."><span>B</span><span>e</span><span>w</span><span>a</span><span>r</span><span>e</span><span>.</span><span>&nbsp;</span><span>C</span><span>h</span><span>a</span><span>n</span><span>g</span><span>e</span><span>&nbsp;</span><span>o</span><span>f</span><span>&nbsp;</span><span>C</span><span>o</span><span>l</span><span>o</span><span>r</span><span>&nbsp;</span><span>T</span><span>h</span><span>e</span><span>m</span><span>e</span><span>.</span></div>
   </section>
 
   <!-- BIG NET (vertical scroll) -->
@@ -1883,7 +1910,9 @@
     }
 
     var onScroll = rafThrottle(function () {
-      rail.classList.toggle('visible', window.scrollY > innerHeight * 1.5);
+      // Side menu: shown past the home screen, hidden on the theme-warning screen
+      var onWarning = $$('.theme-warning').some(isCurrentSection);
+      rail.classList.toggle('visible', window.scrollY > innerHeight * 1.5 && !onWarning);
       var vp = updateRail();
       galleries.forEach(function (g) { if (g.name !== vp) resetGallery(g); });
       stacks.forEach(function (st) { if (st.name !== vp) resetStack(st); });
@@ -1998,6 +2027,14 @@
       $$('video[data-play-visible]').forEach(function (v) { v.autoplay = true; playVideo(v); });
     }
 
+    // ── Theme warning: text fades in each time the screen comes into view ──
+    $$('.theme-warning').forEach(function (el) {
+      if (!('IntersectionObserver' in window)) { el.classList.add('in-view'); return; }
+      new IntersectionObserver(function (entries) {
+        el.classList.toggle('in-view', entries[0].intersectionRatio >= 0.5);
+      }, { threshold: [0, 0.5] }).observe(el);
+    });
+
     // ── Iteration slider (Big Net): one at a time ──
     var iterSliders = $$('.iter-slider').map(function (el) {
       return {
@@ -2055,19 +2092,23 @@
             if (d[i] < 246 || d[i + 1] < 246 || d[i + 2] < 246) { rows[y]++; cols[x]++; }
           }
         }
-        // Trim the outermost 0.5% of drawn pixels on each side, so stray specks
-        // (e.g. lone anchor-point dots far from the net) don't stretch the frame
+        // Keep only the main drawing: split the drawn columns (and rows) into blocks
+        // separated by empty gaps, and keep the block with the most ink. Lone specks
+        // such as anchor-point dots away from the net form their own small blocks
+        // and are dropped. Small gaps (thin tips, faint lines) are bridged.
         function span(counts, n) {
-          var total = 0, i;
-          for (i = 0; i < n; i++) total += counts[i];
-          if (!total) return null;
-          var lo = total * 0.005, hi = total * 0.995, acc = 0, a = -1, b = n - 1;
-          for (i = 0; i < n; i++) {
-            acc += counts[i];
-            if (a < 0 && acc >= lo) a = i;
-            if (acc >= hi) { b = i; break; }
+          var gap = Math.max(3, Math.round(n * 0.025));
+          var best = null, bestMass = 0, a = -1, last = -1, mass = 0;
+          for (var i = 0; i <= n; i++) {
+            var on = i < n && counts[i] > 0;
+            if (on && a >= 0 && i - last > gap) {          // gap too wide: close the block
+              if (mass > bestMass) { bestMass = mass; best = [a, last]; }
+              a = -1; mass = 0;
+            }
+            if (on) { if (a < 0) a = i; last = i; mass += counts[i]; }
+            if (i === n && a >= 0 && mass > bestMass) { bestMass = mass; best = [a, last]; }
           }
-          return [a, b];
+          return best;
         }
         var sx = span(cols, w), sy = span(rows, h);
         if (!sx || !sy) return null;
