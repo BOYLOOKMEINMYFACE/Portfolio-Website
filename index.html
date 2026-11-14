@@ -154,7 +154,48 @@
       display: flex;
       flex-direction: column;
       padding: var(--pad);
+      background: var(--bg);
+      color: var(--text);
+      transition: background-color 0.7s ease, color 0.7s ease;
     }
+
+    /* ── LIGHT THEME (Big Net selected) ──
+       Page fades to white; nav icons are inverted so their dark
+       background turns white and the white linework turns black. */
+    .home.theme-light {
+      --text: rgba(0, 0, 0, 0.9);
+      --dim: rgba(0, 0, 0, 0.7);
+      background: #fff;
+    }
+    .home .square img { transition: filter 0.7s ease; }
+    .home.theme-light .square img { filter: invert(1) brightness(1.15); }
+    .home.theme-light .project-name { color: rgba(0, 0, 0, 0.6); }
+    .home.theme-light .project-icon::before { background: rgba(0, 0, 0, 0.65); }
+    .home.theme-light .scroller-arrow { color: rgba(0, 0, 0, 0.45); }
+    .home.theme-light .scroller-arrow:hover { color: rgba(0, 0, 0, 0.95); }
+    .home.theme-light .contact-flyout a:hover,
+    .home.theme-light .contact-flyout-btn:hover,
+    .home.theme-light .email-addr:hover { color: rgba(0, 0, 0, 0.95); }
+    .home.theme-light .email-addr { color: rgba(0, 0, 0, 0.5); }
+    .home .project-name,
+    .home .scroller-arrow,
+    .home .contact-toggle,
+    .home .contact-flyout a,
+    .home .contact-flyout-btn,
+    .home .project-info p { transition-property: color, opacity, font-size; transition-duration: 0.7s, 0.45s, 0.65s; }
+
+    /* Project preview video behaves like the preview images */
+    .project-image video {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    /* Lift the video's near-white background to pure white so no box edge shows */
+    .home.theme-light .project-image video { filter: brightness(1.03) contrast(1.04); }
+    .stack-video { display: block; width: 100%; height: auto; margin-bottom: clamp(12px, 1.2vw, 20px); }
 
     /* Strip: centred at rest, slides to top when pinned */
     .home-strip {
@@ -341,12 +382,54 @@
       transition: font-size 0.65s var(--ease), opacity 0.45s ease;
     }
 
+    /* ── PROJECT SCROLLER: CV + projects scroll together, 4 at a time ── */
+    .project-scroller {
+      flex: 1 1 0;
+      min-width: 0;
+      position: relative;
+    }
+    .scroller-viewport {
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+    .scroller-viewport::-webkit-scrollbar { display: none; }
+    .scroller-viewport .project-icon {
+      flex: 0 0 25%;            /* exactly 4 visible */
+      scroll-snap-align: start;
+    }
+
+    .scroller-arrow {
+      position: absolute;
+      top: 50%;
+      z-index: 3;
+      background: none;
+      border: 0;
+      color: rgba(255, 255, 255, 0.45);
+      cursor: pointer;
+      padding: clamp(8px, 1vw, 14px);
+      line-height: 0;
+      transition: color 0.2s ease, opacity 0.3s ease;
+    }
+    .scroller-arrow svg { width: clamp(9px, 0.8vw, 13px); height: auto; display: block; }
+    .scroller-arrow:hover { color: rgba(255, 255, 255, 0.95); }
+    .scroller-arrow.prev { left: 0; transform: translate(-50%, -50%); }
+    .scroller-arrow.next { right: 0; transform: translate(50%, -50%); }
+    .scroller-arrow:disabled { opacity: 0; pointer-events: none; }
+
     .home.icons-animate .project-icon { animation: iconSlideIn 0.9s var(--ease) backwards; }
-    .home.icons-animate .project-icon:nth-child(1) { animation-delay: 0.1s; }
-    .home.icons-animate .project-icon:nth-child(2) { animation-delay: 0.22s; }
-    .home.icons-animate .project-icon:nth-child(3) { animation-delay: 0.34s; }
-    .home.icons-animate .project-icon:nth-child(4) { animation-delay: 0.46s; }
-    .home.icons-animate .project-icon:nth-child(5) { animation-delay: 0.58s; }
+    .home.icons-animate .scroller-viewport .project-icon:nth-child(1) { animation-delay: 0.1s; }
+    .home.icons-animate .scroller-viewport .project-icon:nth-child(2) { animation-delay: 0.22s; }
+    .home.icons-animate .scroller-viewport .project-icon:nth-child(3) { animation-delay: 0.34s; }
+    .home.icons-animate .scroller-viewport .project-icon:nth-child(4) { animation-delay: 0.46s; }
+    .home.icons-animate .scroller-viewport .project-icon:nth-child(5) { animation-delay: 0.58s; }
+    .home.icons-animate .scroller-viewport .project-icon:nth-child(n+6) { animation-delay: 0.7s; }
 
     /* ── PINNED STATE ── */
     .home.project-pinned .contents-row { width: 100%; }
@@ -702,6 +785,121 @@
       background: linear-gradient(to bottom, var(--bg), rgba(31, 31, 31, 0));
     }
 
+    /* ── LIGHT PROJECT PAGE (Big Net) ── */
+    .detail-section.theme-light {
+      --bg: #fff;
+      --text: rgba(0, 0, 0, 0.9);
+      --dim: rgba(0, 0, 0, 0.7);
+      color: var(--text);
+    }
+    /* The iteration grid is wider than the column, so the bar's background
+       (and its fade) stretch to the full page width */
+    .vstack-bar {
+      box-shadow: 0 0 0 100vmax var(--bg);
+      clip-path: inset(0 -100vmax calc(-1 * clamp(16px, 2.5vh, 28px)));
+    }
+    .vstack-bar::after { left: -100vmax; right: -100vmax; }
+    .detail-section.theme-light .vstack-bar::after {
+      background: linear-gradient(to bottom, #fff, rgba(255, 255, 255, 0));
+    }
+    .detail-section.theme-light .stack-video,
+    .detail-section.theme-light .vstack-img { filter: brightness(1.03) contrast(1.04); }
+
+    /* ── BIG NET PAGE: smaller, centred animation ── */
+    #bignet-section .stack-video { width: 62%; margin: 0 auto; }
+
+    /* ── ITERATION SLIDER (Big Net): one iteration at a time ──
+       Centred on the page, clear of the side menu on both sides.
+       (.vstack is 60% wide and centred, so a 100vw element starts 20vw left of it.) */
+    .iter-slider {
+      --sw: calc(100vw - 2 * (var(--safe-left) + 2vw));   /* slider width */
+      --arrow: clamp(40px, 4vw, 64px);                     /* room for each arrow */
+      --fh: min(66vh, calc((var(--sw) - 2 * var(--arrow)) * 9 / 16));  /* image frame height */
+      position: relative;
+      width: var(--sw);
+      margin: clamp(72px, 12vh, 160px) 0 0 calc((100% - var(--sw)) / 2);
+      scroll-snap-align: center;
+    }
+    .iter-track {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+    .iter-track::-webkit-scrollbar { display: none; }
+    .iter-slide {
+      flex: 0 0 100%;
+      margin: 0;
+      padding: 0 var(--arrow);
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+    }
+    .iter-frame { position: relative; height: var(--fh); overflow: hidden; }
+    /* Before the auto-crop runs (or if it can't): plain zoom on the centre */
+    .iter-frame .vstack-img {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: scale(1.6);
+      opacity: 1;
+    }
+    /* After the auto-crop: JS sizes and places the image so the net fills the frame */
+    .iter-frame.is-cropped .vstack-img { transform: none; object-fit: fill; }
+    /* Thin linework reads darker */
+    .detail-section.theme-light .iter-frame .vstack-img { filter: contrast(1.45) brightness(1.03); }
+    .iter-slide figcaption {
+      margin-top: clamp(14px, 2.5vh, 28px);
+      text-align: center;
+      font-size: clamp(13px, 1.1vw, 18px);
+      font-weight: 200;
+      letter-spacing: 0.02em;
+      color: var(--dim);
+    }
+    .iter-num { margin-right: 0.8em; opacity: 0.5; }
+    .iter-count {
+      margin-top: 8px;
+      text-align: center;
+      font-size: clamp(11px, 0.85vw, 13px);
+      font-weight: 200;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      opacity: 0.6;
+    }
+    .iter-arrow {
+      position: absolute;
+      top: calc(var(--fh) / 2);
+      transform: translateY(-50%);
+      width: var(--arrow);
+      display: flex;
+      justify-content: center;
+      background: none;
+      border: 0;
+      padding: 16px 0;
+      color: var(--dim);
+      cursor: pointer;
+      z-index: 2;
+      transition: color 0.2s ease, opacity 0.3s ease;
+    }
+    .iter-arrow svg { width: clamp(11px, 0.9vw, 15px); height: auto; display: block; }
+    .iter-arrow:hover { color: var(--text); }
+    .iter-arrow.prev { left: 0; }
+    .iter-arrow.next { right: 0; }
+    .iter-arrow:disabled { opacity: 0; pointer-events: none; }
+
+    #bignet-section .vstack-scroll { scroll-snap-type: y proximity; }
+
+    /* Side menu turns dark-on-white while over a light project page */
+    .rail-square img { transition: filter 0.45s ease; }
+    .fixed-project-rail.rail-light .rail-button { color: rgba(0, 0, 0, 0.5); }
+    .fixed-project-rail.rail-light .rail-button:hover,
+    .fixed-project-rail.rail-light .rail-button.active { color: rgba(0, 0, 0, 0.95); }
+    .fixed-project-rail.rail-light .rail-square img { filter: invert(1) brightness(1.15); }
+
     /* Sketch shown as white lines with no background */
     .vstack-img.sketch-invert { filter: invert(1); mix-blend-mode: screen; }
 
@@ -883,12 +1081,26 @@
       .home-strip { min-height: 0; padding: 8px 0; }
       .home.project-pinned .home-strip { padding: 12px 0; }
 
-      .contents-row { width: 100%; height: 100%; flex-direction: column; gap: 0; }
-      .home.project-pinned .contents-row { flex-direction: row; height: auto; }
+      .contents-row { width: 100%; height: 100%; flex-direction: column; gap: 0; position: relative; }
+      .home.project-pinned .contents-row {
+        flex-direction: row;
+        height: auto;
+        justify-content: safe center;   /* centred, but scrollable from the first icon if it overflows */
+        overflow-x: auto;
+        scrollbar-width: none;
+        scroll-behavior: smooth;
+      }
+      .home.project-pinned .contents-row::-webkit-scrollbar { display: none; }
+
+      /* Phones keep the original stacked list: the scroller wrappers step aside */
+      .project-scroller, .scroller-viewport { display: contents; }
+      .scroller-arrow { display: none; }
+      .scroller-viewport .project-icon { flex: 1; }
 
       .project-icon { width: 100%; min-height: 0; justify-content: center; padding: 6px 0; gap: 10px; }
 
-      .square { width: clamp(48px, min(15vw, 11svh), 80px); min-height: 0; }
+      /* Slightly smaller so six icons still fit the stacked list */
+      .square { width: clamp(40px, min(15vw, 8svh), 72px); min-height: 0; }
       .project-name { font-size: clamp(11px, 3vw, 14px); letter-spacing: 0.04em; }
 
       .home.project-pinned .project-icon { width: auto; padding: 8px clamp(2px, 0.8vw, 8px); }
@@ -933,7 +1145,8 @@
 
       .project-info, .project-image { grid-column: auto; grid-row: auto; }
       .project-image { order: 1; height: auto; justify-content: center; flex: 0 1 auto; min-height: 0; }
-      .project-image img { height: auto; max-height: 42svh; object-fit: contain; }
+      .project-image img,
+      .project-image video { height: auto; max-height: 42svh; object-fit: contain; }
       .project-info { order: 2; flex: 0 0 auto; text-align: left; align-items: flex-start; }
       .project-info h2 { font-size: clamp(20px, 6vw, 32px); margin-bottom: 8px; }
       .project-info p { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.45; }
@@ -992,6 +1205,9 @@
       .puzzle-layout { --puzzle-gap: 10vw; }
       .puzzle-photos { column-gap: 8px; padding: 0; }
       .stack-single { gap: 16px; }
+      #bignet-section .stack-video { width: 100%; }
+      .iter-slider { --sw: 100%; --arrow: 0px; --fh: 46svh; width: 100%; margin: 48px 0 0; }
+      .iter-arrow { display: none; }   /* swipe on phones */
 
       .cv-modal-body { flex-direction: column; }
       .cv-modal-sidebar {
@@ -1040,26 +1256,41 @@
   <section class="snap-section home">
     <div class="home-strip">
       <div class="contents-row" id="contentsRow" aria-label="Project contents">
-        <button class="project-icon" id="cvButton" type="button" aria-label="Open CV">
-          <div class="square"><img src="NavBar_Pics/CV_nav.jpg" alt="CV"></div>
-          <div class="project-name">CV</div>
-        </button>
-        <button class="project-icon project-open-button" type="button" data-project="wall">
-          <div class="square"><img src="NavBar_Pics/Wall_nav.jpg" alt="Wall"></div>
-          <div class="project-name">Wall</div>
-        </button>
-        <button class="project-icon project-open-button" type="button" data-project="puzzle">
-          <div class="square"><img src="NavBar_Pics/Puzzle_nav.jpg" alt="Puzzle"></div>
-          <div class="project-name">Puzzle</div>
-        </button>
-        <button class="project-icon project-open-button" type="button" data-project="herbinizer">
-          <div class="square"><img src="NavBar_Pics/Herbinizer_nav.jpg" alt="Herbinizer"></div>
-          <div class="project-name">Herbinizer</div>
-        </button>
-        <button class="project-icon project-open-button" type="button" data-project="globe">
-          <div class="square"><img src="NavBar_Pics/Globe_nav.jpg" alt="Globe"></div>
-          <div class="project-name">Globe</div>
-        </button>
+        <!-- Horizontal scroller: shows 4 items at a time -->
+        <div class="project-scroller">
+          <button class="scroller-arrow prev" type="button" id="scrollerPrev" aria-label="Previous projects">
+            <svg viewBox="0 0 10 20" fill="none"><polyline points="9,1 1,10 9,19" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="scroller-viewport" id="projectScroller">
+            <button class="project-icon" id="cvButton" type="button" aria-label="Open CV">
+              <div class="square"><img src="NavBar_Pics/CV_nav.jpg" alt="CV"></div>
+              <div class="project-name">CV</div>
+            </button>
+            <button class="project-icon project-open-button" type="button" data-project="wall">
+              <div class="square"><img src="NavBar_Pics/Wall_nav.jpg" alt="Wall"></div>
+              <div class="project-name">Wall</div>
+            </button>
+            <button class="project-icon project-open-button" type="button" data-project="puzzle">
+              <div class="square"><img src="NavBar_Pics/Puzzle_nav.jpg" alt="Puzzle"></div>
+              <div class="project-name">Puzzle</div>
+            </button>
+            <button class="project-icon project-open-button" type="button" data-project="herbinizer">
+              <div class="square"><img src="NavBar_Pics/Herbinizer_nav.jpg" alt="Herbinizer"></div>
+              <div class="project-name">Herbinizer</div>
+            </button>
+            <button class="project-icon project-open-button" type="button" data-project="globe">
+              <div class="square"><img src="NavBar_Pics/Globe_nav.jpg" alt="Globe"></div>
+              <div class="project-name">Globe</div>
+            </button>
+            <button class="project-icon project-open-button" type="button" data-project="bignet">
+              <div class="square"><img src="NavBar_Pics/BigNet_nav.jpg" alt="Big Net"></div>
+              <div class="project-name">Big Net</div>
+            </button>
+          </div>
+          <button class="scroller-arrow next" type="button" id="scrollerNext" aria-label="More projects">
+            <svg viewBox="0 0 10 20" fill="none"><polyline points="1,1 9,10 1,19" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1095,6 +1326,18 @@
             <p>Individual Work<br>September - December, 2023<br>PVC board, Paper, Pen<br>Rhino, Grasshopper, Photoshop<br>Vary in size</p>
           </div>
           <div class="project-image"><img loading="lazy" decoding="async" src="Home Page/Globe.jpg" alt="Globe"></div>
+        </article>
+
+        <article class="project-card" data-card="bignet">
+          <div class="project-info">
+            <h2>Big Net</h2>
+            <p>Class Project<br>November, 2026<br>Elastic mesh, Wooden sticks<br>Rhino, Grasshopper<br>12" x 12" x 8"</p>
+          </div>
+          <!-- Live animation: plays only while Big Net is selected and on screen (see JS) -->
+          <div class="project-image">
+            <video id="bignetPreview" class="project-video" src="Big net/BignetAnimation.mov"
+                   muted loop playsinline preload="metadata" aria-label="Big Net animation"></video>
+          </div>
         </article>
       </div>
     </div>
@@ -1141,6 +1384,10 @@
     <button class="rail-button" type="button" data-project="globe">
       <div class="rail-square"><img src="NavBar_Pics/Globe_nav.jpg" alt="Globe"></div>
       <span>Globe</span>
+    </button>
+    <button class="rail-button" type="button" data-project="bignet">
+      <div class="rail-square"><img src="NavBar_Pics/BigNet_nav.jpg" alt="Big Net"></div>
+      <span>Big Net</span>
     </button>
   </nav>
 
@@ -1280,6 +1527,58 @@
     </div>
   </section>
 
+  <!-- BIG NET (vertical scroll) -->
+  <section id="bignet-section" class="detail-section theme-light" data-project-section="bignet">
+    <div class="vstack-scroll">
+      <div class="vstack">
+        <div class="vstack-title" aria-label="Big Net"><span>B</span><span>i</span><span>g</span><span>&nbsp;</span><span>N</span><span>e</span><span>t</span></div>
+        <div class="vstack-info">
+          <div class="gallery-meta">
+            Class Project<br>
+            November, 2026<br>
+            Elastic mesh, Wooden sticks<br>
+            Rhino, Grasshopper<br>
+            12&quot; × 12&quot; × 8&quot;
+          </div>
+          <!-- TODO: replace with the real project description -->
+          <p class="vstack-intro">Project description goes here.</p>
+        </div>
+        <!-- Animation plays while this section is on screen -->
+        <video class="stack-video" data-play-visible src="Big net/BignetAnimation.mov"
+               muted loop playsinline preload="metadata" aria-label="Big Net animation"></video>
+        <!-- Iterations 0–20: horizontal slider, one at a time -->
+        <div class="iter-slider" id="iterSlider">
+          <button class="iter-arrow prev" type="button" aria-label="Previous iteration"><svg viewBox="0 0 10 20" fill="none"><polyline points="9,1 1,10 9,19" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg></button>
+          <div class="iter-track">
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/Physical.jpg" alt="0 – Physical Model"></div><figcaption><span class="iter-num">0</span>Physical Model</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V1_0.25Pi.jpg" alt="1 – 45° Rotation"></div><figcaption><span class="iter-num">1</span>45° Rotation</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V2_0.5Pi.jpg" alt="2 – 90° Rotation"></div><figcaption><span class="iter-num">2</span>90° Rotation</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V3_-.25Pi.jpg" alt="3 – −25° Rotation"></div><figcaption><span class="iter-num">3</span>−25° Rotation</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V4_1xMesh.jpg" alt="4 – 1× Grid Density"></div><figcaption><span class="iter-num">4</span>1× Grid Density</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V5_3xMesh.jpg" alt="5 – 3× Grid Density"></div><figcaption><span class="iter-num">5</span>3× Grid Density</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V6_5xMesh.jpg" alt="6 – 5× Grid Density"></div><figcaption><span class="iter-num">6</span>5× Grid Density</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V7_10xMesh.jpg" alt="7 – 10× Grid Density"></div><figcaption><span class="iter-num">7</span>10× Grid Density</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V8_Zoffset.jpg" alt="8 – Z Offset of Anchors (1)"></div><figcaption><span class="iter-num">8</span>Z Offset of Anchors (1)</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V9_Zoffset.jpg" alt="9 – Z Offset of Anchors (2)"></div><figcaption><span class="iter-num">9</span>Z Offset of Anchors (2)</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V10_Zoffset.jpg" alt="10 – Z Offset of Anchors (3)"></div><figcaption><span class="iter-num">10</span>Z Offset of Anchors (3)</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V11_Zoffset.jpg" alt="11 – Z Offset of Anchors (4)"></div><figcaption><span class="iter-num">11</span>Z Offset of Anchors (4)</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V12_VarStrength.jpg" alt="12 – Variable Strength #1"></div><figcaption><span class="iter-num">12</span>Variable Strength #1</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V13_VarStrength.jpg" alt="13 – Variable Strength #2"></div><figcaption><span class="iter-num">13</span>Variable Strength #2</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V14_VarStrength.jpg" alt="14 – Variable Strength #3"></div><figcaption><span class="iter-num">14</span>Variable Strength #3</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V15_Load1Corner.jpg" alt="15 – Load on 1 Corner of Each Mesh Surface"></div><figcaption><span class="iter-num">15</span>Load on 1 Corner of Each Mesh Surface</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V16_Z+Load.jpg" alt="16 – Z Offset + Loads"></div><figcaption><span class="iter-num">16</span>Z Offset + Loads</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V17_Z+VarLoad.jpg" alt="17 – Z Offset + Lighter Loads"></div><figcaption><span class="iter-num">17</span>Z Offset + Lighter Loads</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V18_Z+VarLoad+LessAnchor.jpg" alt="18 – Z Offset + Loads + Fewer Anchors"></div><figcaption><span class="iter-num">18</span>Z Offset + Loads + Fewer Anchors</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V19_Z+VarLoad+LessAnchor.jpg" alt="19 – Z Offset + Loads + Fewer Anchors (2)"></div><figcaption><span class="iter-num">19</span>Z Offset + Loads + Fewer Anchors (2)</figcaption></figure>
+            <figure class="iter-slide"><div class="iter-frame"><img decoding="async" class="vstack-img" src="Big net/V20_Everything.jpg" alt="20 – Everything Combined"></div><figcaption><span class="iter-num">20</span>Everything Combined</figcaption></figure>
+          </div>
+          <button class="iter-arrow next" type="button" aria-label="Next iteration"><svg viewBox="0 0 10 20" fill="none"><polyline points="1,1 9,10 1,19" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg></button>
+          <div class="iter-count"><span class="iter-idx">1</span> / 21</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CV PREVIEW MODAL -->
   <div class="cv-modal" id="cvModal" aria-hidden="true" role="dialog" aria-label="CV Preview">
     <div class="cv-modal-header">
@@ -1363,7 +1662,11 @@
     var cvModal = $('cvModal');
     var imageModal = $('imageModal');
 
-    var projectOrder = ['wall', 'puzzle', 'herbinizer', 'globe'];
+    var projectOrder = ['wall', 'puzzle', 'herbinizer', 'globe', 'bignet'];
+    var contentsRow = $('contentsRow');
+    var scroller = $('projectScroller');
+    var scrollerPrev = $('scrollerPrev');
+    var scrollerNext = $('scrollerNext');
     var currentProject = null;
 
     function isOpen(el) { return !!el && el.classList.contains('open'); }
@@ -1573,6 +1876,9 @@
       railButtons.forEach(function (b) {
         b.classList.toggle('active', vp === b.getAttribute('data-project'));
       });
+      // Dark-on-white menu over light project pages
+      var vpSection = vp && document.querySelector('[data-project-section="' + vp + '"]');
+      rail.classList.toggle('rail-light', !!vpSection && vpSection.classList.contains('theme-light'));
       return vp;
     }
 
@@ -1581,6 +1887,7 @@
       var vp = updateRail();
       galleries.forEach(function (g) { if (g.name !== vp) resetGallery(g); });
       stacks.forEach(function (st) { if (st.name !== vp) resetStack(st); });
+      if (typeof updatePreviewVideo === 'function') updatePreviewVideo();
     });
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', function () { onScroll(); onResizeGalleries(); });
@@ -1622,10 +1929,203 @@
       });
     }
 
+    // ── Project scroller (4 visible at a time) ──
+    // Desktop scrolls the scroller itself; phones scroll the pinned icon row.
+    function iconScrollBox() { return mobile.matches ? contentsRow : scroller; }
+
+    function slotWidth() {
+      var first = scroller.querySelector('.project-icon');
+      return first ? first.getBoundingClientRect().width : scroller.clientWidth / 4;
+    }
+
+    function updateScrollerArrows() {
+      var max = scroller.scrollWidth - scroller.clientWidth;
+      scrollerPrev.disabled = scroller.scrollLeft <= 1;
+      scrollerNext.disabled = scroller.scrollLeft >= max - 1;
+    }
+
+    // Scroll just enough to bring an icon fully into view
+    function revealIcon(btn, instant) {
+      var box = iconScrollBox();
+      if (!btn || box.scrollWidth <= box.clientWidth + 1) return;
+      var boxRect = box.getBoundingClientRect();
+      var r = btn.getBoundingClientRect();
+      var target = null;
+      if (r.left < boxRect.left - 1) target = box.scrollLeft + (r.left - boxRect.left);
+      else if (r.right > boxRect.right + 1) target = box.scrollLeft + (r.right - boxRect.right);
+      if (target !== null) box.scrollTo({ left: target, behavior: instant ? 'auto' : 'smooth' });
+    }
+
+    scrollerPrev.addEventListener('click', function () { scroller.scrollBy({ left: -slotWidth(), behavior: 'smooth' }); });
+    scrollerNext.addEventListener('click', function () { scroller.scrollBy({ left: slotWidth(), behavior: 'smooth' }); });
+    scroller.addEventListener('scroll', rafThrottle(updateScrollerArrows), { passive: true });
+    window.addEventListener('resize', rafThrottle(updateScrollerArrows));
+    updateScrollerArrows();
+
+    // ── Big Net: light theme + live preview ──
+    var LIGHT_PROJECTS = ['bignet'];
+    var previewVideo = $('bignetPreview');
+
+    function playVideo(v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+
+    // Play only while Big Net is selected, the home section is on screen and the tab is visible
+    function updatePreviewVideo() {
+      if (!previewVideo) return;
+      var shouldPlay = currentProject === 'bignet' && onHome() && !document.hidden;
+      if (shouldPlay && previewVideo.paused) playVideo(previewVideo);
+      else if (!shouldPlay && !previewVideo.paused) previewVideo.pause();
+    }
+
+    function syncTheme() {
+      home.classList.toggle('theme-light', LIGHT_PROJECTS.indexOf(currentProject) !== -1);
+      updatePreviewVideo();
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      updatePreviewVideo();
+      $$('video[data-play-visible]').forEach(function (v) { if (document.hidden) v.pause(); });
+    });
+
+    // Videos on project pages play while at least a quarter of them is on screen
+    if ('IntersectionObserver' in window) {
+      var videoObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting && !document.hidden) playVideo(en.target); else en.target.pause();
+        });
+      }, { threshold: 0.25 });
+      $$('video[data-play-visible]').forEach(function (v) { videoObserver.observe(v); });
+    } else {
+      $$('video[data-play-visible]').forEach(function (v) { v.autoplay = true; playVideo(v); });
+    }
+
+    // ── Iteration slider (Big Net): one at a time ──
+    var iterSliders = $$('.iter-slider').map(function (el) {
+      return {
+        el: el,
+        section: el.closest('.detail-section'),
+        track: el.querySelector('.iter-track'),
+        slides: $$('.iter-slide', el),
+        prev: el.querySelector('.iter-arrow.prev'),
+        next: el.querySelector('.iter-arrow.next'),
+        idx: el.querySelector('.iter-idx')
+      };
+    });
+
+    function iterIndex(sl) { return Math.round(sl.track.scrollLeft / Math.max(1, sl.track.clientWidth)); }
+    function iterGo(sl, i) {
+      i = Math.max(0, Math.min(sl.slides.length - 1, i));
+      sl.track.scrollTo({ left: i * sl.track.clientWidth, behavior: 'smooth' });
+    }
+    function updateIter(sl) {
+      var i = iterIndex(sl);
+      sl.idx.textContent = i + 1;
+      sl.prev.disabled = i <= 0;
+      sl.next.disabled = i >= sl.slides.length - 1;
+    }
+    // Used by the arrow keys; returns true if the visible section has a slider
+    function stepIter(sectionName, dir) {
+      for (var k = 0; k < iterSliders.length; k++) {
+        var sl = iterSliders[k];
+        if (sl.section && sl.section.getAttribute('data-project-section') === sectionName) {
+          iterGo(sl, iterIndex(sl) + dir);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Auto-crop: find the drawing inside each render's white margin, then size and
+    // place the image so that drawing fills the frame. Needs the page served over
+    // http (e.g. Live Server); opened as a file it falls back to the CSS zoom.
+    function findDrawing(img) {
+      try {
+        var nw = img.naturalWidth, nh = img.naturalHeight;
+        if (!nw || !nh) return null;
+        var k = Math.min(1, 1600 / Math.max(nw, nh));   // high enough that thin lines survive
+        var w = Math.max(1, Math.round(nw * k)), h = Math.max(1, Math.round(nh * k));
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        var ctx = c.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0, w, h);
+        var d = ctx.getImageData(0, 0, w, h).data;
+        var rows = new Uint16Array(h), cols = new Uint16Array(w);
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++) {
+            var i = (y * w + x) * 4;
+            if (d[i] < 246 || d[i + 1] < 246 || d[i + 2] < 246) { rows[y]++; cols[x]++; }
+          }
+        }
+        // Trim the outermost 0.5% of drawn pixels on each side, so stray specks
+        // (e.g. lone anchor-point dots far from the net) don't stretch the frame
+        function span(counts, n) {
+          var total = 0, i;
+          for (i = 0; i < n; i++) total += counts[i];
+          if (!total) return null;
+          var lo = total * 0.005, hi = total * 0.995, acc = 0, a = -1, b = n - 1;
+          for (i = 0; i < n; i++) {
+            acc += counts[i];
+            if (a < 0 && acc >= lo) a = i;
+            if (acc >= hi) { b = i; break; }
+          }
+          return [a, b];
+        }
+        var sx = span(cols, w), sy = span(rows, h);
+        if (!sx || !sy) return null;
+        var x0 = sx[0], x1 = sx[1], y0 = sy[0], y1 = sy[1];
+        var pad = 0.04;   // breathing room around the drawing, as a share of the image
+        return {
+          x0: Math.max(0, x0 / w - pad), x1: Math.min(1, (x1 + 1) / w + pad),
+          y0: Math.max(0, y0 / h - pad), y1: Math.min(1, (y1 + 1) / h + pad)
+        };
+      } catch (err) { return null; }   // e.g. canvas blocked when opened from disk
+    }
+
+    function placeCrop(frame, img, box) {
+      var W = frame.clientWidth, H = frame.clientHeight;
+      var nw = img.naturalWidth, nh = img.naturalHeight;
+      if (!W || !H || !nw) return;
+      var s = Math.min(W / ((box.x1 - box.x0) * nw), H / ((box.y1 - box.y0) * nh));
+      img.style.width = nw * s + 'px';
+      img.style.height = nh * s + 'px';
+      img.style.left = W / 2 - (box.x0 + box.x1) / 2 * nw * s + 'px';
+      img.style.top = H / 2 - (box.y0 + box.y1) / 2 * nh * s + 'px';
+    }
+
+    iterSliders.forEach(function (sl) {
+      sl.prev.addEventListener('click', function () { iterGo(sl, iterIndex(sl) - 1); });
+      sl.next.addEventListener('click', function () { iterGo(sl, iterIndex(sl) + 1); });
+      sl.track.addEventListener('scroll', rafThrottle(function () { updateIter(sl); }), { passive: true });
+      updateIter(sl);
+
+      var crops = [];
+      sl.slides.forEach(function (slide) {
+        var frame = slide.querySelector('.iter-frame');
+        var img = frame.querySelector('img');
+        var run = function () {
+          var box = findDrawing(img);
+          if (!box) return;
+          crops.push({ frame: frame, img: img, box: box });
+          placeCrop(frame, img, box);
+          frame.classList.add('is-cropped');
+        };
+        if (img.complete && img.naturalWidth) run(); else img.addEventListener('load', run, { once: true });
+      });
+      var relayout = rafThrottle(function () {
+        crops.forEach(function (c) { placeCrop(c.frame, c.img, c.box); });
+        updateIter(sl);
+      });
+      if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(sl.track);
+      else window.addEventListener('resize', relayout);
+    });
+
     function setActiveProject(name) {
       currentProject = name;
+      syncTheme();
       cards.forEach(function (c) { c.classList.toggle('active', c.getAttribute('data-card') === name); });
       icons.forEach(function (b) { b.classList.toggle('icon-active', b.getAttribute('data-project') === name); });
+      var activeIcon = icons.filter(function (b) { return b.getAttribute('data-project') === name; })[0];
+      // Wait a frame so pinned-state sizes have applied before measuring
+      requestAnimationFrame(function () { revealIcon(activeIcon); });
     }
 
     function refreshHomeUi() {
@@ -1652,8 +2152,10 @@
         home.classList.remove('project-pinned');
         currentProject = null;
         icons.forEach(function (b) { b.classList.remove('icon-active'); });
+        syncTheme();
       };
       if (wasPinned && mobile.matches) flipIcons(apply); else apply();
+      if (mobile.matches) contentsRow.scrollLeft = 0;
       refreshHomeUi();
     }
 
@@ -1722,19 +2224,21 @@
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         var dir = e.key === 'ArrowRight' ? 1 : -1;
         var vp = visibleProjectSection();
-        if (vp) { e.preventDefault(); stepGallery(vp, dir); }
+        if (vp) { e.preventDefault(); if (!stepIter(vp, dir)) stepGallery(vp, dir); }
         else navigateProject(dir);
       }
     });
 
     // ── Touch swipes (mobile) ──
-    var sx = 0, sy = 0, swipeSection = null, swipeOnHome = false;
+    var sx = 0, sy = 0, swipeSection = null, swipeOnHome = false, swipeOnRow = false;
 
     document.addEventListener('touchstart', function (e) {
       if (!mobile.matches || isOpen(imageModal) || isOpen(cvModal)) { swipeSection = null; swipeOnHome = false; return; }
       sx = e.touches[0].clientX;
       sy = e.touches[0].clientY;
       swipeOnHome = home.contains(e.target);
+      // If the pinned icon row overflows, a swipe on it just scrolls the row
+      swipeOnRow = contentsRow.contains(e.target) && contentsRow.scrollWidth > contentsRow.clientWidth + 1;
       swipeSection = swipeOnHome ? null : visibleProjectSection();
     }, { passive: true });
 
@@ -1747,7 +2251,7 @@
 
       if (swipeOnHome) {
         swipeOnHome = false;
-        if (horizontal) navigateProject(dx < 0 ? 1 : -1);
+        if (horizontal && !swipeOnRow) navigateProject(dx < 0 ? 1 : -1);
         else if (vertical && currentProject) {
           if (dy < 0) scrollToProjectSection(currentProject);
           else document.querySelector('.cover').scrollIntoView({ behavior: 'smooth' });
@@ -1763,6 +2267,8 @@
     home.addEventListener('wheel', function (e) {
       if (mobile.matches) return;
       if (Math.abs(e.deltaX) < 12 || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      // Over the project scroller (nothing pinned yet): let the trackpad scroll it natively
+      if (!currentProject && scroller.contains(e.target)) return;
       e.preventDefault(); // stop browser back/forward swipe
       if (wheelLock) return;
       wheelLock = true;
@@ -1824,6 +2330,7 @@
           home.classList.remove('project-pinned');
           currentProject = null;
           icons.forEach(function (b) { b.classList.remove('icon-active'); });
+          syncTheme();
           refreshHomeUi();
         }
         home.classList.toggle('icons-animate', ratio >= 0.35);
