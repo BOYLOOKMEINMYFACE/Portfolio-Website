@@ -171,14 +171,11 @@
     .home.theme-light .square img { filter: invert(1) brightness(1.15); }
     .home.theme-light .project-name { color: rgba(0, 0, 0, 0.6); }
     .home.theme-light .project-icon::before { background: rgba(0, 0, 0, 0.65); }
-    .home.theme-light .scroller-arrow { color: rgba(0, 0, 0, 0.45); }
-    .home.theme-light .scroller-arrow:hover { color: rgba(0, 0, 0, 0.95); }
     .home.theme-light .contact-flyout a:hover,
     .home.theme-light .contact-flyout-btn:hover,
     .home.theme-light .email-addr:hover { color: rgba(0, 0, 0, 0.95); }
     .home.theme-light .email-addr { color: rgba(0, 0, 0, 0.5); }
     .home .project-name,
-    .home .scroller-arrow,
     .home .contact-toggle,
     .home .contact-flyout a,
     .home .contact-flyout-btn,
@@ -324,7 +321,9 @@
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      width: min(90vw, 1200px);
+      /* 10% tighter gaps between icons: gap = slot - icon, so the row is
+         0.9 x the old width plus 0.4 x the icon size (4 slots x 0.1) */
+      width: calc(0.9 * min(90vw, 1200px) + 0.4 * clamp(80px, 9vw, 140px));
       transition: width 0.65s var(--ease), gap 0.65s var(--ease);
     }
 
@@ -405,23 +404,37 @@
       scroll-snap-align: start;
     }
 
-    .scroller-arrow {
+    /* Peek icons: a small, dimmed copy of the next hidden project's icon sits
+       at each side of the row to hint there is more to scroll. Click to scroll.
+       (JS fills in the image and hides the button when nothing is hidden.) */
+    .scroller-peek {
       position: absolute;
-      top: 50%;
+      top: calc(50% - clamp(10px, 1.2vh, 14px));   /* level with the icons, not the labels */
       z-index: 3;
+      width: clamp(26.4px, 2.64vw, 41.8px);
+      aspect-ratio: 1/1;
       background: none;
       border: 0;
-      color: rgba(255, 255, 255, 0.45);
+      padding: 0;
       cursor: pointer;
-      padding: clamp(8px, 1vw, 14px);
-      line-height: 0;
-      transition: color 0.2s ease, opacity 0.3s ease;
+      opacity: 1;                                   /* same weight as the big icons */
+      transition: opacity 0.3s ease, width 0.65s var(--ease);
     }
-    .scroller-arrow svg { width: clamp(9px, 0.8vw, 13px); height: auto; display: block; }
-    .scroller-arrow:hover { color: rgba(255, 255, 255, 0.95); }
-    .scroller-arrow.prev { left: 0; transform: translate(-50%, -50%); }
-    .scroller-arrow.next { right: 0; transform: translate(50%, -50%); }
-    .scroller-arrow:disabled { opacity: 0; pointer-events: none; }
+    .scroller-peek img { width: 100%; height: 100%; object-fit: contain; transition: filter 0.7s ease; }
+    .scroller-peek:hover { opacity: 0.45; }             /* same hover as the big icons */
+    .scroller-peek.prev { left: 0; transform: translate(-50%, -50%); }
+    .scroller-peek.next { right: 0; transform: translate(50%, -50%); }
+    .scroller-peek:disabled { opacity: 0; pointer-events: none; }
+    .home.project-pinned .scroller-peek { width: clamp(19.8px, 1.98vw, 30.8px); opacity: 0.38; }
+    .home.project-pinned .scroller-peek:hover { opacity: 0.72; }
+    .home.theme-light .scroller-peek img { filter: invert(1) brightness(1.15); }
+
+    /* True vertical centring on desktop: the Contact line is taken out of the
+       flow so it no longer pushes the icon row above the middle of the screen. */
+    @media (min-width: 761px) {
+      .home-bottom-wrap { position: absolute; left: var(--pad); right: var(--pad); bottom: var(--pad); }
+      .home.project-pinned .home-work { margin-bottom: clamp(20px, 1.8vw, 28px); }
+    }
 
     .home.icons-animate .project-icon { animation: iconSlideIn 0.9s var(--ease) backwards; }
     .home.icons-animate .scroller-viewport .project-icon:nth-child(1) { animation-delay: 0.1s; }
@@ -819,6 +832,7 @@
     .theme-warning-text {
       width: 60%;
       margin: 0;
+      font-size: clamp(12px, 1.3vw, 22px);   /* half the project-title size */
       color: #fff;
       opacity: 0;
       transform: translateY(14px);
@@ -1115,7 +1129,7 @@
 
       /* Phones keep the original stacked list: the scroller wrappers step aside */
       .project-scroller, .scroller-viewport { display: contents; }
-      .scroller-arrow { display: none; }
+      .scroller-peek { display: none; }
       .scroller-viewport .project-icon { flex: 1; }
 
       .project-icon { width: 100%; min-height: 0; justify-content: center; padding: 6px 0; gap: 10px; }
@@ -1280,9 +1294,7 @@
       <div class="contents-row" id="contentsRow" aria-label="Project contents">
         <!-- Horizontal scroller: shows 4 items at a time -->
         <div class="project-scroller">
-          <button class="scroller-arrow prev" type="button" id="scrollerPrev" aria-label="Previous projects">
-            <svg viewBox="0 0 10 20" fill="none"><polyline points="9,1 1,10 9,19" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>
-          </button>
+          <button class="scroller-peek prev" type="button" id="scrollerPrev" aria-label="Previous projects" disabled><img alt=""></button>
           <div class="scroller-viewport" id="projectScroller">
             <button class="project-icon" id="cvButton" type="button" aria-label="Open CV">
               <div class="square"><img src="NavBar_Pics/CV_nav.jpg" alt="CV"></div>
@@ -1309,9 +1321,7 @@
               <div class="project-name">Big Net</div>
             </button>
           </div>
-          <button class="scroller-arrow next" type="button" id="scrollerNext" aria-label="More projects">
-            <svg viewBox="0 0 10 20" fill="none"><polyline points="1,1 9,10 1,19" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/></svg>
-          </button>
+          <button class="scroller-peek next" type="button" id="scrollerNext" aria-label="More projects" disabled><img alt=""></button>
         </div>
       </div>
     </div>
@@ -1967,10 +1977,20 @@
       return first ? first.getBoundingClientRect().width : scroller.clientWidth / 4;
     }
 
+    // Each peek button shows the icon of the first hidden item on its side
+    var scrollerItems = $$('.project-icon', scroller);
+    function setPeek(btn, item) {
+      btn.disabled = !item;
+      if (!item) return;
+      var from = item.querySelector('img'), to = btn.querySelector('img');
+      if (from && to.getAttribute('src') !== from.getAttribute('src')) to.setAttribute('src', from.getAttribute('src'));
+    }
     function updateScrollerArrows() {
-      var max = scroller.scrollWidth - scroller.clientWidth;
-      scrollerPrev.disabled = scroller.scrollLeft <= 1;
-      scrollerNext.disabled = scroller.scrollLeft >= max - 1;
+      var slot = Math.max(1, slotWidth());
+      var first = Math.round(scroller.scrollLeft / slot);
+      var shown = Math.max(1, Math.round(scroller.clientWidth / slot));
+      setPeek(scrollerPrev, first > 0 ? scrollerItems[first - 1] : null);
+      setPeek(scrollerNext, scrollerItems[first + shown] || null);
     }
 
     // Scroll just enough to bring an icon fully into view
